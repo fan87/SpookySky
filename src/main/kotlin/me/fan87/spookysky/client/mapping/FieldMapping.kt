@@ -1,0 +1,37 @@
+package me.fan87.spookysky.client.mapping
+
+import org.objectweb.asm.tree.FieldInsnNode
+import org.objectweb.asm.tree.FieldNode
+import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.MethodNode
+import java.lang.reflect.Field
+import kotlin.reflect.KProperty
+
+class FieldMapping<FieldType, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedFieldInfo>(parent, name) {
+
+    operator fun getValue(thisRef: OwnerType?, property: KProperty<*>): FieldType? {
+        return getJavaField().get(thisRef?.original) as FieldType?
+    }
+
+    operator fun setValue(thisRef: OwnerType?, property: KProperty<*>, value: FieldType?) {
+        getJavaField().set(thisRef?.original, value)
+    }
+
+    fun getJavaField(): Field {
+        return parent.getJavaClass().getDeclaredField(checkMapped().name).apply { isAccessible = true }
+    }
+
+
+    fun map(fieldName: String, desc: String) {
+        mapped = MappedFieldInfo(fieldName, desc)
+    }
+
+    fun map(node: FieldNode) {
+        mapped = MappedFieldInfo(node.name, node.desc)
+    }
+
+    fun map(node: FieldInsnNode) {
+        mapped = MappedFieldInfo(node.name, node.desc)
+    }
+
+}

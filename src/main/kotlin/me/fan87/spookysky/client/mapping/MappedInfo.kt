@@ -1,0 +1,7 @@
+package me.fan87.spookysky.client.mapping
+
+abstract class MappedInfo(val name: String)
+class MappedClassInfo(name: String): MappedInfo(name)
+open class MappedMemberInfo(name: String, val desc: String): MappedInfo(name)
+class MappedFieldInfo(name: String, desc: String): MappedMemberInfo(name, desc)
+class MappedMethodInfo(name: String, desc: String): MappedMemberInfo(name, desc)
