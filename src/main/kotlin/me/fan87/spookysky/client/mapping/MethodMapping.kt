@@ -8,7 +8,11 @@ import java.lang.reflect.Method
 
 class MethodMapping<ReturnType, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedMethodInfo>(parent, name) {
 
+    operator fun OwnerType.invoke(vararg args: Any): ReturnType? {
+        return this@MethodMapping.invoke(this, *args)
+    }
 
+    @JvmName("invoke1")
     operator fun invoke(instance: OwnerType?, vararg args: Any): ReturnType? {
         return getJavaMethod().invoke(instance?.original, *args.map { if (it is WrapperClass) it.original else it }.toTypedArray()) as ReturnType?
     }

@@ -37,18 +37,18 @@ object MapEntity: ClassMapping<Entity>() {
 
 open class Entity(original: Any): WrapperClass(original) {
 
-    val motionX by MapEntity.mapMotionX
-    val motionY by MapEntity.mapMotionY
-    val motionZ by MapEntity.mapMotionZ
-    val posX by MapEntity.mapPosX
-    val posY by MapEntity.mapPosY
-    val posZ by MapEntity.mapPosZ
+    var motionX by MapEntity.mapMotionX
+    var motionY by MapEntity.mapMotionY
+    var motionZ by MapEntity.mapMotionZ
+    var posX by MapEntity.mapPosX
+    var posY by MapEntity.mapPosY
+    var posZ by MapEntity.mapPosZ
 //    val lastTickPosX by MapEntity.mapLastTickPosX
 //    val lastTickPosY by MapEntity.mapLastTickPosY
 //    val lastTickPosZ by MapEntity.mapLastTickPosZ
-    val rotationYaw by MapEntity.mapRotationYaw
-    val rotationPitch by MapEntity.mapRotationPitch
-    val onGround by MapEntity.mapOnGround
+    var rotationYaw by MapEntity.mapRotationYaw
+    var rotationPitch by MapEntity.mapRotationPitch
+    var onGround by MapEntity.mapOnGround
 //    val isCollidedHorizontally by MapEntity.mapIsCollidedHorizontally
 //    val isCollidedVertically by MapEntity.mapIsCollidedVertically
 //    val isCollided by MapEntity.mapIsCollided

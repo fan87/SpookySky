@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.mapping.impl
 
 import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
+import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.GuiScreen
 
 object MapMinecraft: ClassMapping<Minecraft>() {
@@ -10,7 +11,7 @@ object MapMinecraft: ClassMapping<Minecraft>() {
 
     val mapGetMinecraft = MethodMapping<Any, Minecraft>(this, "getMinecraft()")
     val mapSetIngameFocus = MethodMapping<Unit, Minecraft>(this, "setIngameFocus()")
-    val mapDisplayGuiScreen = MethodMapping<Unit, Minecraft>(this, "displayGuiScreen()")
+    val mapDisplayGuiScreen = MethodMapping<Unit, Minecraft>(this, "displayGuiScreen(GuiScreen)")
     val mapClickMouse = MethodMapping<Unit, Minecraft>(this, "clickMouse()")
     val mapRunTick = MethodMapping<Unit, Minecraft>(this, "runTick()")
     val mapRightClickMouse = MethodMapping<Unit, Minecraft>(this, "rightClickMouse()")
@@ -18,6 +19,8 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapLeftClickCounter = FieldMapping<Int, Minecraft>(this, "leftClickCounter")
     val mapThePlayer = FieldMapping<Any, Minecraft>(this, "thePlayer")
     val mapDebugFPS = FieldMapping<Int, Minecraft>(this, "debugFPS")
+    val mapCurrentScreen = FieldMapping<Any, Minecraft>(this, "currentScreen")
+    val mapIngameGui = FieldMapping<Any, Minecraft>(this, "ingameGui")
 }
 
 class Minecraft(original: Any): WrapperClass(original) {
@@ -36,4 +39,6 @@ class Minecraft(original: Any): WrapperClass(original) {
 
     var leftClickCounter by MapMinecraft.mapLeftClickCounter
     var thePlayer by WrappedFieldType(MapMinecraft.mapThePlayer, EntityPlayerSP::class.java)
+    var currentScreen by WrappedFieldType(MapMinecraft.mapCurrentScreen, GuiScreen::class.java)
+    var ingameGui by WrappedFieldType(MapMinecraft.mapCurrentScreen, GuiIngame::class.java)
 }

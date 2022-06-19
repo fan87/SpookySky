@@ -6,11 +6,10 @@ import me.fan87.spookysky.client.events.ClientTickEvent
 import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
-import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
+import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
 import me.fan87.spookysky.client.processors.Processor
-import me.fan87.spookysky.client.processors.impl.entities.ProcessorMapEntityPlayerSP
 import me.fan87.spookysky.client.utils.ASMUtils
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.FieldInsnNode
@@ -18,7 +17,6 @@ import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
-import org.objectweb.asm.tree.TypeInsnNode
 import java.io.File
 import java.lang.reflect.Modifier
 
@@ -26,6 +24,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
 
     init {
         dependsOn(MapEntityPlayerSP)
+        dependsOn(MapGuiIngame)
     }
 
     val minecraftPattern = RegbexPattern {
@@ -47,7 +46,9 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 }
                 matchClickMouse(clazz)
                 matchRunTick(clazz)
+                mapIngameGui(clazz)
                 matchPatternB(clazz)
+                matchCurrentGuiScreen(clazz)
                 matchFPS(clazz)
                 try {
                     val file = File("/tmp/Minecraft.class")
@@ -63,6 +64,15 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
 
 
         return false
+    }
+
+    fun mapIngameGui(clazz: LoadedClass) {
+        for (field in clazz.node.fields) {
+            if (field.desc == "L${MapGuiIngame.mapped!!.name};") {
+                MapMinecraft.mapIngameGui.map(field)
+            }
+        }
+        assertMapped(MapMinecraft.mapIngameGui)
     }
 
     fun matchRunTick(clazz: LoadedClass) {
@@ -128,6 +138,15 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
         }
         assertMapped(MapMinecraft.mapClickMouse)
         assertMapped(MapMinecraft.mapRightClickMouse)
+    }
+
+    fun matchCurrentGuiScreen(clazz: LoadedClass) {
+        for (field in clazz.node.fields) {
+            if (field.desc == "L${MapGuiScreen.mapped!!.name};") {
+                MapMinecraft.mapCurrentScreen.map(field)
+            }
+        }
+        assertMapped(MapMinecraft.mapCurrentScreen)
     }
 
     fun matchPatternB(clazz: LoadedClass) {

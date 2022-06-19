@@ -1,14 +1,19 @@
 package me.fan87.spookysky.client.mapping.impl.rendering
 
 import me.fan87.spookysky.client.mapping.*
-import me.fan87.spookysky.client.mapping.impl.Minecraft
 
-object MapGuiScreen: ClassMapping<Minecraft>() {
+object MapGuiScreen: ClassMapping<GuiScreen>() {
     override val humanReadableName: String
         get() = "GuiScreen"
+
+
+    val mapSendChatMessage_SB = MethodMapping<Unit, GuiScreen>(this, "sendChatMessage(String,Boolean)")
+    val mapHandleComponentClick = MethodMapping<Unit, GuiScreen>(this, "handleComponentClick(IChatComponent)")
 
 }
 
 class GuiScreen(original: Any): WrapperClass(original) {
+
+    fun sendChatMessage(msg: String, addToChat: Boolean) = MapGuiScreen.mapSendChatMessage_SB.invoke(this, msg, addToChat)
 
 }

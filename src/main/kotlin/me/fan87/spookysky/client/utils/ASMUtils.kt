@@ -240,4 +240,11 @@ object ASMUtils {
     inline fun <reified T> InsnList.addGetCompanion() {
         add(generateGetCompanion<T>())
     }
+
+    fun ClassNode.getMethod(name: String, desc: String): MethodNode {
+        return this.methods.first { it.name == name && it.desc == desc }
+    }
+    fun ClassNode.getMethod(node: MethodInsnNode): MethodNode {
+        return getMethod(node.name, node.desc)
+    }
 }

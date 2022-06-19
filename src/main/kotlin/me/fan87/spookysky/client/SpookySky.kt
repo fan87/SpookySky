@@ -7,10 +7,13 @@ import com.github.philippheuer.events4j.simple.SimpleEventHandler
 import com.github.philippheuer.events4j.simple.domain.EventSubscriber
 import me.fan87.spookysky.client.events.ClientTickEvent
 import me.fan87.spookysky.client.mapping.MappingsManager
+import me.fan87.spookysky.client.mapping.impl.MapMinecraft
+import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
 import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.GL11
 import org.objectweb.asm.tree.ClassNode
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
@@ -62,6 +65,11 @@ class SpookySky(
     @EventSubscriber
     fun onTick(tick: ClientTickEvent) {
         Display.setTitle("Hello, World!")
+        try {
+            Minecraft.getMinecraft().thePlayer?.sendChatMessage("hi")
+            Minecraft.getMinecraft().thePlayer?.motionX = 0.5;
+        } catch (e: Exception) {
+        }
     }
 
 

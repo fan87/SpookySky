@@ -8,10 +8,12 @@ object MapEntityPlayerSP: ClassMapping<EntityPlayerSP>() {
         get() = "EntityPlayerSP"
 
     val mapOnUpdateWalkingPlayer = MethodMapping<Unit, EntityPlayerSP>(this, "onUpdateWalkingPlayer()")
+    val mapSendChatMessage = MethodMapping<Unit, EntityPlayerSP>(this, "sendChatMessage(String)")
 }
 
 class EntityPlayerSP(original: Any): Entity(original) {
 
     fun onUpdateWalkingPlayer() = MapEntityPlayerSP.mapOnUpdateWalkingPlayer.invoke(this)
+    fun sendChatMessage(message: String) = MapEntityPlayerSP.mapSendChatMessage.invoke(this, message)
 
 }
