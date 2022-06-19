@@ -1,13 +1,20 @@
 package me.fan87.spookysky.client
 
+import com.github.philippheuer.events4j.api.domain.IDisposable
+import com.github.philippheuer.events4j.api.service.IEventHandler
 import com.github.philippheuer.events4j.core.EventManager
+import com.github.philippheuer.events4j.simple.SimpleEventHandler
+import com.github.philippheuer.events4j.simple.domain.EventSubscriber
+import me.fan87.spookysky.client.events.ClientTickEvent
 import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
+import org.lwjgl.opengl.Display
 import org.objectweb.asm.tree.ClassNode
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
+import java.util.function.Consumer
 
 class SpookySky(
     val instrumentation: Instrumentation,
@@ -29,7 +36,7 @@ class SpookySky(
     val processorsManager: ProcessorsManager
     val modulesManager: ModulesManager
 
-    val eventManager = EventManager()
+    val eventManager = SimpleEventHandler()
 
     init {
         INSTANCE = this
@@ -49,8 +56,13 @@ class SpookySky(
         processorsManager = ProcessorsManager(this)
         modulesManager = ModulesManager(this)
 
+        eventManager.registerListener(this)
     }
 
+    @EventSubscriber
+    fun onTick(tick: ClientTickEvent) {
+        Display.setTitle("Hello, World!")
+    }
 
 
 }

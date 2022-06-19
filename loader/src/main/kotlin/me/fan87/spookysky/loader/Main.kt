@@ -89,7 +89,11 @@ object Main {
         if (customClassLoader == null) {
             throw e
         } else {
-            return customClassLoader!!.findClass(name)
+            try {
+                return customClassLoader!!.findClass(name)
+            } catch (e: LinkageError) {
+                return customClassLoader!!.loadClass(name)
+            }
         }
     }
 
@@ -132,8 +136,9 @@ class Transformer: ClassFileTransformer {
                 out.add(method.instructions)
                 out.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
                 out.add(catch)
+                out.add(TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
                 out.add(VarInsnNode(Opcodes.ALOAD, 1))
-                out.add(ASMUtils.getMethodCall(Main::tryFindClass))
+                out.add(ASMUtils.generateMethodCall(Main::tryFindClass))
                 out.add(InsnNode(Opcodes.ARETURN))
                 out.add(endOfMethod)
                 method.instructions = out
@@ -151,12 +156,12 @@ class Transformer: ClassFileTransformer {
                 method.instructions.add(start)
                 method.instructions.add(VarInsnNode(Opcodes.ALOAD, 0))
                 method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
-                method.instructions.add(ASMUtils.getMethodCall(URLClassLoader::class.java.getDeclaredMethod("findClass", String::class.java)))
+                method.instructions.add(ASMUtils.generateMethodCall(URLClassLoader::class.java.getDeclaredMethod("findClass", String::class.java)))
                 method.instructions.add(InsnNode(Opcodes.ARETURN))
                 method.instructions.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
                 method.instructions.add(catch)
                 method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
-                method.instructions.add(ASMUtils.getMethodCall(Main::tryFindClass))
+                method.instructions.add(ASMUtils.generateMethodCall(Main::tryFindClass))
                 method.instructions.add(InsnNode(Opcodes.ARETURN))
                 method.instructions.add(endOfMethod)
 
@@ -172,7 +177,7 @@ class Transformer: ClassFileTransformer {
                     val methodToInject = node.methods.first { it.name == "<init>" }
                     val replaceMatcher = returnPattern.replaceAll(methodToInject.instructions, InsnList().also {
                         it.add(VarInsnNode(Opcodes.ALOAD, 0))
-                        it.add(ASMUtils.getMethodCall(Main::classLoaderHook))
+                        it.add(ASMUtils.generateMethodCall(Main::classLoaderHook))
                         it.add(InsnNode(Opcodes.RETURN))
                     })
 

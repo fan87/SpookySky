@@ -23,6 +23,7 @@ tasks {
     jar {
         manifest {
             attributes["Premain-Class"] = "me.fan87.spookysky.loader.Main"
+            attributes["Can-Redefine-Classes"] = true
         }
     }
 

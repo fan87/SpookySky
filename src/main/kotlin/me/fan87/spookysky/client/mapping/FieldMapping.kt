@@ -17,6 +17,14 @@ class FieldMapping<FieldType, OwnerType: WrapperClass>(parent: ClassMapping<Owne
         getJavaField().set(thisRef?.original, value)
     }
 
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): FieldType? {
+        return getJavaField().get(thisRef) as FieldType?
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: FieldType?) {
+        getJavaField().set(thisRef, value)
+    }
+
     fun getJavaField(): Field {
         return parent.getJavaClass().getDeclaredField(checkMapped().name).apply { isAccessible = true }
     }

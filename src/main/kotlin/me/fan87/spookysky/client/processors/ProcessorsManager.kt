@@ -4,6 +4,9 @@ import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.Mapping
 import me.fan87.spookysky.client.utils.ASMUtils
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.util.CheckClassAdapter
+import java.io.PrintWriter
 import java.lang.instrument.ClassDefinition
 import java.lang.reflect.Modifier
 import java.net.URI
@@ -49,8 +52,15 @@ class ProcessorsManager(val spookySky: SpookySky) {
                 while (!processor.jobDone()) {
                     try {
                         for (mutableEntry in HashMap(spookySky.classes)) {
+                            if (mutableEntry.value.name.startsWith("me/fan87/spookysky")) continue
                             if (processor.process(mutableEntry.value)) {
-                                spookySky.instrumentation.redefineClasses(ClassDefinition(mutableEntry.value.getJavaClass(), ASMUtils.writeClass(mutableEntry.value.node)))
+                                SpookySky.debug("[Processors Manager] Processor has redefined a class: ${mutableEntry.value.node.name}")
+                                val writeClass = ASMUtils.writeClass(mutableEntry.value.node)
+                                val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
+                                spookySky.instrumentation.redefineClasses(ClassDefinition(mutableEntry.value.getJavaClass(),
+                                    writeClass
+                                ))
+                                SpookySky.debug("[Processors Manager] Successfully redefined ${mutableEntry.value.node.name}")
                             }
                             if (!firstTime) {
                                 Thread.sleep(1)
@@ -60,7 +70,7 @@ class ProcessorsManager(val spookySky: SpookySky) {
                                 return@Thread
                             }
                         }
-                        Thread.sleep(100)
+                        Thread.sleep(10)
                         firstTime = false
                     } catch (_: ConcurrentModificationException) {}
                 }

@@ -43,6 +43,7 @@ dependencies {
     compileOnly("org.lwjgl.lwjgl:lwjgl_util:2.9.3")
     implementation("com.github.philippheuer.events4j:events4j-api:0.10.0")
     implementation("com.github.philippheuer.events4j:events4j-core:0.10.0")
+    implementation("com.github.philippheuer.events4j:events4j-handler-simple:0.10.0")
     implementation("org.apache.logging.log4j:log4j-api:2.0-beta9")
     implementation("org.apache.logging.log4j:log4j-core:2.0-beta9")
 }
@@ -97,6 +98,7 @@ tasks {
             "-Dlog4j2.formatMsgNoLookups=true",
             "-Djava.library.path=natives",
             "-javaagent:$agentJar=$clientJar",
+            "-Xverify:all",
             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6950",
         )
 
