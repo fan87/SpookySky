@@ -1,13 +1,11 @@
 package me.fan87.spookysky.client.utils
 
-import com.github.philippheuer.events4j.core.EventManager
-import com.github.philippheuer.events4j.simple.SimpleEventHandler
 import me.fan87.regbex.PrimitiveType
 import me.fan87.regbex.utils.MethodArgumentsTypeReader
 import me.fan87.spookysky.client.SpookySky
-import me.fan87.spookysky.client.events.ClientTickEvent
-import me.fan87.spookysky.client.utils.ASMUtils.getDescName
-import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
+import me.fan87.spookysky.client.events.EventsManager
+import me.fan87.spookysky.client.mapping.MappedMethodInfo
+import me.fan87.spookysky.client.mapping.MethodMapping
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
@@ -15,7 +13,6 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.TypeInsnNode
@@ -27,7 +24,6 @@ import java.lang.reflect.Modifier
 import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.javaMethod
 
 object ASMUtils {
@@ -200,7 +196,26 @@ object ASMUtils {
             it.add(InsnNode(Opcodes.DUP))
             it.add(between)
             it.add(MethodInsnNode(Opcodes.INVOKESPECIAL, constructor.declaringClass.getJvmTypeName(), "<init>", generateMethodDesc(constructor)))
-            it.addMethodCall(SimpleEventHandler::publish)
+            it.addMethodCall(EventsManager::post)
+        }
+    }
+    inline fun <reified E> generateNewEventPostAndPushToStack(between: InsnList = InsnList(), varNumberManager: VarNumberManager): InsnList {
+        SpookySky.Companion
+        val clazz = E::class.java
+        val constructor = clazz.constructors[0]
+        return InsnList().also {
+            it.addGetCompanion<SpookySky>()
+            it.addGetField(SpookySky.Companion::INSTANCE)
+            it.addGetField(SpookySky::eventManager)
+            it.add(TypeInsnNode(Opcodes.NEW, clazz.name.replace(".", "/")))
+            it.add(InsnNode(Opcodes.DUP))
+            it.add(between)
+            it.add(MethodInsnNode(Opcodes.INVOKESPECIAL, constructor.declaringClass.getJvmTypeName(), "<init>", generateMethodDesc(constructor)))
+            it.add(InsnNode(Opcodes.DUP))
+            var number = varNumberManager.allocateVariable()
+            it.add(VarInsnNode(Opcodes.ASTORE, number))
+            it.addMethodCall(EventsManager::post)
+            it.add(VarInsnNode(Opcodes.ALOAD, number))
         }
     }
 
@@ -246,5 +261,11 @@ object ASMUtils {
     }
     fun ClassNode.getMethod(node: MethodInsnNode): MethodNode {
         return getMethod(node.name, node.desc)
+    }
+    fun ClassNode.getMethod(info: MappedMethodInfo): MethodNode {
+        return getMethod(info.name, info.desc)
+    }
+    fun ClassNode.getMethod(mapping: MethodMapping<*, *>): MethodNode {
+        return getMethod(mapping.assumeMapped().name, mapping.assumeMapped().desc)
     }
 }

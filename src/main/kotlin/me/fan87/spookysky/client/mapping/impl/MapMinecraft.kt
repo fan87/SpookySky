@@ -17,10 +17,10 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapRightClickMouse = MethodMapping<Unit, Minecraft>(this, "rightClickMouse()")
 
     val mapLeftClickCounter = FieldMapping<Int, Minecraft>(this, "leftClickCounter")
-    val mapThePlayer = FieldMapping<Any, Minecraft>(this, "thePlayer")
+    val mapThePlayer = NullableFieldMapping<Any, Minecraft>(this, "thePlayer")
     val mapDebugFPS = FieldMapping<Int, Minecraft>(this, "debugFPS")
-    val mapCurrentScreen = FieldMapping<Any, Minecraft>(this, "currentScreen")
-    val mapIngameGui = FieldMapping<Any, Minecraft>(this, "ingameGui")
+    val mapCurrentScreen = NullableFieldMapping<Any, Minecraft>(this, "currentScreen")
+    val mapIngameGui = NullableFieldMapping<Any, Minecraft>(this, "ingameGui")
 }
 
 class Minecraft(original: Any): WrapperClass(original) {
@@ -38,7 +38,7 @@ class Minecraft(original: Any): WrapperClass(original) {
     fun displayGuiScreen(guiScreen: GuiScreen) = MapMinecraft.mapDisplayGuiScreen.invoke(this, guiScreen)
 
     var leftClickCounter by MapMinecraft.mapLeftClickCounter
-    var thePlayer by WrappedFieldType(MapMinecraft.mapThePlayer, EntityPlayerSP::class.java)
-    var currentScreen by WrappedFieldType(MapMinecraft.mapCurrentScreen, GuiScreen::class.java)
-    var ingameGui by WrappedFieldType(MapMinecraft.mapCurrentScreen, GuiIngame::class.java)
+    var thePlayer by NullableWrappedFieldType(MapMinecraft.mapThePlayer, EntityPlayerSP::class.java)
+    var currentScreen by NullableWrappedFieldType(MapMinecraft.mapCurrentScreen, GuiScreen::class.java)
+    var ingameGui by NullableWrappedFieldType(MapMinecraft.mapIngameGui, GuiIngame::class.java)
 }

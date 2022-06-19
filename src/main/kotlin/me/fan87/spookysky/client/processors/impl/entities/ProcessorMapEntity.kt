@@ -3,14 +3,11 @@ package me.fan87.spookysky.client.processors.impl.entities
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
-import me.fan87.spookysky.client.mapping.impl.entities.Entity
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntity
-import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
 import me.fan87.spookysky.client.processors.Processor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
-import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 
 class ProcessorMapEntity: Processor("Map Entity") {
@@ -105,13 +102,55 @@ class ProcessorMapEntity: Processor("Map Entity") {
                 assertMapped(MapEntity.mapFallDistance)
                 assertMapped(MapEntity.mapOnGround)
                 assertMapped(MapEntity.mapGetUniqueID)
-                height(clazz.node)
+                mapHeight(clazz.node)
+                mapGetName(clazz.node)
             }
         }
         return false
     }
 
-    fun height(clazz: ClassNode) {
+    fun mapGetName(clazz: ClassNode) {
+        val pattern = RegbexPattern {
+            thenThis()
+            thenGroup("hasCustomName") {
+                thenOpcodeCheck(Opcodes.INVOKEVIRTUAL)
+            }
+            thenOpcodeCheck(Opcodes.IFEQ)
+            thenLazyAmountOf(0..4) {
+                thenAny()
+            }
+            thenThis()
+            thenGroup("getCustomNameTag") {
+                thenOpcodeCheck(Opcodes.INVOKEVIRTUAL)
+            }
+            thenReturn()
+            thenLazyAnyAmountOf {
+                thenAny()
+            }
+            thenLdcStringEqual("generic")
+            thenLazyAnyAmountOf {
+                thenAny()
+            }
+            thenLdcStringEqual("entity.")
+            thenLazyAnyAmountOf {
+                thenAny()
+            }
+            thenLdcStringEqual(".name")
+        }
+        for (method in clazz.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                MapEntity.mapGetName.map(method)
+                MapEntity.mapHasCustomName.map(matcher.group("hasCustomName")!![0] as MethodInsnNode)
+                MapEntity.mapGetCustomNameTag.map(matcher.group("getCustomNameTag")!![0] as MethodInsnNode)
+            }
+        }
+        assertMapped(MapEntity.mapHasCustomName)
+        assertMapped(MapEntity.mapGetCustomNameTag)
+        assertMapped(MapEntity.mapGetName)
+    }
+
+    fun mapHeight(clazz: ClassNode) {
         val pattern = RegbexPattern {
             thenThis()
             thenGroup("height") {

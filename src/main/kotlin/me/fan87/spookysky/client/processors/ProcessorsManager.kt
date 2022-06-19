@@ -18,7 +18,7 @@ class ProcessorsManager(val spookySky: SpookySky) {
 
     init {
         val resolver = ResolverUtil()
-        resolver.classLoader = ProcessorsManager::class.java.classLoader
+        resolver.classLoader = javaClass.classLoader
         resolver.findInPackage(object : ResolverUtil.Test {
             override fun matches(type: Class<*>?): Boolean {
                 return Processor::class.java.isAssignableFrom(type) && !Modifier.isAbstract(type!!.modifiers)
@@ -35,7 +35,7 @@ class ProcessorsManager(val spookySky: SpookySky) {
             override fun doesMatchResource(): Boolean {
                 return false
             }
-        }, ProcessorsManager::class.java.`package`.name)
+        }, javaClass.`package`.name)
 
         for (clazz in resolver.classes) {
             val processor = clazz.newInstance() as Processor
@@ -49,27 +49,54 @@ class ProcessorsManager(val spookySky: SpookySky) {
                 }
                 SpookySky.debug("[Processors Manager] Running processor: ${processor.humanReadableName} as all of its dependencies has been solved")
                 var firstTime = false
+                processor.start()
                 while (!processor.jobDone()) {
                     try {
-                        for (mutableEntry in HashMap(spookySky.classes)) {
-                            if (mutableEntry.value.name.startsWith("me/fan87/spookysky")) continue
-                            if (processor.process(mutableEntry.value)) {
-                                SpookySky.debug("[Processors Manager] Processor has redefined a class: ${mutableEntry.value.node.name}")
-                                val writeClass = ASMUtils.writeClass(mutableEntry.value.node)
-                                val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
-                                spookySky.instrumentation.redefineClasses(ClassDefinition(mutableEntry.value.getJavaClass(),
-                                    writeClass
-                                ))
-                                SpookySky.debug("[Processors Manager] Successfully redefined ${mutableEntry.value.node.name}")
+                        if (processor.onlyProcess.isEmpty()) {
+                            for (mutableEntry in HashMap(spookySky.classes)) {
+                                if (mutableEntry.value.name.startsWith("me/fan87/spookysky")) continue
+                                if (processor.process(mutableEntry.value)) {
+                                    SpookySky.debug("[Processors Manager] Processor has redefined a class: ${mutableEntry.value.node.name}")
+                                    val writeClass = ASMUtils.writeClass(mutableEntry.value.node)
+                                    val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
+                                    spookySky.instrumentation.redefineClasses(ClassDefinition(mutableEntry.value.getJavaClass(),
+                                        writeClass
+                                    ))
+                                    SpookySky.debug("[Processors Manager] Successfully redefined ${mutableEntry.value.node.name}")
+                                }
+                                if (!firstTime) {
+                                    Thread.sleep(1)
+                                }
+                                if (processor.jobDone()) {
+                                    SpookySky.debug("[Processors Manager] Processor: ${processor.humanReadableName} has got its job done")
+                                    return@Thread
+                                }
                             }
-                            if (!firstTime) {
-                                Thread.sleep(1)
-                            }
-                            if (processor.jobDone()) {
-                                SpookySky.debug("[Processors Manager] Processor: ${processor.humanReadableName} has got its job done")
-                                return@Thread
+                        } else {
+                            for (onlyProcess in processor.onlyProcess) {
+                                val node = spookySky.classes[onlyProcess]
+                                if (node == null) {
+                                    continue
+                                }
+                                if (processor.process(node)) {
+                                    SpookySky.debug("[Processors Manager] Processor has redefined a class: ${node.node.name}")
+                                    val writeClass = ASMUtils.writeClass(node.node)
+                                    val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
+                                    spookySky.instrumentation.redefineClasses(ClassDefinition(node.getJavaClass(),
+                                        writeClass
+                                    ))
+                                    SpookySky.debug("[Processors Manager] Successfully redefined ${node.node.name}")
+                                }
+                                if (!firstTime) {
+                                    Thread.sleep(1)
+                                }
+                                if (processor.jobDone()) {
+                                    SpookySky.debug("[Processors Manager] Processor: ${processor.humanReadableName} has got its job done")
+                                    return@Thread
+                                }
                             }
                         }
+
                         Thread.sleep(10)
                         firstTime = false
                     } catch (_: ConcurrentModificationException) {}

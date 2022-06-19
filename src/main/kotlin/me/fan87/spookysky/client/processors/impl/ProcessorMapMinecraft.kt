@@ -2,7 +2,7 @@ package me.fan87.spookysky.client.processors.impl
 
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
-import me.fan87.spookysky.client.events.ClientTickEvent
+import me.fan87.spookysky.client.events.events.ClientTickEvent
 import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
@@ -34,7 +34,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
     override fun process(clazz: LoadedClass): Boolean {
         Class.forName("net.minecraft.v1_8.epeapasaasseaspaspheeseph")
         for (field in clazz.node.fields) {
-            if (field.desc == "L${MapEntityPlayerSP.mapped!!.name};") {
+            if (field.desc == "L${MapEntityPlayerSP.assumeMapped().name};") {
                 MapMinecraft.mapThePlayer.map(field)
             }
         }
@@ -68,7 +68,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
 
     fun mapIngameGui(clazz: LoadedClass) {
         for (field in clazz.node.fields) {
-            if (field.desc == "L${MapGuiIngame.mapped!!.name};") {
+            if (field.desc == "L${MapGuiIngame.assumeMapped().name};") {
                 MapMinecraft.mapIngameGui.map(field)
             }
         }
@@ -142,7 +142,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
 
     fun matchCurrentGuiScreen(clazz: LoadedClass) {
         for (field in clazz.node.fields) {
-            if (field.desc == "L${MapGuiScreen.mapped!!.name};") {
+            if (field.desc == "L${MapGuiScreen.assumeMapped().name};") {
                 MapMinecraft.mapCurrentScreen.map(field)
             }
         }

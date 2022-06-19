@@ -30,8 +30,11 @@ object MapEntity: ClassMapping<Entity>() {
     val mapHeight = FieldMapping<Float, Entity>(this, "height")
     val mapFallDistance = FieldMapping<Float, Entity>(this, "fallDistance")
 
-    val mapGetUniqueID = MethodMapping<UUID, Entity>(this, "getUniqueID")
-    val mapGetEyeHeight = MethodMapping<Float, Entity>(this, "getEyeHeight")
+    val mapGetUniqueID = MethodMapping<UUID, Entity>(this, "getUniqueID()")
+    val mapGetEyeHeight = MethodMapping<Float, Entity>(this, "getEyeHeight()")
+    val mapGetName = MethodMapping<String, Entity>(this, "getName()")
+    val mapHasCustomName = MethodMapping<Boolean, Entity>(this, "hasCustomName()")
+    val mapGetCustomNameTag = MethodMapping<String, Entity>(this, "getCustomNameTag()")
 
 }
 
@@ -58,5 +61,8 @@ open class Entity(original: Any): WrapperClass(original) {
 
     fun getUniqueID(): UUID? = MapEntity.mapGetUniqueID.invoke(this)
     fun getEyeHeight(): Float? = MapEntity.mapGetEyeHeight.invoke(this)
+    fun getName(): String = MapEntity.mapGetName.invoke(this)!!
+    fun hasCustomName(): Boolean = MapEntity.mapHasCustomName.invoke(this)!!
+    fun getCustomNameTag(): String = MapEntity.mapGetCustomNameTag.invoke(this)!!
 
 }

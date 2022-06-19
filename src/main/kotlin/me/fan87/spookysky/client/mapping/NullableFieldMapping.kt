@@ -5,21 +5,21 @@ import org.objectweb.asm.tree.FieldNode
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 
-class FieldMapping<FieldType: Any?, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedFieldInfo>(parent, name) {
+class NullableFieldMapping<FieldType: Any?, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedFieldInfo>(parent, name) {
 
-    operator fun getValue(thisRef: OwnerType?, property: KProperty<*>): FieldType {
+    operator fun getValue(thisRef: OwnerType?, property: KProperty<*>): FieldType? {
         return getJavaField().get(thisRef?.original) as FieldType
     }
 
-    operator fun setValue(thisRef: OwnerType?, property: KProperty<*>, value: FieldType) {
+    operator fun setValue(thisRef: OwnerType?, property: KProperty<*>, value: FieldType?) {
         getJavaField().set(thisRef?.original, value)
     }
 
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): FieldType {
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): FieldType? {
         return getJavaField().get(thisRef) as FieldType
     }
 
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: FieldType) {
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: FieldType?) {
         getJavaField().set(thisRef, value)
     }
 

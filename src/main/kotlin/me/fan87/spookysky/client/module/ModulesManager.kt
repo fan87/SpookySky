@@ -9,9 +9,11 @@ import java.net.URI
 
 class ModulesManager(val spookySky: SpookySky) {
 
+    val modules = ArrayList<Module>()
+
     init {
         val resolver = ResolverUtil()
-        resolver.classLoader = ProcessorsManager::class.java.classLoader
+        resolver.classLoader = javaClass.classLoader
         resolver.findInPackage(object : ResolverUtil.Test {
             override fun matches(type: Class<*>?): Boolean {
                 return Module::class.java.isAssignableFrom(type) && !Modifier.isAbstract(type!!.modifiers)
@@ -28,12 +30,17 @@ class ModulesManager(val spookySky: SpookySky) {
             override fun doesMatchResource(): Boolean {
                 return false
             }
-        }, ProcessorsManager::class.java.`package`.name)
+        }, javaClass.`package`.name)
 
         for (clazz in resolver.classes) {
             val module = clazz.newInstance() as Module
             SpookySky.debug("[Modules Manager] Registered Module: ${module.name}")
+            modules.add(module)
         }
+    }
+
+    inline fun <reified T: Module> getModule(): T {
+        return modules.first { it.javaClass == T::class.java } as T
     }
 
 

@@ -12,14 +12,14 @@ class MappingsManager(val spookySky: SpookySky) {
     val updateLock = ReentrantLock()
     val condition = updateLock.newCondition()
 
-    val mappings = ArrayList<Mapping<*>>()
+    val mappings = ArrayList<ClassMapping<*>>()
 
     init {
         val resolver = ResolverUtil()
-        resolver.classLoader = ProcessorsManager::class.java.classLoader
+        resolver.classLoader = javaClass.classLoader
         resolver.findInPackage(object : ResolverUtil.Test {
             override fun matches(type: Class<*>?): Boolean {
-                return Mapping::class.java.isAssignableFrom(type) && !MemberMapping::class.java.isAssignableFrom(type) && !Modifier.isAbstract(type!!.modifiers)
+                return ClassMapping::class.java.isAssignableFrom(type) && !MemberMapping::class.java.isAssignableFrom(type) && !Modifier.isAbstract(type!!.modifiers)
             }
 
             override fun matches(resource: URI?): Boolean {
@@ -33,11 +33,11 @@ class MappingsManager(val spookySky: SpookySky) {
             override fun doesMatchResource(): Boolean {
                 return false
             }
-        }, ProcessorsManager::class.java.`package`.name)
+        }, javaClass.`package`.name)
 
         for (clazz in resolver.classes) {
             val declaredField = clazz.getDeclaredField("INSTANCE")
-            val mapping = declaredField.get(null) as Mapping<*>
+            val mapping = declaredField.get(null) as ClassMapping<*>
             mappings.add(mapping)
         }
     }

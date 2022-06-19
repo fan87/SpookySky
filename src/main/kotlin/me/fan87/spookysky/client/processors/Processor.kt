@@ -8,6 +8,15 @@ abstract class Processor(
 ) {
 
     val dependencies = ArrayList<Mapping<*>>()
+    val onlyProcess = ArrayList<String>()
+
+    open fun start() {
+
+    }
+
+    fun onlyProcess(name: String) {
+        onlyProcess.add(name)
+    }
 
     fun dependsOn(mapping: Mapping<*>) {
         dependencies.add(mapping)

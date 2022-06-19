@@ -7,13 +7,13 @@ object MapGuiScreen: ClassMapping<GuiScreen>() {
         get() = "GuiScreen"
 
 
-    val mapSendChatMessage_SB = MethodMapping<Unit, GuiScreen>(this, "sendChatMessage(String,Boolean)")
+    val mapSendChatMessage = MethodMapping<Unit, GuiScreen>(this, "sendChatMessage(String,Boolean)")
     val mapHandleComponentClick = MethodMapping<Unit, GuiScreen>(this, "handleComponentClick(IChatComponent)")
 
 }
 
 class GuiScreen(original: Any): WrapperClass(original) {
 
-    fun sendChatMessage(msg: String, addToChat: Boolean) = MapGuiScreen.mapSendChatMessage_SB.invoke(this, msg, addToChat)
+    fun sendChatMessage(msg: String, addToChat: Boolean) = MapGuiScreen.mapSendChatMessage.invoke(this, msg, addToChat)
 
 }

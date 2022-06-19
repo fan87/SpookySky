@@ -18,9 +18,9 @@ class MethodMapping<ReturnType, OwnerType: WrapperClass>(parent: ClassMapping<Ow
     }
 
     fun getJavaMethod(): Method {
-        checkMapped()
-        val methodArgumentsTypeReader = MethodArgumentsTypeReader(checkMapped().desc)
-        return parent.getJavaClass().getDeclaredMethod(mapped!!.name, *methodArgumentsTypeReader.arguments.map { ASMUtils.descTypeToClass(it) }.toTypedArray()).apply { isAccessible = true }
+        assumeMapped()
+        val methodArgumentsTypeReader = MethodArgumentsTypeReader(assumeMapped().desc)
+        return parent.getJavaClass().getDeclaredMethod(assumeMapped().name, *methodArgumentsTypeReader.arguments.map { ASMUtils.descTypeToClass(it) }.toTypedArray()).apply { isAccessible = true }
     }
 
     fun map(methodName: String, desc: String) {

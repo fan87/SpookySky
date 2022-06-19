@@ -29,7 +29,7 @@ abstract class Mapping<T: MappedInfo>() {
         return javaClass.simpleName + ":$humanReadableName"
     }
 
-    protected fun checkMapped(): T {
+    fun assumeMapped(): T {
         if (!isMapped()) {
             throw IllegalStateException("${toString()} has not been mapped yet")
         }

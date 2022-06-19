@@ -1,23 +1,18 @@
 package me.fan87.spookysky.client
 
-import com.github.philippheuer.events4j.api.domain.IDisposable
-import com.github.philippheuer.events4j.api.service.IEventHandler
-import com.github.philippheuer.events4j.core.EventManager
-import com.github.philippheuer.events4j.simple.SimpleEventHandler
-import com.github.philippheuer.events4j.simple.domain.EventSubscriber
-import me.fan87.spookysky.client.events.ClientTickEvent
+import me.fan87.spookysky.client.commands.CommandsManager
+import me.fan87.spookysky.client.events.EventsManager
 import me.fan87.spookysky.client.mapping.MappingsManager
-import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.Minecraft
+import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
+import me.fan87.spookysky.client.mapping.impl.chat.IChatComponent
 import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
-import org.lwjgl.opengl.Display
-import org.lwjgl.opengl.GL11
+import me.fan87.spookysky.client.utils.ChatColor
 import org.objectweb.asm.tree.ClassNode
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
-import java.util.function.Consumer
 
 class SpookySky(
     val instrumentation: Instrumentation,
@@ -32,14 +27,22 @@ class SpookySky(
         fun debug(message: Any) {
             println("[SpookySky] $message")
         }
+
+        fun addClientChat(message: String) {
+            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(ChatComponentText("${ChatColor.BLUE}[SpookySky] ${ChatColor.RESET}$message"))
+        }
+        fun addClientChat(component: IChatComponent) {
+            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(component)
+        }
     }
     val classes = HashMap<String, LoadedClass>()
 
     val mappingsManager: MappingsManager
     val processorsManager: ProcessorsManager
     val modulesManager: ModulesManager
+    val commandsManager: CommandsManager
 
-    val eventManager = SimpleEventHandler()
+    val eventManager = EventsManager()
 
     init {
         INSTANCE = this
@@ -58,19 +61,12 @@ class SpookySky(
         mappingsManager = MappingsManager(this)
         processorsManager = ProcessorsManager(this)
         modulesManager = ModulesManager(this)
+        commandsManager = CommandsManager(this)
 
         eventManager.registerListener(this)
+
     }
 
-    @EventSubscriber
-    fun onTick(tick: ClientTickEvent) {
-        Display.setTitle("Hello, World!")
-        try {
-            Minecraft.getMinecraft().thePlayer?.sendChatMessage("hi")
-            Minecraft.getMinecraft().thePlayer?.motionX = 0.5;
-        } catch (e: Exception) {
-        }
-    }
 
 
 }

@@ -41,9 +41,6 @@ repositories {
 dependencies {
     compileOnly("org.lwjgl.lwjgl:lwjgl:2.9.3")
     compileOnly("org.lwjgl.lwjgl:lwjgl_util:2.9.3")
-    implementation("com.github.philippheuer.events4j:events4j-api:0.10.0")
-    implementation("com.github.philippheuer.events4j:events4j-core:0.10.0")
-    implementation("com.github.philippheuer.events4j:events4j-handler-simple:0.10.0")
     implementation("org.apache.logging.log4j:log4j-api:2.0-beta9")
     implementation("org.apache.logging.log4j:log4j-core:2.0-beta9")
 }
@@ -78,6 +75,7 @@ tasks {
         dependsOn("assemble")
     }
     register<JavaExec>("lunar") {
+
         dependsOn(":loader:classes")
         dependsOn(":loader:shadowJar")
         dependsOn("classes")
@@ -89,6 +87,11 @@ tasks {
         workingDir = File(lunarHome, "offline/1.8")
         val agentJar = File(project(":loader").buildDir, "libs/${project(":loader").name}-${project(":loader").version}-all.jar").absolutePath
         val clientJar = File(rootProject.buildDir, "libs/${rootProject.name}-${rootProject.version}-all.jar").absolutePath
+        doFirst {
+            try {
+                Runtime.getRuntime().exec(arrayOf("killall", "-9", File(jreHome, "bin/java").absolutePath)).waitFor()
+            } catch (_: Throwable) {}
+        }
         jvmArgs = listOf(
             "--add-modules", "jdk.naming.dns",
             "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
@@ -99,7 +102,7 @@ tasks {
             "-Djava.library.path=natives",
             "-javaagent:$agentJar=$clientJar",
             "-Xverify:all",
-            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6950",
+            "-agentlib:jdwp=transport=dt_socket,server=n,address=pop-os.localdomain:6950,suspend=y",
         )
 
         classpath = files(*workingDir.listFiles { _, name -> name?.endsWith(".jar") == true }!!)
