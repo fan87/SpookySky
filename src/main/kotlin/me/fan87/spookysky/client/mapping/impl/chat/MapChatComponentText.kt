@@ -10,7 +10,7 @@ object MapChatComponentText: ClassMapping<ChatComponentText>() {
 
 }
 
-class ChatComponentText private constructor(original: Any): IChatComponent(original) {
+class ChatComponentText private constructor(original: Any): ChatComponentStyle(original) {
 
     companion object {
         operator fun invoke(string: String): ChatComponentText {

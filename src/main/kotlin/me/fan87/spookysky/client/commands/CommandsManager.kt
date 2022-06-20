@@ -4,8 +4,12 @@ import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.events.GuiChatMessageEvent
 import me.fan87.spookysky.client.mapping.impl.Minecraft
+import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
+import me.fan87.spookysky.client.mapping.impl.chat.ChatStyle
+import me.fan87.spookysky.client.mapping.impl.chat.EnumChatFormatting.Companion.toEnumChatFormatting
 import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
+import me.fan87.spookysky.client.utils.ChatColor
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
 import java.lang.reflect.Modifier
 import java.net.URI
@@ -67,7 +71,9 @@ class CommandsManager(val spookySky: SpookySky) {
                 Minecraft.getMinecraft().ingameGui?.getChatGUI()?.addToSentMessages(event.message)
             }
         } catch (e: CommandException) {
-            e.printStackTrace()
+            SpookySky.addClientChat(ChatComponentText(e.message!!).setChatStyle(ChatStyle().apply {
+                color = ChatColor.RED.toEnumChatFormatting()
+            }))
         } catch (e: Throwable) {
             e.printStackTrace()
         }

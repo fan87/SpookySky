@@ -10,7 +10,7 @@ object MapChatComponentTranslation: ClassMapping<ChatComponentTranslation>() {
 
 }
 
-class ChatComponentTranslation private constructor(original: Any): WrapperClass(original) {
+class ChatComponentTranslation private constructor(original: Any): ChatComponentStyle(original) {
 
     companion object {
         operator fun invoke(translationKey: String, vararg args: Any): ChatComponentTranslation {

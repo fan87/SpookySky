@@ -45,7 +45,7 @@ class ProcessorMapEntityPlayerSP: Processor("Map EntityPlayerSP") {
                 MapEntityPlayerSP.mapOnUpdateWalkingPlayer.map(method)
                 MapC06PacketPlayerPosLook.map(matcher.group("C06")!![0] as TypeInsnNode)
                 MapC03PacketPlayer.map(MapC06PacketPlayerPosLook.getJavaClass().superclass.getJvmTypeName())
-                MapPacket.map(MapC03PacketPlayer.getJavaClass().superclass.getJvmTypeName())
+                MapPacket.map(MapC03PacketPlayer.getJavaClass().interfaces[0].getJvmTypeName())
             }
         }
         return false

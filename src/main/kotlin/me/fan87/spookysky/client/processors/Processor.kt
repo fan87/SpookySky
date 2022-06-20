@@ -17,6 +17,9 @@ abstract class Processor(
     fun onlyProcess(name: String) {
         onlyProcess.add(name)
     }
+    fun onlyProcess(mapping: Mapping<*>) {
+        onlyProcess.add(mapping.assumeMapped().name)
+    }
 
     fun dependsOn(mapping: Mapping<*>) {
         dependencies.add(mapping)

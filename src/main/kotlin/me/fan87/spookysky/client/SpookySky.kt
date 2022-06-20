@@ -5,6 +5,8 @@ import me.fan87.spookysky.client.events.EventsManager
 import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
+import me.fan87.spookysky.client.mapping.impl.chat.ChatStyle
+import me.fan87.spookysky.client.mapping.impl.chat.EnumChatFormatting.Companion.toEnumChatFormatting
 import me.fan87.spookysky.client.mapping.impl.chat.IChatComponent
 import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
@@ -29,10 +31,13 @@ class SpookySky(
         }
 
         fun addClientChat(message: String) {
-            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(ChatComponentText("${ChatColor.BLUE}[SpookySky] ${ChatColor.RESET}$message"))
+            addClientChat(ChatComponentText(message))
         }
         fun addClientChat(component: IChatComponent) {
-            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(component)
+            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(ChatComponentText("[SpookySky] ").apply {
+                setChatStyle(ChatStyle().apply { color = ChatColor.BLUE.toEnumChatFormatting() })
+                appendSibling(component)
+            })
         }
     }
     val classes = HashMap<String, LoadedClass>()

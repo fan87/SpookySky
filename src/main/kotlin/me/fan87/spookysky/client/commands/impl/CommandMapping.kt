@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.commands.impl
 
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.commands.Command
+import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
 import me.fan87.spookysky.client.utils.ChatColor
 
 class CommandMapping: Command(
@@ -11,9 +12,17 @@ class CommandMapping: Command(
 ) {
     override fun onCommand(args: Array<String>) {
         for (mapping in spookySky.mappingsManager.mappings) {
-            SpookySky.addClientChat("${if (mapping.isMapped()) ChatColor.GREEN else ChatColor.RED}${mapping.humanReadableName}${if (mapping.isMapped()) "${ChatColor.GRAY} - ${mapping.mapped!!.name}" else ""}")
+            var output = ChatComponentText(mapping.humanReadableName).setColor(if (mapping.isMapped()) ChatColor.GREEN else ChatColor.RED)
+            if (mapping.isMapped()) {
+                output = output.appendSibling(ChatComponentText(" - ${mapping.assumeMapped().name}").setColor(ChatColor.GRAY))
+            }
+            SpookySky.addClientChat(output)
             for (child in mapping.children) {
-                SpookySky.addClientChat("  ${if (child.isMapped()) ChatColor.GREEN else ChatColor.RED}${child.humanReadableName}${if (child.isMapped()) "${ChatColor.GRAY} - ${child.mapped!!.name}" else ""}")
+                output = ChatComponentText("  " + child.humanReadableName).setColor(if (child.isMapped()) ChatColor.GREEN else ChatColor.RED)
+                if (child.isMapped()) {
+                    output = output.appendSibling(ChatComponentText(" - ${child.assumeMapped().name}").setColor(ChatColor.GRAY))
+                }
+                SpookySky.addClientChat(output)
             }
         }
     }

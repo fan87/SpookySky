@@ -32,7 +32,6 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
     }
 
     override fun process(clazz: LoadedClass): Boolean {
-        Class.forName("net.minecraft.v1_8.epeapasaasseaspaspheeseph")
         for (field in clazz.node.fields) {
             if (field.desc == "L${MapEntityPlayerSP.assumeMapped().name};") {
                 MapMinecraft.mapThePlayer.map(field)
