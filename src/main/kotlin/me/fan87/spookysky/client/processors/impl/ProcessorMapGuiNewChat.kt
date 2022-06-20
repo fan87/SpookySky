@@ -3,12 +3,10 @@ package me.fan87.spookysky.client.processors.impl
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
-import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiNewChat
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
+import me.fan87.spookysky.client.mapping.impl.rendering.*
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
+import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import me.fan87.spookysky.client.utils.ASMUtils.getMethod
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.FieldInsnNode
@@ -41,13 +39,10 @@ class ProcessorMapGuiNewChat: Processor("Map GuiNewChat") {
             }
         }
         val matcher = pattern.matcher(method)
-        if (!matcher.next()) {
-            File("/tmp/test.class").writeBytes(ASMUtils.writeClass(clazz.node))
-            throw IllegalStateException("Couldn't match GuiNewChat")
-        }
-
+        matcher.next()
         MapGuiIngame.mapGetChatGUI.map(matcher.group("getChatGUI")!![0] as MethodInsnNode)
         MapGuiNewChat.map((matcher.group("addToSentMessages")!![0] as MethodInsnNode).owner)
+        MapGui.map(MapGuiNewChat.getJavaClass().superclass.getJvmTypeName())
         MapGuiNewChat.mapAddToSentMessages.map(matcher.group("addToSentMessages")!![0] as MethodInsnNode)
         return false
     }

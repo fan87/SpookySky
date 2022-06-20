@@ -6,6 +6,10 @@ import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.GuiScreen
 
 object MapMinecraft: ClassMapping<Minecraft>() {
+    override fun getWrapperClass(): Class<Minecraft> {
+        return Minecraft::class.java
+    }
+
     override val humanReadableName: String
         get() = "Minecraft"
 
@@ -23,7 +27,7 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapIngameGui = NullableFieldMapping<Any, Minecraft>(this, "ingameGui")
 }
 
-class Minecraft(original: Any): WrapperClass(original) {
+class Minecraft protected constructor(original: Any): WrapperClass(original) {
     companion object {
         fun getMinecraft(): Minecraft {
             return WrappedMethodType(MapMinecraft.mapGetMinecraft, Minecraft::class.java).invoke(null)!!

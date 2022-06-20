@@ -4,6 +4,10 @@ import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.utils.ChatColor
 
 object MapChatStyle: ClassMapping<ChatStyle>() {
+    override fun getWrapperClass(): Class<ChatStyle> {
+        return ChatStyle::class.java
+    }
+
     override val humanReadableName: String
         get() = "ChatStyle"
 
@@ -18,18 +22,18 @@ object MapChatStyle: ClassMapping<ChatStyle>() {
     val mapObfuscated = NullableFieldMapping<Boolean, ChatStyle>(this, "obfuscated")
 }
 
-open class ChatStyle private constructor(original: Any): WrapperClass(original) {
+open class ChatStyle protected constructor(original: Any): WrapperClass(original) {
 
     companion object {
         operator fun invoke(): ChatStyle {
             return fromOriginal(MapChatStyle())
         }
         fun fromOriginal(original: Any): ChatStyle {
-            return ChatStyle(original)
+            return MappingsManager.getWrapped(original)
         }
     }
 
-    fun createShallowCopy(): ChatStyle = ChatStyle(MapChatStyle.mapCreateShallowCopy.invoke(this)!!)
+    fun createShallowCopy(): ChatStyle = MappingsManager.getWrapped(MapChatStyle.mapCreateShallowCopy.invoke(this)!!)
 
     var parentStyle by NullableWrappedFieldType(MapChatStyle.mapParentStyle, ChatStyle::class.java)
     var color by NullableWrappedFieldType(MapChatStyle.mapColor, EnumChatFormatting::class.java)

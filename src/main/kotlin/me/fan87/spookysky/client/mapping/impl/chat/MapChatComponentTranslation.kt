@@ -4,13 +4,17 @@ import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.WrapperClass
 
 object MapChatComponentTranslation: ClassMapping<ChatComponentTranslation>() {
+    override fun getWrapperClass(): Class<ChatComponentTranslation> {
+        return ChatComponentTranslation::class.java
+    }
+
     override val humanReadableName: String
         get() = "ChatComponentTranslation"
 
 
 }
 
-class ChatComponentTranslation private constructor(original: Any): ChatComponentStyle(original) {
+class ChatComponentTranslation protected constructor(original: Any): ChatComponentStyle(original) {
 
     companion object {
         operator fun invoke(translationKey: String, vararg args: Any): ChatComponentTranslation {

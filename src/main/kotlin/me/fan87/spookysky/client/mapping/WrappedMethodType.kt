@@ -11,7 +11,7 @@ class WrappedMethodType<WrapperType: WrapperClass, OwnerType: WrapperClass>(val 
         if (returnValue == null) {
             return null
         }
-        return wrapperClass.constructors[0].newInstance(returnValue) as WrapperType?
+        return MappingsManager.getWrapped(returnValue)
     }
 
 }

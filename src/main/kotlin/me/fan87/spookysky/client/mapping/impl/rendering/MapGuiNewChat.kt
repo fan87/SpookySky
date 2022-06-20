@@ -4,6 +4,10 @@ import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.mapping.impl.chat.IChatComponent
 
 object MapGuiNewChat: ClassMapping<GuiNewChat>() {
+    override fun getWrapperClass(): Class<GuiNewChat> {
+        return GuiNewChat::class.java
+    }
+
     override val humanReadableName: String
         get() = "GuiNewChat"
 
@@ -11,7 +15,7 @@ object MapGuiNewChat: ClassMapping<GuiNewChat>() {
     val mapPrintChatMessage = MethodMapping<Unit, GuiNewChat>(this, "printChatMessage(IChatComponent)")
 }
 
-class GuiNewChat(original: Any): WrapperClass(original) {
+class GuiNewChat protected constructor(original: Any): Gui(original) {
 
     fun addToSentMessages(message: String) = MapGuiNewChat.mapAddToSentMessages.invoke(this, message)
     fun printChatMessage(component: IChatComponent) = MapGuiNewChat.mapPrintChatMessage.invoke(this, component.original)

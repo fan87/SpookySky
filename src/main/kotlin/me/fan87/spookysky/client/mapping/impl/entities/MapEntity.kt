@@ -8,6 +8,10 @@ import me.fan87.spookysky.client.mapping.impl.Minecraft
 import java.util.UUID
 
 object MapEntity: ClassMapping<Entity>() {
+    override fun getWrapperClass(): Class<Entity> {
+        return Entity::class.java
+    }
+
     override val humanReadableName: String
         get() = "Entity"
 
@@ -38,7 +42,7 @@ object MapEntity: ClassMapping<Entity>() {
 
 }
 
-open class Entity(original: Any): WrapperClass(original) {
+open class Entity protected constructor (original: Any): WrapperClass(original) {
 
     var motionX by MapEntity.mapMotionX
     var motionY by MapEntity.mapMotionY

@@ -1,13 +1,40 @@
 package me.fan87.spookysky.client.mapping
 
 import me.fan87.spookysky.client.SpookySky
-import me.fan87.spookysky.client.processors.ProcessorsManager
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
 import java.lang.reflect.Modifier
 import java.net.URI
 import java.util.concurrent.locks.ReentrantLock
 
 class MappingsManager(val spookySky: SpookySky) {
+
+    companion object {
+        fun <T> getWrapped(original: Any): T {
+            var highest: Class<T>? = null
+            for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
+                val wrapperClass = mapping.getWrapperClass()
+                if (mapping.isInstance(original)) {
+                    if (highest == null) {
+                        highest = wrapperClass as Class<T>
+                    } else {
+                        if (highest.isAssignableFrom(wrapperClass) && !wrapperClass.isAssignableFrom(highest)) {
+                            highest = wrapperClass as Class<T>
+                        }
+                    }
+                }
+            }
+            if (highest == null) {
+                throw IllegalArgumentException("Un-supported class: ${original.javaClass.name}")
+            }
+            for (declaredConstructor in highest.declaredConstructors) {
+                if (declaredConstructor.parameterCount == 1 && declaredConstructor.parameterTypes[0] == Any::class.java) {
+                    declaredConstructor.isAccessible = true
+                    return declaredConstructor.newInstance(original) as T
+                }
+            }
+            throw IllegalStateException("No available constructor for wrapper: ${highest.name}")
+        }
+    }
 
     val updateLock = ReentrantLock()
     val condition = updateLock.newCondition()

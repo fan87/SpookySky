@@ -7,6 +7,10 @@ import me.fan87.spookysky.client.mapping.WrapperClass
 import me.fan87.spookysky.client.utils.ChatColor
 
 object MapEnumChatFormatting: ClassMapping<EnumChatFormatting>() {
+    override fun getWrapperClass(): Class<EnumChatFormatting> {
+        return EnumChatFormatting::class.java
+    }
+
     override val humanReadableName: String
         get() = "EnumChatFormatting"
 
@@ -15,7 +19,7 @@ object MapEnumChatFormatting: ClassMapping<EnumChatFormatting>() {
 
 }
 
-open class EnumChatFormatting(original: Any): WrapperClass(original) {
+open class EnumChatFormatting protected constructor(original: Any): WrapperClass(original) {
 
     companion object {
         fun fromChatColor(color: ChatColor): EnumChatFormatting {

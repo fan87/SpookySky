@@ -4,13 +4,17 @@ import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.WrapperClass
 
 object MapChatComponentText: ClassMapping<ChatComponentText>() {
+    override fun getWrapperClass(): Class<ChatComponentText> {
+        return ChatComponentText::class.java
+    }
+
     override val humanReadableName: String
         get() = "ChatComponentText"
 
 
 }
 
-class ChatComponentText private constructor(original: Any): ChatComponentStyle(original) {
+class ChatComponentText protected constructor(original: Any): ChatComponentStyle(original) {
 
     companion object {
         operator fun invoke(string: String): ChatComponentText {

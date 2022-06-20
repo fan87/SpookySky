@@ -7,10 +7,12 @@ import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
+import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiChat
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
+import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
@@ -49,6 +51,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 matchPatternB(clazz)
                 matchCurrentGuiScreen(clazz)
                 matchFPS(clazz)
+                matchGuiChat(clazz)
                 try {
                     val file = File("/tmp/Minecraft.class")
                     file.createNewFile()
@@ -65,6 +68,24 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
         return false
     }
 
+    fun matchGuiChat(clazz: LoadedClass) {
+        val pattern = RegbexPattern {
+            thenGroup("GuiChat") {
+                thenOpcodeCheck(Opcodes.NEW)
+            }
+            thenOpcodeCheck(Opcodes.DUP)
+            thenLdc("/")
+            thenOpcodeCheck(Opcodes.INVOKESPECIAL)
+        }
+
+        for (method in clazz.node.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                MapGuiChat.map(matcher.groupAsTypeInsnNode("GuiChat"))
+            }
+        }
+        assertMapped(MapGuiChat)
+    }
     fun mapIngameGui(clazz: LoadedClass) {
         for (field in clazz.node.fields) {
             if (field.desc == "L${MapGuiIngame.assumeMapped().name};") {

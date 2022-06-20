@@ -8,7 +8,7 @@ class NullableWrappedFieldType<WrapperType: WrapperClass, OwnerType: WrapperClas
         if (value == null) {
             return null
         }
-        return wrapperType.constructors[0].newInstance(value) as WrapperType
+        return MappingsManager.getWrapped(value)
     }
 
     operator fun setValue(thisRef: OwnerType?, property: KProperty<*>, value: WrapperType?) {

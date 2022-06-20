@@ -5,10 +5,14 @@ import me.fan87.spookysky.client.mapping.WrapperClass
 import me.fan87.spookysky.client.mapping.impl.packets.client.C06PacketPlayerPosLook
 
 object MapPacket: ClassMapping<Packet>() {
+    override fun getWrapperClass(): Class<Packet> {
+        return Packet::class.java
+    }
+
     override val humanReadableName: String
         get() = "Packet"
 }
 
-open class Packet(original: Any) : WrapperClass(original) {
+open class Packet protected constructor(original: Any) : WrapperClass(original) {
 
 }

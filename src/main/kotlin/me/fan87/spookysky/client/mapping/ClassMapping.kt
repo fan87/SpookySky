@@ -1,6 +1,7 @@
 package me.fan87.spookysky.client.mapping
 
 import me.fan87.spookysky.client.LoadedClass
+import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import org.objectweb.asm.tree.TypeInsnNode
 
 abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
@@ -10,6 +11,8 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
     fun getJavaClass(): Class<*> {
         return Class.forName(assumeMapped().name.replace("/", "."))
     }
+
+    abstract fun getWrapperClass(): Class<T>
 
     operator fun invoke(vararg args: Any): Any {
         loopConstructors@for (constructor in getJavaClass().constructors) {
@@ -33,6 +36,13 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
     }
     fun map(type: TypeInsnNode) {
         mapped = MappedClassInfo(type.desc)
+    }
+
+    fun isInstance(any: Any?): Boolean {
+        if (any == null) {
+            return false
+        }
+        return getJavaClass().isAssignableFrom(any.javaClass)
     }
 
 }
