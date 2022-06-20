@@ -59,7 +59,7 @@ class CommandsManager(val spookySky: SpookySky) {
     @EventHandler
     fun onAutoComplete(event: AutoCompleteEvent) {
         try {
-            if (event.message.startsWith(".")) {
+            if (event.message.startsWith(":")) {
                 val guiChat = Minecraft.getMinecraft().currentScreen
                 if (guiChat !is GuiChat) {
                     return
@@ -74,7 +74,7 @@ class CommandsManager(val spookySky: SpookySky) {
                     val output = ArrayList<String>()
                     for (registeredCommand in commands) {
                         if (registeredCommand.name.startsWith(commandName)) {
-                            output.add("." + registeredCommand.name)
+                            output.add(":" + registeredCommand.name)
                         }
                     }
                     guiChat.onAutocompleteResponse(output.toTypedArray())
@@ -96,7 +96,7 @@ class CommandsManager(val spookySky: SpookySky) {
     @EventHandler
     fun onChat(event: GuiChatMessageEvent) {
         try {
-            if (event.message.startsWith(".")) {
+            if (event.message.startsWith(":")) {
                 event.cancelled = true
                 val input = event.message.substring(1)
                 val split = input.split(" ")

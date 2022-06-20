@@ -21,6 +21,7 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
@@ -134,6 +135,10 @@ object ASMUtils {
     fun generateMethodCall(method: KFunction<*>): MethodInsnNode {
         val method1 = method.javaMethod ?: throw IllegalArgumentException("Could not get the java method")
         return generateMethodCall(method1)
+    }
+
+    inline fun <reified T> generateGetInstance(): FieldInsnNode {
+        return generateGetField(T::class.java.fields.first { it.name == "INSTANCE" })
     }
     //</editor-fold>
 
@@ -251,6 +256,9 @@ object ASMUtils {
     }
     fun InsnList.addGetCompanion(type: Class<*>) {
         add(generateGetCompanion(type))
+    }
+    fun InsnList.addThis() {
+        add(VarInsnNode(Opcodes.ALOAD, 0))
     }
     inline fun <reified T> InsnList.addGetCompanion() {
         add(generateGetCompanion<T>())

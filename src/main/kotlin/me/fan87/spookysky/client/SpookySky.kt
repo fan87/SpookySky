@@ -34,7 +34,7 @@ class SpookySky(
             addClientChat(ChatComponentText(message).setColor(ChatColor.GRAY))
         }
         fun addClientChat(component: IChatComponent) {
-            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(ChatComponentText("[SpookySky] ").apply {
+            Minecraft.getMinecraft().ingameGui?.getChatGUI()?.printChatMessage(ChatComponentText("§\uE069SpookySky §7» ").apply {
                 setChatStyle(ChatStyle().apply { color = ChatColor.BLUE.toEnumChatFormatting() })
                 appendSibling(component)
             })

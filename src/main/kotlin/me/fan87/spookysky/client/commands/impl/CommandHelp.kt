@@ -16,8 +16,9 @@ class CommandHelp: Command(
     override fun onCommand(args: Array<String>) {
         for (command in spookySky.commandsManager.commands) {
             SpookySky.addClientChat(
-                ChatComponentText("${command.name} ${command.argumentsUsage}  ").setColor(ChatColor.GREEN)
+                ChatComponentText("${command.name} ${command.argumentsUsage}  ").setColor(ChatColor.WHITE)
                 .appendSibling(ChatComponentText("-  ${command.description}").setColor(ChatColor.GRAY))
+
             )
         }
     }

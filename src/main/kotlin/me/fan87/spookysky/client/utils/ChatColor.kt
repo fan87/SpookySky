@@ -141,6 +141,7 @@ enum class ChatColor(
          * you need to dynamically convert colour codes from your custom format.
          */
         const val COLOR_CHAR = '\u00A7'
+        const val RAINBOW_COLOR_CHAR = '\uE069'
 
         private val STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR.toString() + "[0-9A-FK-ORX]")
         private val BY_ID: MutableMap<Int, ChatColor> = HashMap()

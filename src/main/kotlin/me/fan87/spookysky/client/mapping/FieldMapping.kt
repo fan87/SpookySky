@@ -5,7 +5,7 @@ import org.objectweb.asm.tree.FieldNode
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 
-class FieldMapping<FieldType: Any?, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedFieldInfo>(parent, name) {
+open class FieldMapping<FieldType: Any?, OwnerType: WrapperClass>(parent: ClassMapping<OwnerType>, name: String): MemberMapping<MappedFieldInfo>(parent, name) {
 
     operator fun getValue(thisRef: OwnerType?, property: KProperty<*>): FieldType {
         return getJavaField().get(thisRef?.original) as FieldType

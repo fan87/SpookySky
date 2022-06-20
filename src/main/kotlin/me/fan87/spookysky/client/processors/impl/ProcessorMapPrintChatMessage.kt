@@ -11,10 +11,6 @@ import org.objectweb.asm.Opcodes
 
 class ProcessorMapPrintChatMessage: Processor("Map printCheatMessage()") {
     val pattern = RegbexPattern {
-        thenGroup("ChatComponentTranslation") {
-            thenOpcodeCheck(Opcodes.NEW)
-        }
-        thenOpcodeCheck(Opcodes.DUP)
         thenLdcStringEqual("demo.help.jump")
         thenAnyAmountOf {
             thenAny()
@@ -31,8 +27,26 @@ class ProcessorMapPrintChatMessage: Processor("Map printCheatMessage()") {
         for (method in clazz.node.methods) {
             val matcher = pattern.matcher(method)
             if (matcher.next()) {
-                MapChatComponentTranslation.map(matcher.groupAsTypeInsnNode("ChatComponentTranslation"))
-                MapGuiNewChat.mapPrintChatMessage.map(matcher.groupAsMethodInsnNode("printChatMessage"))
+                val newPattern = RegbexPattern {
+                    thenGroup("ChatComponentTranslation") {
+                        thenOpcodeCheck(Opcodes.NEW)
+                    }
+                    thenOpcodeCheck(Opcodes.DUP)
+                    thenLdcStringEqual("demo.help.jump")
+                    thenAnyAmountOf {
+                        thenAny()
+                    }
+                    thenOpcodeCheck(Opcodes.INVOKESPECIAL)
+                    thenGroup("printChatMessage") {
+                        thenOpcodeCheck(Opcodes.INVOKEVIRTUAL)
+                    }
+                }
+                val matcher1 = newPattern.matcher(method)
+                if (matcher1.next()) {
+                    MapChatComponentTranslation.map(matcher1.groupAsTypeInsnNode("ChatComponentTranslation"))
+                    MapGuiNewChat.mapPrintChatMessage.map(matcher1.groupAsMethodInsnNode("printChatMessage"))
+                }
+
             }
         }
         return false
