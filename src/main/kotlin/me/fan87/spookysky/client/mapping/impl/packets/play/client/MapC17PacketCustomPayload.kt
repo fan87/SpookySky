@@ -15,7 +15,7 @@ object MapC17PacketCustomPayload: PacketMapping<C17PacketCustomPayload>() {
     override val humanReadableName: String
         get() = "C17PacketCustomPayload"
     override val id: Int
-        get() = 0x17
+        get() = 23
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

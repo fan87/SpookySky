@@ -15,7 +15,7 @@ object MapS33PacketUpdateSign: PacketMapping<S33PacketUpdateSign>() {
     override val humanReadableName: String
         get() = "S33PacketUpdateSign"
     override val id: Int
-        get() = 0x33
+        get() = 51
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

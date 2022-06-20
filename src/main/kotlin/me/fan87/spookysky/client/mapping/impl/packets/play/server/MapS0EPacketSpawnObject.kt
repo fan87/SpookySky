@@ -15,7 +15,7 @@ object MapS0EPacketSpawnObject: PacketMapping<S0EPacketSpawnObject>() {
     override val humanReadableName: String
         get() = "S0EPacketSpawnObject"
     override val id: Int
-        get() = 0x0E
+        get() = 14
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

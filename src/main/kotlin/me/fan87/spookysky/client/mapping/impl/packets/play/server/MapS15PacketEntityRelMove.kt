@@ -15,7 +15,7 @@ object MapS15PacketEntityRelMove: PacketMapping<S15PacketEntityRelMove>() {
     override val humanReadableName: String
         get() = "S15PacketEntityRelMove"
     override val id: Int
-        get() = 0x15
+        get() = 21
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

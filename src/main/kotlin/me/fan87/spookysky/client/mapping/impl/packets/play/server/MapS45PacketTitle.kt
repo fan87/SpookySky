@@ -15,7 +15,7 @@ object MapS45PacketTitle: PacketMapping<S45PacketTitle>() {
     override val humanReadableName: String
         get() = "S45PacketTitle"
     override val id: Int
-        get() = 0x45
+        get() = 69
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

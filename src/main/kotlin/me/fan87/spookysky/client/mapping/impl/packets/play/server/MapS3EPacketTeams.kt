@@ -15,7 +15,7 @@ object MapS3EPacketTeams: PacketMapping<S3EPacketTeams>() {
     override val humanReadableName: String
         get() = "S3EPacketTeams"
     override val id: Int
-        get() = 0x3E
+        get() = 62
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

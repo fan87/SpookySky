@@ -15,7 +15,7 @@ object MapS25PacketBlockBreakAnim: PacketMapping<S25PacketBlockBreakAnim>() {
     override val humanReadableName: String
         get() = "S25PacketBlockBreakAnim"
     override val id: Int
-        get() = 0x25
+        get() = 37
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

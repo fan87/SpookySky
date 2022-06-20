@@ -15,7 +15,7 @@ object MapC18PacketSpectate: PacketMapping<C18PacketSpectate>() {
     override val humanReadableName: String
         get() = "C18PacketSpectate"
     override val id: Int
-        get() = 0x18
+        get() = 24
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

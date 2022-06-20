@@ -15,7 +15,7 @@ object MapS24PacketBlockAction: PacketMapping<S24PacketBlockAction>() {
     override val humanReadableName: String
         get() = "S24PacketBlockAction"
     override val id: Int
-        get() = 0x24
+        get() = 36
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

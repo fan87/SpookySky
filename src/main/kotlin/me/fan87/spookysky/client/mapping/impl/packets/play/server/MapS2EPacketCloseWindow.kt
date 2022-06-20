@@ -15,7 +15,7 @@ object MapS2EPacketCloseWindow: PacketMapping<S2EPacketCloseWindow>() {
     override val humanReadableName: String
         get() = "S2EPacketCloseWindow"
     override val id: Int
-        get() = 0x2E
+        get() = 46
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

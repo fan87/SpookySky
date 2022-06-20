@@ -15,7 +15,7 @@ object MapS37PacketStatistics: PacketMapping<S37PacketStatistics>() {
     override val humanReadableName: String
         get() = "S37PacketStatistics"
     override val id: Int
-        get() = 0x37
+        get() = 55
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

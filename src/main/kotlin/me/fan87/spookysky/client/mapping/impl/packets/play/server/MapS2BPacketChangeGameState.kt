@@ -15,7 +15,7 @@ object MapS2BPacketChangeGameState: PacketMapping<S2BPacketChangeGameState>() {
     override val humanReadableName: String
         get() = "S2BPacketChangeGameState"
     override val id: Int
-        get() = 0x2B
+        get() = 43
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

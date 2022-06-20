@@ -15,7 +15,7 @@ object MapC11PacketEnchantItem: PacketMapping<C11PacketEnchantItem>() {
     override val humanReadableName: String
         get() = "C11PacketEnchantItem"
     override val id: Int
-        get() = 0x11
+        get() = 17
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

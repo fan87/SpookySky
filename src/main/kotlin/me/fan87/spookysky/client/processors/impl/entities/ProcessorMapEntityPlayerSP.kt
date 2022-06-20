@@ -6,8 +6,6 @@ import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.packets.MapPacket
 import me.fan87.spookysky.client.mapping.impl.packets.Packet
-import me.fan87.spookysky.client.mapping.impl.packets.client.MapC03PacketPlayer
-import me.fan87.spookysky.client.mapping.impl.packets.client.MapC06PacketPlayerPosLook
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import org.objectweb.asm.Opcodes

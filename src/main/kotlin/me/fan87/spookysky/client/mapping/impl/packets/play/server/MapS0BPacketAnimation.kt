@@ -15,7 +15,7 @@ object MapS0BPacketAnimation: PacketMapping<S0BPacketAnimation>() {
     override val humanReadableName: String
         get() = "S0BPacketAnimation"
     override val id: Int
-        get() = 0x0B
+        get() = 11
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

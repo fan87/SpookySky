@@ -15,7 +15,7 @@ object MapC0EPacketClickWindow: PacketMapping<C0EPacketClickWindow>() {
     override val humanReadableName: String
         get() = "C0EPacketClickWindow"
     override val id: Int
-        get() = 0x0E
+        get() = 14
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

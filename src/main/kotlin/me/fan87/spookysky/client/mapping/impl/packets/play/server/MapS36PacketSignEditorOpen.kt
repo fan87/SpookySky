@@ -15,7 +15,7 @@ object MapS36PacketSignEditorOpen: PacketMapping<S36PacketSignEditorOpen>() {
     override val humanReadableName: String
         get() = "S36PacketSignEditorOpen"
     override val id: Int
-        get() = 0x36
+        get() = 54
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

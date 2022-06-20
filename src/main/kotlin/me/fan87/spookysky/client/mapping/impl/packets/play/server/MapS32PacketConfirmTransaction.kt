@@ -15,7 +15,7 @@ object MapS32PacketConfirmTransaction: PacketMapping<S32PacketConfirmTransaction
     override val humanReadableName: String
         get() = "S32PacketConfirmTransaction"
     override val id: Int
-        get() = 0x32
+        get() = 50
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

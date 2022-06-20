@@ -15,7 +15,7 @@ object MapS2FPacketSetSlot: PacketMapping<S2FPacketSetSlot>() {
     override val humanReadableName: String
         get() = "S2FPacketSetSlot"
     override val id: Int
-        get() = 0x2F
+        get() = 47
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

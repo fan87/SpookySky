@@ -15,7 +15,7 @@ object MapS02PacketChat: PacketMapping<S02PacketChat>() {
     override val humanReadableName: String
         get() = "S02PacketChat"
     override val id: Int
-        get() = 0x02
+        get() = 2
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS44PacketWorldBorder: PacketMapping<S44PacketWorldBorder>() {
     override val humanReadableName: String
         get() = "S44PacketWorldBorder"
     override val id: Int
-        get() = 0x44
+        get() = 68
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS43PacketCamera: PacketMapping<S43PacketCamera>() {
     override val humanReadableName: String
         get() = "S43PacketCamera"
     override val id: Int
-        get() = 0x43
+        get() = 67
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

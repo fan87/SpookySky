@@ -15,7 +15,7 @@ object MapS28PacketEffect: PacketMapping<S28PacketEffect>() {
     override val humanReadableName: String
         get() = "S28PacketEffect"
     override val id: Int
-        get() = 0x28
+        get() = 40
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

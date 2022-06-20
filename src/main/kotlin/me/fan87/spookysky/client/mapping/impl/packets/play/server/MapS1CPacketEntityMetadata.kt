@@ -15,7 +15,7 @@ object MapS1CPacketEntityMetadata: PacketMapping<S1CPacketEntityMetadata>() {
     override val humanReadableName: String
         get() = "S1CPacketEntityMetadata"
     override val id: Int
-        get() = 0x1C
+        get() = 28
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

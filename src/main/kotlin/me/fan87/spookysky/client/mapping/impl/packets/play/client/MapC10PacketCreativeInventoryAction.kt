@@ -15,7 +15,7 @@ object MapC10PacketCreativeInventoryAction: PacketMapping<C10PacketCreativeInven
     override val humanReadableName: String
         get() = "C10PacketCreativeInventoryAction"
     override val id: Int
-        get() = 0x10
+        get() = 16
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

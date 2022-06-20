@@ -15,7 +15,7 @@ object MapS2APacketParticles: PacketMapping<S2APacketParticles>() {
     override val humanReadableName: String
         get() = "S2APacketParticles"
     override val id: Int
-        get() = 0x2A
+        get() = 42
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

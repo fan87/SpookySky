@@ -15,7 +15,7 @@ object MapC05PacketPlayerLook: PacketMapping<C05PacketPlayerLook>() {
     override val humanReadableName: String
         get() = "C05PacketPlayerLook"
     override val id: Int
-        get() = 0x05
+        get() = 5
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

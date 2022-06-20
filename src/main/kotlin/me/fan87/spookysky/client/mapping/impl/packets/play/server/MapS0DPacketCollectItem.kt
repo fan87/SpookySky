@@ -15,7 +15,7 @@ object MapS0DPacketCollectItem: PacketMapping<S0DPacketCollectItem>() {
     override val humanReadableName: String
         get() = "S0DPacketCollectItem"
     override val id: Int
-        get() = 0x0D
+        get() = 13
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

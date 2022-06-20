@@ -15,7 +15,7 @@ object MapS42PacketCombatEvent: PacketMapping<S42PacketCombatEvent>() {
     override val humanReadableName: String
         get() = "S42PacketCombatEvent"
     override val id: Int
-        get() = 0x42
+        get() = 66
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS29PacketSoundEffect: PacketMapping<S29PacketSoundEffect>() {
     override val humanReadableName: String
         get() = "S29PacketSoundEffect"
     override val id: Int
-        get() = 0x29
+        get() = 41
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS19PacketEntityHeadLook: PacketMapping<S19PacketEntityHeadLook>() {
     override val humanReadableName: String
         get() = "S19PacketEntityHeadLook"
     override val id: Int
-        get() = 0x19
+        get() = 25
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS17PacketEntityLookMove: PacketMapping<S17PacketEntityLookMove>() {
     override val humanReadableName: String
         get() = "S17PacketEntityLookMove"
     override val id: Int
-        get() = 0x17
+        get() = 23
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

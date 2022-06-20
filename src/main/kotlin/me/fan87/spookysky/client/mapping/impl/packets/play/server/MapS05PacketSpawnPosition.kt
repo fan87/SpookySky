@@ -15,7 +15,7 @@ object MapS05PacketSpawnPosition: PacketMapping<S05PacketSpawnPosition>() {
     override val humanReadableName: String
         get() = "S05PacketSpawnPosition"
     override val id: Int
-        get() = 0x05
+        get() = 5
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

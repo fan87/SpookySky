@@ -15,7 +15,7 @@ object MapS07PacketRespawn: PacketMapping<S07PacketRespawn>() {
     override val humanReadableName: String
         get() = "S07PacketRespawn"
     override val id: Int
-        get() = 0x07
+        get() = 7
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

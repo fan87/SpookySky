@@ -15,7 +15,7 @@ object MapC19PacketResourcePackStatus: PacketMapping<C19PacketResourcePackStatus
     override val humanReadableName: String
         get() = "C19PacketResourcePackStatus"
     override val id: Int
-        get() = 0x19
+        get() = 25
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

@@ -15,7 +15,7 @@ object MapS3DPacketDisplayScoreboard: PacketMapping<S3DPacketDisplayScoreboard>(
     override val humanReadableName: String
         get() = "S3DPacketDisplayScoreboard"
     override val id: Int
-        get() = 0x3D
+        get() = 61
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS1FPacketSetExperience: PacketMapping<S1FPacketSetExperience>() {
     override val humanReadableName: String
         get() = "S1FPacketSetExperience"
     override val id: Int
-        get() = 0x1F
+        get() = 31
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

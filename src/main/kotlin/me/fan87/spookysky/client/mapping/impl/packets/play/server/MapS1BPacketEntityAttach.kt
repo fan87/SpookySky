@@ -15,7 +15,7 @@ object MapS1BPacketEntityAttach: PacketMapping<S1BPacketEntityAttach>() {
     override val humanReadableName: String
         get() = "S1BPacketEntityAttach"
     override val id: Int
-        get() = 0x1B
+        get() = 27
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

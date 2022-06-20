@@ -15,7 +15,7 @@ object MapS47PacketPlayerListHeaderFooter: PacketMapping<S47PacketPlayerListHead
     override val humanReadableName: String
         get() = "S47PacketPlayerListHeaderFooter"
     override val id: Int
-        get() = 0x47
+        get() = 71
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

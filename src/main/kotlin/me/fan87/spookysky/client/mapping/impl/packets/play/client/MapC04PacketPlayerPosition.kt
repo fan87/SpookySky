@@ -15,7 +15,7 @@ object MapC04PacketPlayerPosition: PacketMapping<C04PacketPlayerPosition>() {
     override val humanReadableName: String
         get() = "C04PacketPlayerPosition"
     override val id: Int
-        get() = 0x04
+        get() = 4
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

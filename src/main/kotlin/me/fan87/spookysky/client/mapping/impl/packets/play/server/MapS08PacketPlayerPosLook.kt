@@ -15,7 +15,7 @@ object MapS08PacketPlayerPosLook: PacketMapping<S08PacketPlayerPosLook>() {
     override val humanReadableName: String
         get() = "S08PacketPlayerPosLook"
     override val id: Int
-        get() = 0x08
+        get() = 8
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

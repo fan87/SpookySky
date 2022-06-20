@@ -15,7 +15,7 @@ object MapS49PacketUpdateEntityNBT: PacketMapping<S49PacketUpdateEntityNBT>() {
     override val humanReadableName: String
         get() = "S49PacketUpdateEntityNBT"
     override val id: Int
-        get() = 0x49
+        get() = 73
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

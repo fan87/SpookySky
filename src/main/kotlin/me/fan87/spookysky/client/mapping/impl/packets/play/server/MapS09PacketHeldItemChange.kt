@@ -15,7 +15,7 @@ object MapS09PacketHeldItemChange: PacketMapping<S09PacketHeldItemChange>() {
     override val humanReadableName: String
         get() = "S09PacketHeldItemChange"
     override val id: Int
-        get() = 0x09
+        get() = 9
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

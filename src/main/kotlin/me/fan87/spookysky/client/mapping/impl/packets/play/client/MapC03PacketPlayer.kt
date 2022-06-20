@@ -15,7 +15,7 @@ object MapC03PacketPlayer: PacketMapping<C03PacketPlayer>() {
     override val humanReadableName: String
         get() = "C03PacketPlayer"
     override val id: Int
-        get() = 0x03
+        get() = 3
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

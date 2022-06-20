@@ -15,7 +15,7 @@ object MapC15PacketClientSettings: PacketMapping<C15PacketClientSettings>() {
     override val humanReadableName: String
         get() = "C15PacketClientSettings"
     override val id: Int
-        get() = 0x15
+        get() = 21
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

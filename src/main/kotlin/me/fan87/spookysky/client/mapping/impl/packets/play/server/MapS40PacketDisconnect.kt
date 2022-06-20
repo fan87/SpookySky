@@ -15,7 +15,7 @@ object MapS40PacketDisconnect: PacketMapping<S40PacketDisconnect>() {
     override val humanReadableName: String
         get() = "S40PacketDisconnect"
     override val id: Int
-        get() = 0x40
+        get() = 64
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

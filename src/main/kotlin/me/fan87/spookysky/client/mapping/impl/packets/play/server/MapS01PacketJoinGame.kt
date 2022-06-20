@@ -15,7 +15,7 @@ object MapS01PacketJoinGame: PacketMapping<S01PacketJoinGame>() {
     override val humanReadableName: String
         get() = "S01PacketJoinGame"
     override val id: Int
-        get() = 0x01
+        get() = 1
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

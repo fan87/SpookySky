@@ -15,7 +15,7 @@ object MapS16PacketEntityLook: PacketMapping<S16PacketEntityLook>() {
     override val humanReadableName: String
         get() = "S16PacketEntityLook"
     override val id: Int
-        get() = 0x16
+        get() = 22
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

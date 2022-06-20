@@ -15,7 +15,7 @@ object MapS06PacketUpdateHealth: PacketMapping<S06PacketUpdateHealth>() {
     override val humanReadableName: String
         get() = "S06PacketUpdateHealth"
     override val id: Int
-        get() = 0x06
+        get() = 6
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

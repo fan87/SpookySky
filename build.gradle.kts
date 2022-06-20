@@ -90,6 +90,7 @@ tasks {
         doFirst {
             try {
                 Runtime.getRuntime().exec(arrayOf("killall", "-9", File(jreHome, "bin/java").absolutePath)).waitFor()
+                Thread.sleep(100)
             } catch (_: Throwable) {}
         }
         jvmArgs = listOf(

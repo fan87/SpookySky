@@ -15,7 +15,7 @@ object MapS27PacketExplosion: PacketMapping<S27PacketExplosion>() {
     override val humanReadableName: String
         get() = "S27PacketExplosion"
     override val id: Int
-        get() = 0x27
+        get() = 39
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

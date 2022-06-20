@@ -15,7 +15,7 @@ object MapS21PacketChunkData: PacketMapping<S21PacketChunkData>() {
     override val humanReadableName: String
         get() = "S21PacketChunkData"
     override val id: Int
-        get() = 0x21
+        get() = 33
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

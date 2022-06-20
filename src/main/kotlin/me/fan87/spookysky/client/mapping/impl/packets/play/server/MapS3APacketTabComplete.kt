@@ -15,7 +15,7 @@ object MapS3APacketTabComplete: PacketMapping<S3APacketTabComplete>() {
     override val humanReadableName: String
         get() = "S3APacketTabComplete"
     override val id: Int
-        get() = 0x3A
+        get() = 58
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

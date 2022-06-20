@@ -15,7 +15,7 @@ object MapS13PacketDestroyEntities: PacketMapping<S13PacketDestroyEntities>() {
     override val humanReadableName: String
         get() = "S13PacketDestroyEntities"
     override val id: Int
-        get() = 0x13
+        get() = 19
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

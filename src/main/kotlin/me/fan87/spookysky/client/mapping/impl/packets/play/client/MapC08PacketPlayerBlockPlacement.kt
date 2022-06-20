@@ -15,7 +15,7 @@ object MapC08PacketPlayerBlockPlacement: PacketMapping<C08PacketPlayerBlockPlace
     override val humanReadableName: String
         get() = "C08PacketPlayerBlockPlacement"
     override val id: Int
-        get() = 0x08
+        get() = 8
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

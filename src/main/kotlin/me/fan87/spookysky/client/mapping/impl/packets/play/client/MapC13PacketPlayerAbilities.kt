@@ -15,7 +15,7 @@ object MapC13PacketPlayerAbilities: PacketMapping<C13PacketPlayerAbilities>() {
     override val humanReadableName: String
         get() = "C13PacketPlayerAbilities"
     override val id: Int
-        get() = 0x13
+        get() = 19
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

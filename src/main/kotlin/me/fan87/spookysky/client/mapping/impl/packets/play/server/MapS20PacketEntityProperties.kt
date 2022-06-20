@@ -15,7 +15,7 @@ object MapS20PacketEntityProperties: PacketMapping<S20PacketEntityProperties>() 
     override val humanReadableName: String
         get() = "S20PacketEntityProperties"
     override val id: Int
-        get() = 0x20
+        get() = 32
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

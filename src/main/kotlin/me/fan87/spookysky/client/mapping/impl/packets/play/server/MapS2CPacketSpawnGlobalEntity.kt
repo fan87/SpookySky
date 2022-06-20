@@ -15,7 +15,7 @@ object MapS2CPacketSpawnGlobalEntity: PacketMapping<S2CPacketSpawnGlobalEntity>(
     override val humanReadableName: String
         get() = "S2CPacketSpawnGlobalEntity"
     override val id: Int
-        get() = 0x2C
+        get() = 44
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

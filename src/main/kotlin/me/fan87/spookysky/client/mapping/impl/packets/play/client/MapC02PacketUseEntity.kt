@@ -15,7 +15,7 @@ object MapC02PacketUseEntity: PacketMapping<C02PacketUseEntity>() {
     override val humanReadableName: String
         get() = "C02PacketUseEntity"
     override val id: Int
-        get() = 0x02
+        get() = 2
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

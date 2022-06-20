@@ -15,7 +15,7 @@ object MapS04PacketEntityEquipment: PacketMapping<S04PacketEntityEquipment>() {
     override val humanReadableName: String
         get() = "S04PacketEntityEquipment"
     override val id: Int
-        get() = 0x04
+        get() = 4
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

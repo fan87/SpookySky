@@ -15,7 +15,7 @@ object MapS41PacketServerDifficulty: PacketMapping<S41PacketServerDifficulty>() 
     override val humanReadableName: String
         get() = "S41PacketServerDifficulty"
     override val id: Int
-        get() = 0x41
+        get() = 65
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

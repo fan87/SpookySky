@@ -15,7 +15,7 @@ object MapS0APacketUseBed: PacketMapping<S0APacketUseBed>() {
     override val humanReadableName: String
         get() = "S0APacketUseBed"
     override val id: Int
-        get() = 0x0A
+        get() = 10
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

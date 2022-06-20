@@ -15,7 +15,7 @@ object MapS22PacketMultiBlockChange: PacketMapping<S22PacketMultiBlockChange>() 
     override val humanReadableName: String
         get() = "S22PacketMultiBlockChange"
     override val id: Int
-        get() = 0x22
+        get() = 34
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

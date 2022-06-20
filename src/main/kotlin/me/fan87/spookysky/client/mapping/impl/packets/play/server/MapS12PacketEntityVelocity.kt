@@ -15,7 +15,7 @@ object MapS12PacketEntityVelocity: PacketMapping<S12PacketEntityVelocity>() {
     override val humanReadableName: String
         get() = "S12PacketEntityVelocity"
     override val id: Int
-        get() = 0x12
+        get() = 18
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

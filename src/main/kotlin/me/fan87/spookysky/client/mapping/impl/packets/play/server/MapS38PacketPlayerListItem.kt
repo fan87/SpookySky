@@ -15,7 +15,7 @@ object MapS38PacketPlayerListItem: PacketMapping<S38PacketPlayerListItem>() {
     override val humanReadableName: String
         get() = "S38PacketPlayerListItem"
     override val id: Int
-        get() = 0x38
+        get() = 56
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

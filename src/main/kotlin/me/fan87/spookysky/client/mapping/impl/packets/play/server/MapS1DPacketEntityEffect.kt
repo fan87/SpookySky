@@ -15,7 +15,7 @@ object MapS1DPacketEntityEffect: PacketMapping<S1DPacketEntityEffect>() {
     override val humanReadableName: String
         get() = "S1DPacketEntityEffect"
     override val id: Int
-        get() = 0x1D
+        get() = 29
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

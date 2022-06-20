@@ -15,7 +15,7 @@ object MapC0FPacketConfirmTransaction: PacketMapping<C0FPacketConfirmTransaction
     override val humanReadableName: String
         get() = "C0FPacketConfirmTransaction"
     override val id: Int
-        get() = 0x0F
+        get() = 15
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

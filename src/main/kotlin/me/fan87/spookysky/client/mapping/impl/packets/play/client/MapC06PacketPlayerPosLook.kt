@@ -15,7 +15,7 @@ object MapC06PacketPlayerPosLook: PacketMapping<C06PacketPlayerPosLook>() {
     override val humanReadableName: String
         get() = "C06PacketPlayerPosLook"
     override val id: Int
-        get() = 0x06
+        get() = 6
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

@@ -15,7 +15,7 @@ object MapC0BPacketEntityAction: PacketMapping<C0BPacketEntityAction>() {
     override val humanReadableName: String
         get() = "C0BPacketEntityAction"
     override val id: Int
-        get() = 0x0B
+        get() = 11
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

@@ -15,7 +15,7 @@ object MapC0CPacketInput: PacketMapping<C0CPacketInput>() {
     override val humanReadableName: String
         get() = "C0CPacketInput"
     override val id: Int
-        get() = 0x0C
+        get() = 12
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

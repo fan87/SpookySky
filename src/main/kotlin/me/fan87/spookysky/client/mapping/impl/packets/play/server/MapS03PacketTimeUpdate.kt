@@ -15,7 +15,7 @@ object MapS03PacketTimeUpdate: PacketMapping<S03PacketTimeUpdate>() {
     override val humanReadableName: String
         get() = "S03PacketTimeUpdate"
     override val id: Int
-        get() = 0x03
+        get() = 3
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

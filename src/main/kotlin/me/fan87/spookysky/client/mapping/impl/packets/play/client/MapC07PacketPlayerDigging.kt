@@ -15,7 +15,7 @@ object MapC07PacketPlayerDigging: PacketMapping<C07PacketPlayerDigging>() {
     override val humanReadableName: String
         get() = "C07PacketPlayerDigging"
     override val id: Int
-        get() = 0x07
+        get() = 7
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

@@ -15,7 +15,7 @@ object MapC14PacketTabComplete: PacketMapping<C14PacketTabComplete>() {
     override val humanReadableName: String
         get() = "C14PacketTabComplete"
     override val id: Int
-        get() = 0x14
+        get() = 20
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

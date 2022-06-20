@@ -15,7 +15,7 @@ object MapS35PacketUpdateTileEntity: PacketMapping<S35PacketUpdateTileEntity>() 
     override val humanReadableName: String
         get() = "S35PacketUpdateTileEntity"
     override val id: Int
-        get() = 0x35
+        get() = 53
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

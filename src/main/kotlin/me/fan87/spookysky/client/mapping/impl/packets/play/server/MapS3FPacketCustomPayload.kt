@@ -15,7 +15,7 @@ object MapS3FPacketCustomPayload: PacketMapping<S3FPacketCustomPayload>() {
     override val humanReadableName: String
         get() = "S3FPacketCustomPayload"
     override val id: Int
-        get() = 0x3F
+        get() = 63
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

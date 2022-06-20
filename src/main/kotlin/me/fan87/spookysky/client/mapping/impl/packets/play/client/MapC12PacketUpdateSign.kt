@@ -15,7 +15,7 @@ object MapC12PacketUpdateSign: PacketMapping<C12PacketUpdateSign>() {
     override val humanReadableName: String
         get() = "C12PacketUpdateSign"
     override val id: Int
-        get() = 0x12
+        get() = 18
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

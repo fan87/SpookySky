@@ -15,7 +15,7 @@ object MapS18PacketEntityTeleport: PacketMapping<S18PacketEntityTeleport>() {
     override val humanReadableName: String
         get() = "S18PacketEntityTeleport"
     override val id: Int
-        get() = 0x18
+        get() = 24
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

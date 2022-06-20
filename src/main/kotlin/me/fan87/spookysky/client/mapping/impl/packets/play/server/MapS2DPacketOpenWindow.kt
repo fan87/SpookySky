@@ -15,7 +15,7 @@ object MapS2DPacketOpenWindow: PacketMapping<S2DPacketOpenWindow>() {
     override val humanReadableName: String
         get() = "S2DPacketOpenWindow"
     override val id: Int
-        get() = 0x2D
+        get() = 45
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

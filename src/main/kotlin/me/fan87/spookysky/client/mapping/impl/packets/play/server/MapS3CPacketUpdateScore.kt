@@ -15,7 +15,7 @@ object MapS3CPacketUpdateScore: PacketMapping<S3CPacketUpdateScore>() {
     override val humanReadableName: String
         get() = "S3CPacketUpdateScore"
     override val id: Int
-        get() = 0x3C
+        get() = 60
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

@@ -15,7 +15,7 @@ object MapS46PacketSetCompressionLevel: PacketMapping<S46PacketSetCompressionLev
     override val humanReadableName: String
         get() = "S46PacketSetCompressionLevel"
     override val id: Int
-        get() = 0x46
+        get() = 70
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

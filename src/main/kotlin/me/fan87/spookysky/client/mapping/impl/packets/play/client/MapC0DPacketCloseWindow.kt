@@ -15,7 +15,7 @@ object MapC0DPacketCloseWindow: PacketMapping<C0DPacketCloseWindow>() {
     override val humanReadableName: String
         get() = "C0DPacketCloseWindow"
     override val id: Int
-        get() = 0x0D
+        get() = 13
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

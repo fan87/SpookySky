@@ -15,7 +15,7 @@ object MapS31PacketWindowProperty: PacketMapping<S31PacketWindowProperty>() {
     override val humanReadableName: String
         get() = "S31PacketWindowProperty"
     override val id: Int
-        get() = 0x31
+        get() = 49
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

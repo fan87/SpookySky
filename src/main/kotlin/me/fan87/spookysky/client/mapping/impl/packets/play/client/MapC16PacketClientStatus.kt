@@ -15,7 +15,7 @@ object MapC16PacketClientStatus: PacketMapping<C16PacketClientStatus>() {
     override val humanReadableName: String
         get() = "C16PacketClientStatus"
     override val id: Int
-        get() = 0x16
+        get() = 22
     override val mode: PacketSource
         get() = PacketSource.PLAY_CLIENT
 }

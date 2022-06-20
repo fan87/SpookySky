@@ -15,7 +15,7 @@ object MapS10PacketSpawnPainting: PacketMapping<S10PacketSpawnPainting>() {
     override val humanReadableName: String
         get() = "S10PacketSpawnPainting"
     override val id: Int
-        get() = 0x10
+        get() = 16
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

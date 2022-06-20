@@ -15,7 +15,7 @@ object MapS26PacketMapChunkBulk: PacketMapping<S26PacketMapChunkBulk>() {
     override val humanReadableName: String
         get() = "S26PacketMapChunkBulk"
     override val id: Int
-        get() = 0x26
+        get() = 38
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

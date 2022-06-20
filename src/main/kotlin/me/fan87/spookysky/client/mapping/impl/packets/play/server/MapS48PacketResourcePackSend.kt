@@ -15,7 +15,7 @@ object MapS48PacketResourcePackSend: PacketMapping<S48PacketResourcePackSend>() 
     override val humanReadableName: String
         get() = "S48PacketResourcePackSend"
     override val id: Int
-        get() = 0x48
+        get() = 72
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

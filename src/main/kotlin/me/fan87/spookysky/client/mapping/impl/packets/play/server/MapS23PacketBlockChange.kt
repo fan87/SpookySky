@@ -15,7 +15,7 @@ object MapS23PacketBlockChange: PacketMapping<S23PacketBlockChange>() {
     override val humanReadableName: String
         get() = "S23PacketBlockChange"
     override val id: Int
-        get() = 0x23
+        get() = 35
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }

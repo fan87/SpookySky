@@ -15,7 +15,7 @@ object MapS00PacketKeepAlive: PacketMapping<S00PacketKeepAlive>() {
     override val humanReadableName: String
         get() = "S00PacketKeepAlive"
     override val id: Int
-        get() = 0x00
+        get() = 0
     override val mode: PacketSource
         get() = PacketSource.PLAY_SERVER
 }
