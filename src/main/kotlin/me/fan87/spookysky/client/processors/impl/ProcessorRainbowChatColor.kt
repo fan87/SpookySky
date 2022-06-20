@@ -166,10 +166,10 @@ class ProcessorRainbowChatColor: Processor("Rainbow Chat Color Hooker") {
             val useField = fieldMatcher.next()
             val useMethod = methodMatcher.next()
             if (useField && useMethod) {
-                throw IllegalStateException("Matched field strategy and method strategy at the same time")
+                unsupportedClient("Matched field strategy and method strategy at the same time")
             }
             if (!useMethod && !useField) {
-                throw IllegalStateException("Both of field strategy and method strategy don't work")
+                unsupportedClient("Both of field strategy and method strategy don't work")
             }
 
             for (withIndex in method.instructions.withIndex()) {

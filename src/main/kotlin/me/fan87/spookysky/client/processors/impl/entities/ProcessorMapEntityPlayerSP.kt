@@ -18,9 +18,7 @@ class ProcessorMapEntityPlayerSP: Processor("Map EntityPlayerSP") {
 
 
     val pattern = RegbexPattern {
-        thenGroup("C06") {
-            thenOpcodeCheck(Opcodes.NEW)
-        }
+        thenOpcodeCheck(Opcodes.NEW)
         thenOpcodeCheck(Opcodes.DUP)
         thenThis()
         thenOpcodeCheck(Opcodes.GETFIELD)
@@ -43,9 +41,6 @@ class ProcessorMapEntityPlayerSP: Processor("Map EntityPlayerSP") {
             if (matcher.next()) {
                 MapEntityPlayerSP.map(clazz.node.name)
                 MapEntityPlayerSP.mapOnUpdateWalkingPlayer.map(method)
-                MapC06PacketPlayerPosLook.map(matcher.group("C06")!![0] as TypeInsnNode)
-                MapC03PacketPlayer.map(MapC06PacketPlayerPosLook.getJavaClass().superclass.getJvmTypeName())
-                MapPacket.map(MapC03PacketPlayer.getJavaClass().interfaces[0].getJvmTypeName())
             }
         }
         return false

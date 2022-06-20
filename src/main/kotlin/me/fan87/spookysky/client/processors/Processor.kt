@@ -44,4 +44,8 @@ abstract class Processor(
         }
     }
 
+    fun unsupportedClient(reason: String): Nothing {
+        throw IllegalStateException("Unsupported Client: $reason")
+    }
+
 }
