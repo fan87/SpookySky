@@ -8,7 +8,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-var debugRegbex = true
+var debugRegbex = false
 
 
 repositories {
@@ -58,7 +58,7 @@ allprojects {
         if (debugRegbex) {
             implementation("me.fan87:regular-bytecode-expression:1.0.0-SNAPSHOT")
         } else {
-            implementation("com.github.fan87:Regular-Bytecode-Expression:2.0.0")
+            implementation("com.github.fan87:Regular-Bytecode-Expression:2.2.1")
         }
         implementation("org.ow2.asm:asm:9.3")
         implementation("org.ow2.asm:asm-util:9.3")
