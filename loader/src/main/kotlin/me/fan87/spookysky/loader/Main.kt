@@ -50,7 +50,7 @@ object Main {
 
         val res = Main::class.java.classLoader.getResource("spookysky-resources/")!!
         val path = res.toURI()
-        val jarFile = JarFile(res.path.split(":")[1].split("!")[0])
+        val jarFile = JarFile(res.path.split(":").let { it.subList(1, it.size).joinToString(":") }.split("!")[0])
         for (entry in jarFile.entries()) {
             if (entry.name.startsWith("spookysky-resources/")) {
                 if (entry.name.substring("spookysky-resources/".length).length == 0) continue

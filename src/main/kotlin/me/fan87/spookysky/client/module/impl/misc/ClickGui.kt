@@ -101,7 +101,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     }
 
     fun getMousePosition(): Vector2d {
-        val rotationYaw = mc.thePlayer!!.rotationYaw - startYaw
+        val rotationYaw = (mc.thePlayer!!.rotationYaw - startYaw)
         val rotationPitch = mc.thePlayer!!.rotationPitch + pitchOffset
         val x = tan(Math.toRadians(-rotationYaw.toDouble())) * distance
         val yDistance = sqrt(x*x + distance*distance)
