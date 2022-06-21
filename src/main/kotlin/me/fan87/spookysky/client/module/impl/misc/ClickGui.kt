@@ -10,6 +10,8 @@ import me.fan87.spookysky.client.utils.RenderUtils
 import me.fan87.spookysky.client.utils.Vector2d
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 
@@ -21,7 +23,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     var scale: Float = 1.5f
 
     override fun onEnable() {
-        this.pitchOffset = 0.0f
+        this.pitchOffset = -20f
         this.distance = 1.0
         startYaw = mc.thePlayer?.rotationYaw?:0f
     }
@@ -58,6 +60,21 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         GL11.glLoadIdentity()
         mc.entityRenderer!!.orientCamera(event.partialTicks)
         GL11.glTranslated(0.0, player.getEyeHeight()!!.toDouble(), 0.0)
+
+        GL11.glPushMatrix()
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        GL11.glLineWidth(1f)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glRotated(-mc.thePlayer!!.rotationYaw % 360.0, 0.0, 1.0, 0.0)
+        GL11.glRotated(mc.thePlayer!!.rotationPitch.toDouble(), 1.0, 0.0, 0.0)
+        GL11.glBegin(GL11.GL_LINES)
+        GL11.glVertex3d(0.0, 0.0, 0.0)
+        GL11.glVertex3d(0.0, 0.0, 2.0)
+        GL11.glEnd()
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
+        GL11.glPopMatrix()
+
+
         GL11.glRotated(-startYaw % 360.0, 0.0, 1.0, 0.0)
         GL11.glRotated(-pitchOffset.toDouble(), 1.0, 0.0, 0.0)
         GL11.glScaled(1.5, 1.5, 1.0)

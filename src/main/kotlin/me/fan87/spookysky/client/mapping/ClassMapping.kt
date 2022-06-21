@@ -8,8 +8,13 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
 
     val children = ArrayList<MemberMapping<*>>()
 
+    private var cachedJavaClass: Class<*>? = null
+
     fun getJavaClass(): Class<*> {
-        return Class.forName(assumeMapped().name.replace("/", "."), false, javaClass.classLoader)
+        if (cachedJavaClass == null) {
+            cachedJavaClass = Class.forName(assumeMapped().name.replace("/", "."), false, javaClass.classLoader)
+        }
+        return cachedJavaClass!!
     }
 
     abstract fun getWrapperClass(): Class<T>

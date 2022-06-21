@@ -58,7 +58,7 @@ allprojects {
         if (debugRegbex) {
             implementation("me.fan87:regular-bytecode-expression:1.0.0-SNAPSHOT")
         } else {
-            implementation("com.github.fan87:Regular-Bytecode-Expression:2.2.1")
+            implementation("com.github.fan87:Regular-Bytecode-Expression:2.1.1")
         }
         implementation("org.ow2.asm:asm:9.3")
         implementation("org.ow2.asm:asm-util:9.3")
