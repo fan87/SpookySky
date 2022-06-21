@@ -65,7 +65,7 @@ class ProcessorsManager(val spookySky: SpookySky) {
                                     SpookySky.debug("[Processors Manager] Successfully redefined ${mutableEntry.value.node.name}")
                                 }
                                 if (!firstTime) {
-                                    Thread.sleep(0, 100)
+                                    Thread.sleep(0, 10)
                                 }
                                 if (processor.jobDone()) {
                                     SpookySky.debug("[Processors Manager] Processor: ${processor.humanReadableName} has got its job done")
@@ -88,7 +88,7 @@ class ProcessorsManager(val spookySky: SpookySky) {
                                     SpookySky.debug("[Processors Manager] Successfully redefined ${node.node.name}")
                                 }
                                 if (!firstTime) {
-                                    Thread.sleep(0, 100)
+                                    Thread.sleep(0, 10)
                                 }
                                 if (processor.jobDone()) {
                                     SpookySky.debug("[Processors Manager] Processor: ${processor.humanReadableName} has got its job done")

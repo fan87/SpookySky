@@ -4,6 +4,7 @@ import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.GuiScreen
+import me.fan87.spookysky.client.mapping.impl.world.WorldClient
 
 object MapMinecraft: ClassMapping<Minecraft>() {
     override fun getWrapperClass(): Class<Minecraft> {
@@ -25,6 +26,7 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapDebugFPS = FieldMapping<Int, Minecraft>(this, "debugFPS")
     val mapCurrentScreen = NullableFieldMapping<Any, Minecraft>(this, "currentScreen")
     val mapIngameGui = NullableFieldMapping<Any, Minecraft>(this, "ingameGui")
+    val mapTheWorld = NullableFieldMapping<Any, Minecraft>(this, "theWorld")
 }
 
 class Minecraft protected constructor(original: Any): WrapperClass(original) {
@@ -45,4 +47,5 @@ class Minecraft protected constructor(original: Any): WrapperClass(original) {
     var thePlayer by NullableWrappedFieldType(MapMinecraft.mapThePlayer, EntityPlayerSP::class.java)
     var currentScreen by NullableWrappedFieldType(MapMinecraft.mapCurrentScreen, GuiScreen::class.java)
     var ingameGui by NullableWrappedFieldType(MapMinecraft.mapIngameGui, GuiIngame::class.java)
+    var theWorld by NullableWrappedFieldType(MapMinecraft.mapTheWorld, WorldClient::class.java)
 }

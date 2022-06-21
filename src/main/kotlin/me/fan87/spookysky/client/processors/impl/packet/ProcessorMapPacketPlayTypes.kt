@@ -6,6 +6,7 @@ import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.impl.packets.MapPacket
 import me.fan87.spookysky.client.mapping.impl.packets.PacketMapping
 import me.fan87.spookysky.client.mapping.impl.packets.PacketSource
+import me.fan87.spookysky.client.mapping.impl.packets.play.client.MapC00PacketKeepAlive
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import me.fan87.spookysky.client.utils.ASMUtils.getMethod
@@ -69,8 +70,8 @@ class ProcessorMapPacketPlayTypes: Processor("Map All Packet Types") {
             }
             for (clientPacket in clientPackets) {
                 clientPacket.value.map(((matcher.group(clientPacket.value.javaClass.name)!![0] as LdcInsnNode).cst as Type).internalName)
-                MapPacket.map(clientPacket.value.getJavaClass().superclass.getJvmTypeName())
             }
+            MapPacket.map(MapC00PacketKeepAlive.getJavaClass().interfaces[0])
             processed = true
         } else {
             if (clazz.node.access and Opcodes.ACC_ENUM == 0) {
@@ -100,7 +101,6 @@ class ProcessorMapPacketPlayTypes: Processor("Map All Packet Types") {
                 }
             }
         }
-        println("Map!")
         return false
     }
 

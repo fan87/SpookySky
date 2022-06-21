@@ -25,6 +25,9 @@ class TestModule: Module("Test", "A module to test the module system", Category.
 
     override fun onEnable() {
         println("Test Module has been enabled")
+        for (entity in mc.theWorld!!.loadedEntityList) {
+            println("Entity: ${entity.getName()}")
+        }
     }
 
     override fun onDisable() {

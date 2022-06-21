@@ -74,6 +74,10 @@ object Main {
                 val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java)
                     .newInstance(instrumentation, HashMap(classes), transformer)
             } else {
+                /**
+                 * This part of code is untested!
+                 */
+
                 println("[SpookySky Loader] Target class loader is not an instance of URLClassLoader! Loading with App Class Loader (Using strategy: Agent Load)")
                 SpookySky(instrumentation, HashMap(classes), transformer)
             }

@@ -34,6 +34,9 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
     fun map(loadedClass: LoadedClass) {
         mapped = MappedClassInfo(loadedClass.node.name)
     }
+    fun map(loadedClass: Class<*>) {
+        mapped = MappedClassInfo(loadedClass.getJvmTypeName())
+    }
     fun map(type: TypeInsnNode) {
         mapped = MappedClassInfo(type.desc)
     }

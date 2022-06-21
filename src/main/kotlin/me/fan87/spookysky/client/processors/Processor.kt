@@ -40,12 +40,18 @@ abstract class Processor(
 
     fun assertMapped(mapping: Mapping<*>) {
         if (!mapping.isMapped()) {
-            throw IllegalStateException("$mapping was asserted to be mapped, but it's not!")
+            unsupportedClient("$mapping was asserted to be mapped, but it's not!")
         }
     }
 
     fun unsupportedClient(reason: String): Nothing {
         throw IllegalStateException("Unsupported Client: $reason")
+    }
+
+    fun assertTrue(value: Boolean) {
+        if (!value) {
+            unsupportedClient("Expected true, but got false")
+        }
     }
 
 }
