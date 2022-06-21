@@ -63,6 +63,12 @@ allprojects {
         implementation("org.ow2.asm:asm:9.3")
         implementation("org.ow2.asm:asm-util:9.3")
         implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+
+        implementation("us.ihmc:euclid:0.17.2")
+        implementation("us.ihmc:euclid-geometry:0.17.2")
+        implementation("us.ihmc:euclid-frame:0.17.2")
+        implementation("us.ihmc:euclid-shape:0.17.2")
+        implementation("us.ihmc:euclid-frame-shape:0.17.2")
     }
 }
 

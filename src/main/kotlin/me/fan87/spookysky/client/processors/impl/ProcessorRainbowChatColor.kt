@@ -221,7 +221,8 @@ class ProcessorRainbowChatColor: Processor("Rainbow Chat Color Hooker") {
     }
 
     override fun jobDone(): Boolean {
-        return hooked
+//        return hooked
+        return true
     }
 
 
