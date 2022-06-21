@@ -214,9 +214,6 @@ class ProcessorRainbowChatColor: Processor("Rainbow Chat Color Hooker") {
                 out.add(instruction)
             }
             method.instructions = out
-            if (clazz.node.name.startsWith("net")) {
-                File("/tmp/fontRenderer.class").writeBytes(ASMUtils.writeClass(clazz.node))
-            }
             hooked = true
             return true
         }

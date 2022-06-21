@@ -2,20 +2,27 @@ package me.fan87.spookysky.client.processors.impl
 
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
+import me.fan87.spookysky.client.events.events.ClickMouseEvent
 import me.fan87.spookysky.client.events.events.ClientTickEvent
+import me.fan87.spookysky.client.events.events.RightClickMouseEvent
 import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
+import me.fan87.spookysky.client.mapping.impl.rendering.MapEntityRenderer
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiChat
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
+import me.fan87.spookysky.client.utils.ASMUtils.addGetField
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
+import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
@@ -27,6 +34,7 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
     init {
         dependsOn(MapEntityPlayerSP)
         dependsOn(MapGuiIngame)
+        dependsOn(MapEntityRenderer)
     }
 
     val minecraftPattern = RegbexPattern {
@@ -52,14 +60,8 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 matchCurrentGuiScreen(clazz)
                 matchFPS(clazz)
                 matchGuiChat(clazz)
-                try {
-                    val file = File("/tmp/Minecraft.class")
-                    file.createNewFile()
-                    file.writeBytes(ASMUtils.writeClass(clazz.node))
-                    println("File: ${file.absolutePath}")
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                }
+                mapIngameGui(clazz)
+                matchEntityRenderer(clazz)
                 return true
             }
         }
@@ -93,6 +95,14 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
             }
         }
         assertMapped(MapMinecraft.mapIngameGui)
+    }
+    fun matchEntityRenderer(clazz: LoadedClass) {
+        for (field in clazz.node.fields) {
+            if (field.desc == "L${MapEntityRenderer.assumeMapped().name};") {
+                MapMinecraft.mapEntityRenderer.map(field)
+            }
+        }
+        assertMapped(MapMinecraft.mapEntityRenderer)
     }
 
     fun matchRunTick(clazz: LoadedClass) {
@@ -151,8 +161,28 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
             if (both.matcher(method).next()) {
                 if (left.matcher(method).next()) {
                     MapMinecraft.mapClickMouse.map(method)
+                    val varManager = VarNumberManager(method)
+                    val out = InsnList()
+                    val end = LabelNode()
+                    out.add(ASMUtils.generateNewEventPostAndPushToStack<ClickMouseEvent>(varNumberManager = varManager))
+                    out.addGetField(ClickMouseEvent::cancelled)
+                    out.add(JumpInsnNode(Opcodes.IFEQ, end))
+                    out.add(InsnNode(Opcodes.RETURN))
+                    out.add(end)
+                    out.add(method.instructions)
+                    method.instructions = out
                 } else {
                     MapMinecraft.mapRightClickMouse.map(method)
+                    val varManager = VarNumberManager(method)
+                    val out = InsnList()
+                    val end = LabelNode()
+                    out.add(ASMUtils.generateNewEventPostAndPushToStack<RightClickMouseEvent>(varNumberManager = varManager))
+                    out.addGetField(RightClickMouseEvent::cancelled)
+                    out.add(JumpInsnNode(Opcodes.IFEQ, end))
+                    out.add(InsnNode(Opcodes.RETURN))
+                    out.add(end)
+                    out.add(method.instructions)
+                    method.instructions = out
                 }
             }
         }

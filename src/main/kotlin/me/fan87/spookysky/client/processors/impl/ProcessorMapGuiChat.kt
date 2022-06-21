@@ -59,7 +59,6 @@ class ProcessorMapGuiChat: Processor("Map GuiChat") {
                 method.instructions = out
             }
         }
-        File("/tmp/test.class").writeBytes(ASMUtils.writeClass(clazz.node))
         assertMapped(MapGuiChat.mapOnAutocompleteResponse)
         assertMapped(MapGuiChat.mapSendAutocompleteRequest)
         return true

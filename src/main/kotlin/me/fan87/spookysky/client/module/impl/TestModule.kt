@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.module.impl
 
 import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.events.ClientTickEvent
+import me.fan87.spookysky.client.events.events.PacketSentEvent
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntity
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
@@ -10,7 +11,7 @@ import me.fan87.spookysky.client.module.Module
 import me.fan87.spookysky.client.utils.MathUtils.getRotatedVector3
 import me.fan87.spookysky.client.utils.MathUtils.setMotion
 
-class TestModule: Module("Test", "A module to test the module system", Category.SPOOKYSKY) {
+class TestModule: Module("Test", "A module to test the module system", Category.Misc) {
 
     init {
         dependsOn(MapMinecraft)
@@ -41,6 +42,10 @@ class TestModule: Module("Test", "A module to test the module system", Category.
             return
         }
         player.setMotion((player.getRotatedVector3() * 0.4F).toVector3d())
-
     }
+    @EventHandler
+    fun onPacket(event: PacketSentEvent) {
+    }
+
+
 }

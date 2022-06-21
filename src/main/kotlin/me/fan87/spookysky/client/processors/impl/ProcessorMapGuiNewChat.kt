@@ -16,6 +16,7 @@ import java.io.File
 class ProcessorMapGuiNewChat: Processor("Map GuiNewChat") {
 
     init {
+        dependsOn(MapMinecraft.mapIngameGui)
         dependsOn(MapGuiIngame)
         dependsOn(MapGuiScreen)
         dependsOn(MapGuiScreen.mapSendChatMessage)

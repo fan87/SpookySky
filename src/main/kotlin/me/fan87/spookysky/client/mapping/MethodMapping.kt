@@ -35,4 +35,13 @@ class MethodMapping<ReturnType, OwnerType: WrapperClass>(parent: ClassMapping<Ow
         mapped = MappedMethodInfo(node.name, node.desc)
     }
 
+
+    fun isSame(node: MethodNode): Boolean {
+        return assumeMapped().name == node.name && assumeMapped().desc == node.desc
+    }
+
+    fun isSame(node: MethodInsnNode): Boolean {
+        return assumeMapped().name == node.name && assumeMapped().desc == node.desc && parent.assumeMapped().name == node.owner
+    }
+
 }

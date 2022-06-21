@@ -13,18 +13,26 @@ import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ChatColor
 import org.objectweb.asm.tree.ClassNode
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
 
 class SpookySky(
     val instrumentation: Instrumentation,
     val preLoadedClasses: HashMap<String, ClassNode>,
-    val transformer: ClassFileTransformer
+    val transformer: ClassFileTransformer,
+    val resourcesFile: File
 ) {
+
 
     companion object {
         lateinit var INSTANCE: SpookySky
 
+        fun getResourceAsStream(fileName: String): InputStream {
+            return FileInputStream(File(INSTANCE.resourcesFile, fileName))
+        }
 
         fun debug(message: Any) {
             println("[SpookySky] $message")

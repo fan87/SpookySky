@@ -73,7 +73,7 @@ class ProcessorMapKeyBinding: Processor("Map KeyBinding") {
                     if (!matcher.next()) {
                         unsupportedClient("Couldn't find PUTFIELD in onTick")
                     }
-                    MapKeyBinding.mapPressTime.map(matcher.groupAsFieldInsnNode("field"))
+                    MapKeyBinding.mapPressed.map(matcher.groupAsFieldInsnNode("field"))
                 }
                 if (method.desc == "(I)V") {
                     val matcher = pattern.matcher(method)
@@ -81,7 +81,7 @@ class ProcessorMapKeyBinding: Processor("Map KeyBinding") {
                     if (!matcher.next()) {
                         unsupportedClient("Couldn't find PUTFIELD in setKeyBindState")
                     }
-                    MapKeyBinding.mapPressed.map(matcher.groupAsFieldInsnNode("field"))
+                    MapKeyBinding.mapPressTime.map(matcher.groupAsFieldInsnNode("field"))
                 }
             }
         }

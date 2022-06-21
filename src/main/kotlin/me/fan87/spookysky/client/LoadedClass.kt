@@ -7,6 +7,6 @@ class LoadedClass(
     val node: ClassNode
 ) {
     fun getJavaClass(): Class<*> {
-        return Class.forName(name.replace("/", "."))
+        return Class.forName(name.replace("/", "."), false, javaClass.classLoader)
     }
 }

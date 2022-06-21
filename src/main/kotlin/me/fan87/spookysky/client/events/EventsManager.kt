@@ -1,5 +1,6 @@
 package me.fan87.spookysky.client.events
 
+import me.fan87.spookysky.client.events.events.PostRender3DEvent
 import java.lang.reflect.Method
 import java.util.Comparator
 

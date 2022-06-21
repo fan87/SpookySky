@@ -8,7 +8,6 @@ import me.fan87.spookysky.client.mapping.impl.packets.PacketMapping
 import me.fan87.spookysky.client.mapping.impl.packets.PacketSource
 import me.fan87.spookysky.client.mapping.impl.packets.play.client.MapC00PacketKeepAlive
 import me.fan87.spookysky.client.processors.Processor
-import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import me.fan87.spookysky.client.utils.ASMUtils.getMethod
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsMethodInsnNode
 import org.objectweb.asm.Opcodes

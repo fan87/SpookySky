@@ -1,6 +1,8 @@
 package me.fan87.spookysky.client.mapping
 
 import me.fan87.spookysky.client.SpookySky
+import me.fan87.spookysky.client.exception.MissingMappingException
+import org.objectweb.asm.tree.MethodNode
 import kotlin.concurrent.withLock
 
 abstract class Mapping<T: MappedInfo>() {
@@ -31,7 +33,7 @@ abstract class Mapping<T: MappedInfo>() {
 
     fun assumeMapped(): T {
         if (!isMapped()) {
-            throw IllegalStateException("${toString()} has not been mapped yet")
+            throw MissingMappingException("${toString()} has not been mapped yet")
         }
         return mapped!!
     }

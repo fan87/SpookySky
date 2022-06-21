@@ -3,6 +3,7 @@ package me.fan87.spookysky.client.mapping.impl.settings
 
 import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.FieldMapping
+import me.fan87.spookysky.client.mapping.WrappedFieldType
 import me.fan87.spookysky.client.mapping.WrapperClass
 
 object MapGameSettings : ClassMapping<GameSettings>() {
@@ -42,30 +43,30 @@ object MapGameSettings : ClassMapping<GameSettings>() {
 }
 
 open class GameSettings protected constructor(original: Any) : WrapperClass(original) {
-    var keyBindForward by MapGameSettings.mapKeyBindForward
-    var keyBindLeft by MapGameSettings.mapKeyBindLeft
-    var keyBindBack by MapGameSettings.mapKeyBindBack
-    var keyBindRight by MapGameSettings.mapKeyBindRight
-    var keyBindJump by MapGameSettings.mapKeyBindJump
-    var keyBindSneak by MapGameSettings.mapKeyBindSneak
-    var keyBindSprint by MapGameSettings.mapKeyBindSprint
-    var keyBindInventory by MapGameSettings.mapKeyBindInventory
-    var keyBindUseItem by MapGameSettings.mapKeyBindUseItem
-    var keyBindDrop by MapGameSettings.mapKeyBindDrop
-    var keyBindAttack by MapGameSettings.mapKeyBindAttack
-    var keyBindPickBlock by MapGameSettings.mapKeyBindPickBlock
-    var keyBindChat by MapGameSettings.mapKeyBindChat
-    var keyBindPlayerList by MapGameSettings.mapKeyBindPlayerList
-    var keyBindCommand by MapGameSettings.mapKeyBindCommand
-    var keyBindScreenshot by MapGameSettings.mapKeyBindScreenshot
-    var keyBindTogglePerspective by MapGameSettings.mapKeyBindTogglePerspective
-    var keyBindSmoothCamera by MapGameSettings.mapKeyBindSmoothCamera
-    var keyBindFullscreen by MapGameSettings.mapKeyBindFullscreen
-    var keyBindSpectatorOutlines by MapGameSettings.mapKeyBindSpectatorOutlines
-    var keyBindStreamStartStop by MapGameSettings.mapKeyBindStreamStartStop
-    var keyBindStreamPauseUnpause by MapGameSettings.mapKeyBindStreamPauseUnpause
-    var keyBindStreamCommercials by MapGameSettings.mapKeyBindStreamCommercials
-    var keyBindStreamToggleMic by MapGameSettings.mapKeyBindStreamToggleMic
+    var keyBindForward by WrappedFieldType(MapGameSettings.mapKeyBindForward, KeyBinding::class.java)
+    var keyBindLeft by WrappedFieldType(MapGameSettings.mapKeyBindLeft, KeyBinding::class.java)
+    var keyBindBack by WrappedFieldType(MapGameSettings.mapKeyBindBack, KeyBinding::class.java)
+    var keyBindRight by WrappedFieldType(MapGameSettings.mapKeyBindRight, KeyBinding::class.java)
+    var keyBindJump by WrappedFieldType(MapGameSettings.mapKeyBindJump, KeyBinding::class.java)
+    var keyBindSneak by WrappedFieldType(MapGameSettings.mapKeyBindSneak, KeyBinding::class.java)
+    var keyBindSprint by WrappedFieldType(MapGameSettings.mapKeyBindSprint, KeyBinding::class.java)
+    var keyBindInventory by WrappedFieldType(MapGameSettings.mapKeyBindInventory, KeyBinding::class.java)
+    var keyBindUseItem by WrappedFieldType(MapGameSettings.mapKeyBindUseItem, KeyBinding::class.java)
+    var keyBindDrop by WrappedFieldType(MapGameSettings.mapKeyBindDrop, KeyBinding::class.java)
+    var keyBindAttack by WrappedFieldType(MapGameSettings.mapKeyBindAttack, KeyBinding::class.java)
+    var keyBindPickBlock by WrappedFieldType(MapGameSettings.mapKeyBindPickBlock, KeyBinding::class.java)
+    var keyBindChat by WrappedFieldType(MapGameSettings.mapKeyBindChat, KeyBinding::class.java)
+    var keyBindPlayerList by WrappedFieldType(MapGameSettings.mapKeyBindPlayerList, KeyBinding::class.java)
+    var keyBindCommand by WrappedFieldType(MapGameSettings.mapKeyBindCommand, KeyBinding::class.java)
+    var keyBindScreenshot by WrappedFieldType(MapGameSettings.mapKeyBindScreenshot, KeyBinding::class.java)
+    var keyBindTogglePerspective by WrappedFieldType(MapGameSettings.mapKeyBindTogglePerspective, KeyBinding::class.java)
+    var keyBindSmoothCamera by WrappedFieldType(MapGameSettings.mapKeyBindSmoothCamera, KeyBinding::class.java)
+    var keyBindFullscreen by WrappedFieldType(MapGameSettings.mapKeyBindFullscreen, KeyBinding::class.java)
+    var keyBindSpectatorOutlines by WrappedFieldType(MapGameSettings.mapKeyBindSpectatorOutlines, KeyBinding::class.java)
+    var keyBindStreamStartStop by WrappedFieldType(MapGameSettings.mapKeyBindStreamStartStop, KeyBinding::class.java)
+    var keyBindStreamPauseUnpause by WrappedFieldType(MapGameSettings.mapKeyBindStreamPauseUnpause, KeyBinding::class.java)
+    var keyBindStreamCommercials by WrappedFieldType(MapGameSettings.mapKeyBindStreamCommercials, KeyBinding::class.java)
+    var keyBindStreamToggleMic by WrappedFieldType(MapGameSettings.mapKeyBindStreamToggleMic, KeyBinding::class.java)
 }
 
 

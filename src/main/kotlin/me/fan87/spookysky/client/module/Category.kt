@@ -7,7 +7,7 @@ enum class Category(val displayName: String) {
     PLAYER("Player"),
     WORLD("World"),
     RENDER("Render"),
-    SPOOKYSKY("SpookySky"),
+    Misc("Misc"),
     EXPLOIT("Exploit"),
     LEGIT("Legit"),
 

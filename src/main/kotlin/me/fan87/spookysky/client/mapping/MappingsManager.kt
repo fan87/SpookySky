@@ -1,6 +1,7 @@
 package me.fan87.spookysky.client.mapping
 
 import me.fan87.spookysky.client.SpookySky
+import me.fan87.spookysky.client.exception.MissingMappingException
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
 import java.lang.reflect.Modifier
 import java.net.URI
@@ -32,7 +33,7 @@ class MappingsManager(val spookySky: SpookySky) {
                     return declaredConstructor.newInstance(original) as T
                 }
             }
-            throw IllegalStateException("No available constructor for wrapper: ${highest.name}")
+            throw MissingMappingException("No available constructor for wrapper: ${highest.name}")
         }
     }
 

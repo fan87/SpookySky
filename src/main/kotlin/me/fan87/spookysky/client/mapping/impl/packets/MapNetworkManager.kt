@@ -4,6 +4,7 @@ package me.fan87.spookysky.client.mapping.impl.packets
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.events.events.PacketReceivedEvent
 import me.fan87.spookysky.client.events.events.PacketSentEvent
+import me.fan87.spookysky.client.exception.MissingMappingException
 import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.mapping.MethodMapping
@@ -28,7 +29,7 @@ open class NetworkManager protected constructor(original: Any) : WrapperClass(or
         MapNetworkManager.mapSendPacket.invoke(this, packet.original)
     }
     fun sendPacketNoEvent(packet: Packet) {
-        PacketHandler.noEventPackets.add(packet.original)
+        PacketEventHandler.noEventPackets.add(packet.original)
         MapNetworkManager.mapSendPacket.invoke(this, packet.original)
     }
 
@@ -36,23 +37,37 @@ open class NetworkManager protected constructor(original: Any) : WrapperClass(or
 
 
 
-object PacketHandler {
+object PacketEventHandler {
     val noEventPackets = ArrayList<Any>()
 
     @JvmStatic
-    fun onPacketReceive(packet: Any) {
-        if (noEventPackets.contains(packet)) {
-            noEventPackets.remove(packet)
-        } else {
-            SpookySky.INSTANCE.eventManager.post(PacketReceivedEvent(MappingsManager.getWrapped(packet)))
+    fun onPacketReceive(packet: Any): Boolean {
+        try {
+            if (noEventPackets.contains(packet)) {
+                noEventPackets.remove(packet)
+                return false
+            } else {
+                val event = PacketReceivedEvent(MappingsManager.getWrapped(packet))
+                SpookySky.INSTANCE.eventManager.post(event)
+                return event.cancelled
+            }
+        } catch (_: MissingMappingException) {
+            return false
         }
     }
     @JvmStatic
-    fun onPacketSent(packet: Any) {
-        if (noEventPackets.contains(packet)) {
-            noEventPackets.remove(packet)
-        } else {
-            SpookySky.INSTANCE.eventManager.post(PacketSentEvent(MappingsManager.getWrapped(packet)))
+    fun onPacketSent(packet: Any): Boolean {
+        try {
+            if (noEventPackets.contains(packet)) {
+                noEventPackets.remove(packet)
+                return false
+            } else {
+                val event = PacketSentEvent(MappingsManager.getWrapped(packet))
+                SpookySky.INSTANCE.eventManager.post(event)
+                return event.cancelled
+            }
+        } catch (_: MissingMappingException) {
+            return false
         }
     }
 

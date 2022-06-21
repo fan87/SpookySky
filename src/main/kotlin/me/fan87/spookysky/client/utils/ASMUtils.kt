@@ -66,9 +66,9 @@ object ASMUtils {
             }
         }
         if (name.startsWith("L") && name.endsWith(";")) {
-            return Class.forName(name.replace("/", ".").let { it.substring(1, it.length - 1) })
+            return Class.forName(name.replace("/", ".").let { it.substring(1, it.length - 1) }, false, javaClass.classLoader)
         }
-        return Class.forName(name.replace("/", "."))
+        return Class.forName(name.replace("/", "."), false, javaClass.classLoader)
     }
 
     fun descTypeToJvmType(descType: String): String {

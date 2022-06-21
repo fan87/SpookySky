@@ -13,7 +13,12 @@ import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
 import java.net.URL
 import java.net.URLClassLoader
+import java.nio.file.Files
 import java.security.ProtectionDomain
+import java.util.*
+import java.util.jar.JarFile
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.system.exitProcess
 
 object Main {
@@ -26,6 +31,7 @@ object Main {
 
     var customClassLoader: CustomClassLoader? = null
 
+    val resourcesFile = File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString() + ".spookysky")
 
     @JvmStatic
     fun premain(args: String, instrumentation: Instrumentation) {
@@ -41,6 +47,21 @@ object Main {
         }
 
         instrumentation.addTransformer(transformer)
+
+        val res = Main::class.java.classLoader.getResource("spookysky-resources/")!!
+        val path = res.toURI()
+        val jarFile = JarFile(res.path.split(":")[1].split("!")[0])
+        for (entry in jarFile.entries()) {
+            if (entry.name.startsWith("spookysky-resources/")) {
+                if (entry.name.substring("spookysky-resources/".length).length == 0) continue
+                if (entry.name.endsWith("/")) continue
+                val file = File(resourcesFile, entry.name.substring("spookysky-resources/".length))
+                file.parentFile.mkdirs()
+                file.createNewFile()
+                file.writeBytes(jarFile.getInputStream(entry).readBytes())
+            }
+        }
+
     }
 
     @JvmStatic
@@ -55,8 +76,8 @@ object Main {
                 var text = "kysky.client.SpookySk"
                 text += "y"
                 val loadClass = loader.loadClass("me.fan87.spoo" + text) // Avoid shadowJar doing weird stuff
-                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java)
-                    .newInstance(instrumentation, HashMap(classes), transformer)
+                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java)
+                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile)
             } else if (loader is URLClassLoader) {
                 println("[SpookySky Loader] Detected URLClassLoader! Attempting to inject to it... (Using strategy: addURL)")
                 val addURLMethod = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
@@ -71,15 +92,15 @@ object Main {
                 text += "y"
 
                 val loadClass = loader.loadClass("me.fan87.spoo" + text)
-                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java)
-                    .newInstance(instrumentation, HashMap(classes), transformer)
+                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java)
+                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile)
             } else {
                 /**
                  * This part of code is untested!
                  */
 
                 println("[SpookySky Loader] Target class loader is not an instance of URLClassLoader! Loading with App Class Loader (Using strategy: Agent Load)")
-                SpookySky(instrumentation, HashMap(classes), transformer)
+                SpookySky(instrumentation, HashMap(classes), transformer, resourcesFile)
             }
         } catch (e: Throwable) {
             e.printStackTrace()

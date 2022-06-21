@@ -9,7 +9,7 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
     val children = ArrayList<MemberMapping<*>>()
 
     fun getJavaClass(): Class<*> {
-        return Class.forName(assumeMapped().name.replace("/", "."))
+        return Class.forName(assumeMapped().name.replace("/", "."), false, javaClass.classLoader)
     }
 
     abstract fun getWrapperClass(): Class<T>

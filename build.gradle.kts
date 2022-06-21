@@ -41,6 +41,7 @@ repositories {
 dependencies {
     compileOnly("org.lwjgl.lwjgl:lwjgl:2.9.3")
     compileOnly("org.lwjgl.lwjgl:lwjgl_util:2.9.3")
+    compileOnly("com.google.code.gson:gson:2.2.4")
     implementation("org.apache.logging.log4j:log4j-api:2.0-beta9")
     implementation("org.apache.logging.log4j:log4j-core:2.0-beta9")
 }
