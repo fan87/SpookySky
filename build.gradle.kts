@@ -104,7 +104,7 @@ tasks {
             "-Djava.library.path=natives",
             "-javaagent:$agentJar=$clientJar",
             "-Xverify:all",
-            "-agentlib:jdwp=transport=dt_socket,server=n,address=pop-os.localdomain:6950,suspend=y",
+            "-agentlib:jdwp=transport=dt_socket,server=n,address=localhost:6950,suspend=y",
         )
 
         classpath = files(*workingDir.listFiles { _, name -> name?.endsWith(".jar") == true }!!)
