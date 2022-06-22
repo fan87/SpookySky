@@ -1,9 +1,7 @@
 
 package me.fan87.spookysky.client.mapping.impl.packets.play.client
 
-import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.FieldMapping
-import me.fan87.spookysky.client.mapping.WrapperClass
 import me.fan87.spookysky.client.mapping.impl.packets.Packet
 import me.fan87.spookysky.client.mapping.impl.packets.PacketMapping
 import me.fan87.spookysky.client.mapping.impl.packets.PacketSource  

@@ -13,12 +13,13 @@ object MapEntityPlayerSP: ClassMapping<EntityPlayerSP>() {
 
     val mapOnUpdateWalkingPlayer = MethodMapping<Unit, EntityPlayerSP>(this, "onUpdateWalkingPlayer()")
     val mapSendChatMessage = MethodMapping<Unit, EntityPlayerSP>(this, "sendChatMessage(String)")
+    val mapSendPlayerAbilities = MethodMapping<Unit, EntityPlayerSP>(this, "sendPlayerAbilities()")
 
     val mapSendQueue = FieldMapping<Any, EntityPlayerSP>(this, "sendQueue")
 
 }
 
-class EntityPlayerSP private constructor(original: Any): EntityLivingBase(original) {
+class EntityPlayerSP private constructor(original: Any): EntityPlayer(original) {
 
     val sendQueue by WrappedFieldType(MapEntityPlayerSP.mapSendQueue, NetHandlerPlayClient::class.java)
 
