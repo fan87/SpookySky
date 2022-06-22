@@ -14,7 +14,7 @@ import me.fan87.spookysky.client.utils.MathUtils.getPosition
 import java.lang.Math.*
 import java.util.*
 
-class SmoothAimBot: Module("SmoothAimBot", "Automatically aims to your target", Category.COMBAT) {
+class SmoothAimBot: Module("SmoothAimBot", "Automatically aims to your target", Category.COMBAT, true) {
 
     val turnSpeed = IntSetting("Speed", "Turning speed of the bot", 30, 1, 100)
     val range = DoubleSetting("Range", "Range of the entity detection", 4.0, 2.0, 20.0)
