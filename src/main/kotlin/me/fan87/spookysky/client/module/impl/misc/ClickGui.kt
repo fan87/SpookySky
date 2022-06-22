@@ -27,7 +27,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     
     val pitch = DoubleSetting("Pitch", "The angle of the ClickGui to be rendered", -30.0, -90.0, 90.0)
     val distanceSetting = DoubleSetting("Distance", "The distance (Block) between you and ClickGui", 0.3, 0.1, 4.0)
-    val scaleSetting = DoubleSetting("Scale", "The scale of the ClickGui", 1.0, 0.1, 4.0)
+    val scaleSetting = DoubleSetting("Scale", "The scale of the ClickGui", 1.0, 0.1, 10.0)
 
     init {
         key.value = Keyboard.KEY_INSERT

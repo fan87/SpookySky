@@ -1,6 +1,7 @@
 package me.fan87.spookysky.client.events
 
 import me.fan87.spookysky.client.events.events.ClientTickEvent
+import me.fan87.spookysky.client.events.events.Event
 import me.fan87.spookysky.client.events.events.PostRender3DEvent
 import me.fan87.spookysky.client.events.events.WorldTickEvent
 import me.fan87.spookysky.client.exception.MissingMappingException
@@ -27,6 +28,9 @@ class EventsManager {
     }
 
     fun post(event: Any) {
+        if (event is Event) {
+            if (event.cancelledSending) return
+        }
         val toCall = LinkedHashMap<Method, Any>()
         for (listener in listeners) {
             for (method in listener.javaClass.methods) {

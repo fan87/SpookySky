@@ -3,12 +3,14 @@ package me.fan87.spookysky.client.processors.impl.entities
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.events.events.EntityJumpEvent
+import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntity
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityLivingBase
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.addGetField
+import me.fan87.spookysky.client.utils.ASMUtils.addMethodCall
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsMethodInsnNode
 import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
@@ -51,8 +53,8 @@ class ProcessorMapEntityLivingJump: Processor("Map EntityLivingBase/.jump()") {
                 }, varNumberManager))
                 out.addGetField(EntityJumpEvent::cancelled)
                 out.add(JumpInsnNode(Opcodes.IFEQ, end))
-                out.add(end)
                 out.add(InsnNode(Opcodes.RETURN))
+                out.add(end)
                 out.add(method.instructions)
                 method.instructions = out
                 return true

@@ -5,12 +5,16 @@ import me.fan87.spookysky.client.events.events.ClientTickEvent
 import me.fan87.spookysky.client.events.events.WorldTickEvent
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
+import me.fan87.spookysky.client.module.settings.impl.DoubleSetting
 import me.fan87.spookysky.client.utils.MathUtils.getMotion
 import me.fan87.spookysky.client.utils.MathUtils.getRotatedVector2
 import me.fan87.spookysky.client.utils.MathUtils.setMotion
 import me.fan87.spookysky.client.utils.Vector3d
 
 class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
+
+    val speed = DoubleSetting("Speed", "The speed you are going to be moving at (Unit: BPT)", 0.4, 0.1, 8.0)
+
     override fun onEnable() {
 
     }
@@ -21,7 +25,7 @@ class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
 
     @EventHandler
     fun onTick(event: WorldTickEvent) {
-        mc.thePlayer!!.setMotion(mc.thePlayer!!.getRotatedVector2().toVector3f().toVector3d())
+        mc.thePlayer!!.setMotion(mc.thePlayer!!.getRotatedVector2().toVector2d() * speed.value)
         if (mc.thePlayer!!.onGround) {
             mc.thePlayer!!.jump()
         }

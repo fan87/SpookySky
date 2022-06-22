@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock
 class MappingsManager(val spookySky: SpookySky) {
 
     companion object {
+
         fun <T> getWrapped(original: Any): T {
             var highest: Class<T>? = null
             for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
