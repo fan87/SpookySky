@@ -7,6 +7,7 @@ import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.module.settings.Setting
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
+import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.defaultType
 import kotlin.reflect.full.isSubtypeOf
@@ -62,7 +63,7 @@ abstract class Module(val name: String, val description: String, val category: C
         val kClass = this::class
         val out = ArrayList<Setting<*>>()
         for (memberProperty in kClass.memberProperties) {
-            if (memberProperty.returnType.isSubtypeOf(Setting::class.createType())) {
+            if (memberProperty.returnType.isSubtypeOf(Setting::class.createType(arguments = arrayListOf(KTypeProjection.STAR)))) {
                 out.add((memberProperty as KProperty1<Module, Setting<*>>).get(this))
             }
         }

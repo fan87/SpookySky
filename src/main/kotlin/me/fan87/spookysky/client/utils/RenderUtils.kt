@@ -5,8 +5,13 @@ import me.fan87.spookysky.client.mapping.impl.rendering.Gui
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import java.awt.image.BufferedImage
+import java.awt.Color
 import javax.imageio.ImageIO
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sin
+
 
 object RenderUtils {
 
@@ -119,6 +124,72 @@ object RenderUtils {
             glEnd()
         }
         glPopAttrib()
+    }
+
+    fun drawRoundedRect(startX: Double, startY: Double, endX: Double, endY: Double, cornerRadius: Double, color: Color) {
+        drawRoundedRect0(min(startX, endX), min(startY, endY), max(startX, endX) - min(startX, endX), max(startY, endY) - min(startY, endY), cornerRadius, color)
+    }
+
+    fun drawRoundedRect0(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double, color: Color) {
+        drawRect(x, y + cornerRadius, x + cornerRadius, y + height - cornerRadius, color.getRGB())
+        drawRect(x + cornerRadius, y, x + width - cornerRadius, y + height, color.getRGB())
+        drawRect(x + width - cornerRadius, y + cornerRadius, x + width, y + height - cornerRadius, color.getRGB())
+        drawArc(x + cornerRadius, y + cornerRadius, cornerRadius, 0, 90, color)
+        drawArc(x + width - cornerRadius, y + cornerRadius, cornerRadius, 270, 360, color)
+        drawArc(x + width - cornerRadius, y + height - cornerRadius, cornerRadius, 180, 270, color)
+        drawArc(x + cornerRadius, y + height - cornerRadius, cornerRadius, 90, 180, color)
+    }
+
+    fun drawArc(x: Double, y: Double, radius: Double, startAngle: Int, endAngle: Int, color: Color) {
+        glPushMatrix()
+        glEnable(3042)
+        glDisable(3553)
+        glBlendFunc(770, 771)
+        glColor4f(
+            color.red / 255f,
+            color.green / 255f,
+            color.blue.toFloat() / 255f,
+            color.alpha.toFloat() / 255f
+        )
+        glBegin(GL_TRIANGLE_FAN)
+        glVertex3d(x, y, 0.0)
+        for (i in (startAngle / 360.0 * 100).toInt()..(endAngle / 360.0 * 100).toInt()) {
+            val angle = Math.PI * 2 * i / 100 + Math.toRadians(180.0)
+            glVertex3d(x + sin(angle) * radius, y + cos(angle) * radius, 0.0)
+        }
+        glEnd()
+        glEnable(3553)
+        glDisable(3042)
+        glPopMatrix()
+    }
+
+    fun drawCircle(x: Double, y: Double, radius: Double, howRound: Float, color: Int) {
+        val f3 = (color shr 24 and 255).toFloat() / 255.0f
+        val f = (color shr 16 and 255).toFloat() / 255.0f
+        val f1 = (color shr 8 and 255).toFloat() / 255.0f
+        val f2 = (color and 255).toFloat() / 255.0f
+        glEnable(GL_BLEND)
+        glDisable(GL_TEXTURE_2D)
+        glColor4f(f, f1, f2, f3)
+        for (i in 0 until Math.round(howRound * 360)) {
+            val degree = (i * 1f / Math.round(howRound * 360) * 360 - 180).toDouble()
+            val radians = Math.toRadians(degree)
+            val degree2 = ((i + 1) * 1f / Math.round(howRound * 360) * 360 - 180).toDouble()
+            val radians2 = Math.toRadians(degree2)
+            glBegin(GL_TRIANGLE_STRIP)
+            glVertex2d(x, y)
+            glVertex2d(
+                x + radius * Math.sin(radians),
+                y + radius * Math.cos(radians)
+            )
+            glVertex2d(
+                x + radius * Math.sin(radians2),
+                y + radius * Math.cos(radians2)
+            )
+            glEnd()
+        }
+        glEnable(GL_TEXTURE_2D)
+        glColor4f(1f, 1f, 1f, 1f)
     }
 
 }

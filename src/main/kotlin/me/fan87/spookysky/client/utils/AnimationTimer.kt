@@ -5,10 +5,10 @@ class AnimationTimer(var total: Long, val easingFunction: (Float) -> Float = {it
     var endTime = System.currentTimeMillis()
 
     fun getProgress(): Float {
-        return 1f - (((endTime - System.currentTimeMillis())*1000/total*1000).toFloat()/1000000f).coerceAtLeast(0.0f).coerceAtMost(1.0f)
+        return easingFunction(1f - (((endTime - System.currentTimeMillis())*1000/total*1000).toFloat()/1000000f).coerceAtLeast(0.0f).coerceAtMost(1.0f))
     }
     fun getProgressReverted(): Float {
-        return (((endTime - System.currentTimeMillis())*1000/total*1000).toFloat()/1000000f).coerceAtLeast(0.0f).coerceAtMost(1.0f)
+        return easingFunction((((endTime - System.currentTimeMillis())*1000/total*1000).toFloat()/1000000f).coerceAtLeast(0.0f).coerceAtMost(1.0f))
     }
     fun getValue(start: Double, end: Double): Double {
         return getProgress()*(end - start) + start
