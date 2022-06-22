@@ -32,6 +32,7 @@ object MapEntity: ClassMapping<Entity>() {
 //    val mapIsCollided = FieldMapping<Boolean, Entity>(this, "isCollided")
 //    val mapWidth = FieldMapping<Float, Entity>(this, "width")
     val mapHeight = FieldMapping<Float, Entity>(this, "height")
+    val mapEntityId = FieldMapping<Int, Entity>(this, "entityId")
     val mapFallDistance = FieldMapping<Float, Entity>(this, "fallDistance")
 
     val mapGetUniqueID = MethodMapping<UUID, Entity>(this, "getUniqueID()")
@@ -51,6 +52,7 @@ open class Entity protected constructor (original: Any): WrapperClass(original) 
     var posX by MapEntity.mapPosX
     var posY by MapEntity.mapPosY
     var posZ by MapEntity.mapPosZ
+    var entityId by MapEntity.mapEntityId
 //    val lastTickPosX by MapEntity.mapLastTickPosX
 //    val lastTickPosY by MapEntity.mapLastTickPosY
 //    val lastTickPosZ by MapEntity.mapLastTickPosZ

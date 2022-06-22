@@ -5,10 +5,10 @@ import me.fan87.spookysky.client.events.events.ModuleToggleEvent
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
 
-class LegitMode: Module("LegitMode", "Only allow legit modules", Category.MISC, true) {
+class GhostMode: Module("GhostMode", "Only allow ghost modules", Category.MISC, true) {
     override fun onEnable() {
         for (module in spookySky.modulesManager.modules) {
-            if (!module.legit && module.toggled) {
+            if (!module.ghost && module.toggled) {
                 module.toggled = false
             }
         }
@@ -20,7 +20,7 @@ class LegitMode: Module("LegitMode", "Only allow legit modules", Category.MISC, 
 
     @EventHandler
     fun onToggle(event: ModuleToggleEvent) {
-        if (!event.module.legit && event.newValue) {
+        if (!event.module.ghost && event.newValue) {
             event.cancelled = true
         }
     }

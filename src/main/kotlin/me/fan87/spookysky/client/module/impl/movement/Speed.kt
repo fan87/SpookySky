@@ -36,10 +36,7 @@ class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
             mc.thePlayer!!.setMotion(value)
         } else {
             mc.thePlayer!!.setMotion(Vector2d(0.0, 0.0))
-
         }
-
-
     }
 
 }
