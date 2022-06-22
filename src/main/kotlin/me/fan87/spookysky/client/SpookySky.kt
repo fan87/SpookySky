@@ -83,10 +83,5 @@ class SpookySky(
 
     }
 
-    @EventHandler
-    fun onKey(event: KeyEvent) {
-        println("Key: ${Keyboard.getKeyName(event.key)}")
-    }
-
 
 }
