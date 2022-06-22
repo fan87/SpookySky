@@ -22,6 +22,9 @@ class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
     @EventHandler
     fun onTick(event: WorldTickEvent) {
         mc.thePlayer!!.setMotion(mc.thePlayer!!.getRotatedVector2().toVector3f().toVector3d())
+        if (mc.thePlayer!!.onGround) {
+            mc.thePlayer!!.jump()
+        }
     }
 
 }
