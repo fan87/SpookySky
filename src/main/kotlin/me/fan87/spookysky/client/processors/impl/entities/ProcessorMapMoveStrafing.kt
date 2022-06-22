@@ -20,15 +20,15 @@ class ProcessorMapMoveStrafing: Processor("Map EntityLivingBase.moveStrafing/mov
     override fun process(clazz: LoadedClass): Boolean {
         val pattern = RegbexPattern {
             thenLdc(0.98f)
-            thenOpcodeCheck(Opcodes.IMUL)
+            thenOpcodeCheck(Opcodes.FMUL)
             thenGroup("moveStrafing") {
                 thenOpcodeCheck(Opcodes.PUTFIELD)
             }
-            thenLazyAmountOf(0..8) {
+            thenLazyAmountOf(0..10) {
                 thenAny()
             }
             thenLdc(0.98f)
-            thenOpcodeCheck(Opcodes.IMUL)
+            thenOpcodeCheck(Opcodes.FMUL)
             thenGroup("moveForward") {
                 thenOpcodeCheck(Opcodes.PUTFIELD)
             }
@@ -38,7 +38,7 @@ class ProcessorMapMoveStrafing: Processor("Map EntityLivingBase.moveStrafing/mov
             if (matcher.next()) {
                 MapEntityLivingBase.mapOnLivingUpdate.map(method)
                 MapEntityLivingBase.mapMoveStrafing.map(matcher.groupAsFieldInsnNode("moveStrafing"))
-                MapEntityLivingBase.mapMoveStrafing.map(matcher.groupAsFieldInsnNode("moveForward"))
+                MapEntityLivingBase.mapMoveForward.map(matcher.groupAsFieldInsnNode("moveForward"))
             }
         }
         return false

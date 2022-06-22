@@ -1,9 +1,10 @@
 package me.fan87.spookysky.client.utils
 
 import me.fan87.spookysky.client.mapping.impl.entities.Entity
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
+import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
+import kotlin.math.*
+
 
 object MathUtils {
 
@@ -39,6 +40,24 @@ object MathUtils {
     fun Entity.setMotion(motion: Vector2d) {
         motionX = motion.x
         motionZ = motion.y
+    }
+    fun Entity.addMotion(motion: Vector3f) {
+        motionX += motion.x.toDouble()
+        motionY += motion.y.toDouble()
+        motionZ += motion.z.toDouble()
+    }
+    fun Entity.addMotion(motion: Vector2f) {
+        motionX += motion.x.toDouble()
+        motionZ += motion.y.toDouble()
+    }
+    fun Entity.setMotion(motion: Vector3f) {
+        motionX = motion.x.toDouble()
+        motionY = motion.y.toDouble()
+        motionZ = motion.z.toDouble()
+    }
+    fun Entity.setMotion(motion: Vector2f) {
+        motionX = motion.x.toDouble()
+        motionZ = motion.y.toDouble()
     }
     fun Entity.getMotion(): Vector3d {
         return Vector3d(motionX, motionY, motionZ)
@@ -78,6 +97,11 @@ object MathUtils {
 
     fun Entity.getRotatedVector2(): Vector2f {
         return getRotationVector2(rotationYaw)
+    }
+
+    fun EntityLivingBase.getDirection(): Float {
+        var rotationYaw: Float = this.rotationYaw
+        return Math.toDegrees(atan2(-this.moveStrafing, this.moveForward).toDouble()).toFloat() + rotationYaw
     }
 
 }

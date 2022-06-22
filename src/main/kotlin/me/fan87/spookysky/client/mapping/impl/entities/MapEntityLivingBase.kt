@@ -18,7 +18,7 @@ object MapEntityLivingBase : ClassMapping<EntityLivingBase>() {
     val mapOnLivingUpdate = MethodMapping<Unit, EntityLivingBase>(this, "onLivingUpdate()")
 
     val mapMoveStrafing = FieldMapping<Float, EntityLivingBase>(this, "movingStrafing")
-    val mapMovingForward = FieldMapping<Float, EntityLivingBase>(this, "movingForward")
+    val mapMoveForward = FieldMapping<Float, EntityLivingBase>(this, "movingForward")
 
 }
 
@@ -28,7 +28,7 @@ open class EntityLivingBase protected constructor(original: Any) : Entity(origin
     fun onLivingUpdate() = MapEntityLivingBase.mapOnLivingUpdate.invoke(this)
 
     var moveStrafing: Float by MapEntityLivingBase.mapMoveStrafing
-    var moveForward: Float by MapEntityLivingBase.mapMoveStrafing
+    var moveForward: Float by MapEntityLivingBase.mapMoveForward
 
     fun isMoving(): Boolean {
         return moveForward != 0f || moveStrafing != 0f
