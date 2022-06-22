@@ -9,6 +9,7 @@ import me.fan87.spookysky.client.module.settings.impl.DoubleSetting
 import me.fan87.spookysky.client.utils.MathUtils.getMotion
 import me.fan87.spookysky.client.utils.MathUtils.getRotatedVector2
 import me.fan87.spookysky.client.utils.MathUtils.setMotion
+import me.fan87.spookysky.client.utils.Vector2d
 import me.fan87.spookysky.client.utils.Vector3d
 
 class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
@@ -25,9 +26,13 @@ class Speed: Module("Speed", "Makes you walk faster", Category.MOVEMENT) {
 
     @EventHandler
     fun onTick(event: WorldTickEvent) {
-        mc.thePlayer!!.setMotion(mc.thePlayer!!.getRotatedVector2().toVector2d() * speed.value)
-        if (mc.thePlayer!!.onGround) {
-            mc.thePlayer!!.jump()
+        if (mc.thePlayer!!.isMoving()) {
+            mc.thePlayer!!.setMotion(mc.thePlayer!!.getRotatedVector2().toVector2d() * speed.value)
+            if (mc.thePlayer!!.onGround) {
+                mc.thePlayer!!.jump()
+            }
+        } else {
+            mc.thePlayer!!.setMotion(Vector2d(0.0, 0.0))
         }
     }
 

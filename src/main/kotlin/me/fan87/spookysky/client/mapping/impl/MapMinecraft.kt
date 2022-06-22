@@ -24,7 +24,7 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapClickMouse = MethodMapping<Unit, Minecraft>(this, "clickMouse()")
     val mapRightClickMouse = MethodMapping<Unit, Minecraft>(this, "rightClickMouse()")
 
-    val mapGameSettings = NullableFieldMapping<Any, Minecraft>(this, "gameSettings")
+    val mapGameSettings = FieldMapping<Any, Minecraft>(this, "gameSettings")
     val mapLeftClickCounter = FieldMapping<Int, Minecraft>(this, "leftClickCounter")
     val mapThePlayer = NullableFieldMapping<Any, Minecraft>(this, "thePlayer")
     val mapMyNetworkManager = NullableFieldMapping<Any, Minecraft>(this, "myNetworkManager")
@@ -56,5 +56,5 @@ class Minecraft protected constructor(original: Any): WrapperClass(original) {
     var theWorld by NullableWrappedFieldType(MapMinecraft.mapTheWorld, WorldClient::class.java)
     var myNetworkManager by NullableWrappedFieldType(MapMinecraft.mapMyNetworkManager, NetworkManager::class.java)
     var entityRenderer by NullableWrappedFieldType(MapMinecraft.mapEntityRenderer, EntityRenderer::class.java)
-    val gameSettings by NullableWrappedFieldType(MapMinecraft.mapGameSettings, GameSettings::class.java)
+    val gameSettings by WrappedFieldType(MapMinecraft.mapGameSettings, GameSettings::class.java)
 }
