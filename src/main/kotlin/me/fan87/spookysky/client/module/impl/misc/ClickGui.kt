@@ -498,7 +498,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
             val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
             val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
-            startDrawString(sliderStart, startY + height/2.0)
+            startDrawString(sliderEnd, startY + height/2.0)
             valueFont.drawVerticallyCenteredString(textDisplay?:Keyboard.getKeyName(setting.value), 0f, 0f, 0xff6B6B6B.toInt())
             endDrawString()
             lastDisplayed = System.currentTimeMillis()
@@ -527,14 +527,16 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                         textDisplay = null
                         return@keyEvent
                     }
-                    if (it.key == Keyboard.KEY_ESCAPE) {
+                    if (it.key == Keyboard.KEY_BACK) {
                         textDisplay = null
                         return@keyEvent
                     }
                     if (it.key == Keyboard.KEY_DELETE) {
+                        textDisplay = null
                         setting.value = 0
                         return@keyEvent
                     }
+                    textDisplay = null
                     setting.value = it.key
                 }
                 return true
