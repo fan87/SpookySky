@@ -26,7 +26,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     override fun onEnable() {
         this.pitchOffset = -30f
         this.distance = 0.6
-        this.scale = 1.5f;
+        this.scale = 1.8f;
         startYaw = mc.thePlayer?.rotationYaw?.plus(0f) ?:0f
     }
 
@@ -197,12 +197,14 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     }
 
     fun moduleClick(button: Int, posX: Double, posY: Double, midX: Double, midY: Double): Boolean {
+        val regularFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
         val modules = spookySky.modulesManager.modules.filter { it.category == selectedCategory }
         val moduleDisplayHeight = 0.03
         val moduleDisplayWidth = 0.13
         val moduleMargin = 0.002
-        val lineHeightHalf = ((moduleDisplayHeight + moduleMargin) * modules.size - moduleDisplayHeight) / 2
         val allStartY = midY - (modules.size * (moduleDisplayHeight + moduleMargin)).let { if (modules.isNotEmpty()) it - moduleMargin else it }/2.0
+
+
         for (entry in modules.withIndex()) {
             val module = entry.value
             val index = entry.index
@@ -211,7 +213,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             val endX = midX - moduleDisplayWidth
             val endY = startY + moduleDisplayHeight
             if (module == selectedModule) {
-                val settingsClick = settingsClick(endX - 0.006, endY + moduleDisplayHeight / 2.0, button, posX, posY)
+                val settingsClick = settingsClick(endX - 0.006, endY - moduleDisplayHeight / 2.0, button, posX, posY)
                 if (settingsClick) return true
             }
             if (isInSection(startX, startY, endX, endY)) {
@@ -368,25 +370,37 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     }
 
     fun settingsClick(midX: Double, midY: Double, button: Int, posX: Double, posY: Double): Boolean {
+        val value = dryRenderPointingLeftTriangle(midX, midY)
         val settings = selectedModule!!.settings
-        val settingDisplayWidth = 0.31
-        val settingDisplayHeight = 0.032
+        val settingDisplayHeight = 0.034
+        val settingDisplayWidth = 0.25
         val settingMargin = 0.004
-        val settingPadding = 0.004
+        val settingPadding = 0.01
         val allStartY = midY - (settings.size * (settingDisplayHeight + settingMargin)).let { if (settings.isNotEmpty()) it - settingMargin else it }/2.0
         for (entry in settings.withIndex()) {
             val setting = entry.value
             val index = entry.index
-            val startX = midX
+            val startX = midX - value - 0.005
             val startY = allStartY + index * (settingDisplayHeight + settingMargin)
             val endX = midX - settingDisplayWidth
             val endY = startY + settingDisplayHeight
-            RenderUtils.drawRoundedRect(startX, startY, endX, endY, 0.001, Color.WHITE)
-            var settingRenderer: SettingRenderer<*>? = null
-            if (setting is DoubleSetting) {
-                settingRenderer = DoubleSettingRenderer(setting)
+
+            var renderer = cachedSettingsRenderer[setting]
+            if (renderer == null) {
+                if (setting is DoubleSetting) {
+                    renderer = DoubleSettingRenderer(setting)
+                }
+                if (setting is IntSetting) {
+                    renderer = IntSettingRenderer(setting)
+                }
+                if (renderer != null) {
+                    cachedSettingsRenderer[setting] = renderer
+                }
             }
-            settingRenderer?.onMouseClick(startX + settingPadding, startY, endX - settingPadding, endY, button, posX, posY)
+
+            if (renderer?.onMouseClick(startX - settingPadding, startY, endX - settingPadding, endY, button, posX, posY) == true) {
+                return true
+            }
         }
         return false
     }
@@ -399,7 +413,9 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             startDrawString(startX, (startY + height/2.0))
             regularFont.drawVerticallyCenteredString(setting.name, 0f, 0f, 0xff6B6B6B.toInt())
             endDrawString()
+            GL11.glTranslated(0.0, 0.0, -0.0001)
             render(startX, startY, endX, endY, width, height)
+            GL11.glTranslated(0.0, 0.0, 0.0001)
         }
         abstract fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double)
         abstract fun onMouseClick(startX: Double, startY: Double, endX: Double, endY: Double, button: Int, posX: Double, posY: Double): Boolean
@@ -425,11 +441,14 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     }
     inner class IntSettingRenderer(setting: IntSetting): SettingRenderer<IntSetting>(setting) {
         override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
-            val sliderStart = width * 0.4;
-            val sliderEnd = width * 0.9;
-            if (Mouse.isButtonDown(0)) {
-
-            }
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
+            val sliderStart = startX + width * 0.4;
+            val sliderEnd = startX + width * 0.8;
+            RenderUtils.drawRoundedRect(sliderStart, startY + height/2.0 - 0.001, sliderEnd, startY + height/2.0 + 0.001, 0.001, Color(0x767676))
+            startDrawString(sliderEnd + width * 0.05, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString("${setting.value}", 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+//            println("$startY / $endY") // 0.516 0.55
         }
 
 
@@ -442,7 +461,13 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             posX: Double,
             posY: Double
         ): Boolean {
-            return false
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            return isInSection(sliderStart, startY, sliderEnd, endY)
         }
     }
 

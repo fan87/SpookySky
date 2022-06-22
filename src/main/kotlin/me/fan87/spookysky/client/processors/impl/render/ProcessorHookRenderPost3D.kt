@@ -40,7 +40,6 @@ class ProcessorHookRenderPost3D: Processor("Hook Post Render 3D Events") {
                     }
                     out.add(instruction.value)
                 }
-                File("/tmp/EntityRenderer.class").writeBytes(ASMUtils.writeClass(clazz.node))
                 return true
             }
         }
