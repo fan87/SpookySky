@@ -4,8 +4,15 @@ import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.events.events.ModuleToggleEvent
 import me.fan87.spookysky.client.mapping.Mapping
 import me.fan87.spookysky.client.mapping.impl.Minecraft
+import me.fan87.spookysky.client.module.settings.Setting
+import kotlin.reflect.KProperty1
+import kotlin.reflect.KType
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.defaultType
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.memberProperties
 
-abstract class Module(val name: String, val description: String, val category: Category) {
+abstract class Module(val name: String, val description: String, val category: Category, val legit: Boolean = category == Category.LEGIT || category == Category.RENDER) {
 
     var toggled = false
         set(value) {
@@ -21,6 +28,7 @@ abstract class Module(val name: String, val description: String, val category: C
                         return
                     }
                     spookySky.eventManager.registerListener(this)
+                    field = value
                     onEnable()
                 } else {
                     val event = ModuleToggleEvent(this, true)
@@ -29,9 +37,9 @@ abstract class Module(val name: String, val description: String, val category: C
                         return
                     }
                     spookySky.eventManager.unregisterListener(this)
+                    field = value
                     onDisable()
                 }
-                field = value
             }
         }
 
@@ -49,6 +57,17 @@ abstract class Module(val name: String, val description: String, val category: C
     protected abstract fun onEnable()
     protected abstract fun onDisable()
 
+
+    val settings: List<Setting<*>> by lazy {
+        val kClass = this::class
+        val out = ArrayList<Setting<*>>()
+        for (memberProperty in kClass.memberProperties) {
+            if (memberProperty.returnType.isSubtypeOf(Setting::class.createType())) {
+                out.add((memberProperty as KProperty1<Module, Setting<*>>).get(this))
+            }
+        }
+        out
+    }
 
 
 }

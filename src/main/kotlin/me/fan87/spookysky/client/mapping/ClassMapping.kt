@@ -1,5 +1,6 @@
 package me.fan87.spookysky.client.mapping
 
+import me.fan87.regbex.PrimitiveType
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import org.objectweb.asm.tree.TypeInsnNode
@@ -23,7 +24,17 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
         loopConstructors@for (constructor in getJavaClass().constructors) {
             if (constructor.parameterCount != args.size) continue
             for (withIndex in args.withIndex()) {
-                if (!constructor.parameterTypes[withIndex.index].isAssignableFrom(withIndex.value.javaClass)) {
+                var matches =
+                    constructor.parameterTypes[withIndex.index].isAssignableFrom(withIndex.value.javaClass)
+                if (!matches) {
+                    for (value in PrimitiveType.values()) {
+                        if (constructor.parameterTypes[withIndex.index] == value.primitiveType && withIndex.value.javaClass == value.objectType) {
+                            matches = true
+                            break
+                        }
+                    }
+                }
+                if (!matches) {
                     continue@loopConstructors
                 }
             }

@@ -3,10 +3,8 @@ package me.fan87.spookysky.client.utils
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.impl.rendering.Gui
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.ARBFramebufferObject
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL12
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
@@ -42,7 +40,6 @@ object RenderUtils {
                 createIntBuffer
             )
             ARBFramebufferObject.glGenerateMipmap(GL_TEXTURE_2D)
-            println(texture)
             files[fileName] = texture
         } else {
             glBindTexture(GL_TEXTURE_2D, texture)
@@ -51,7 +48,6 @@ object RenderUtils {
         glPushAttrib(GL_ALL_ATTRIB_BITS)
         glEnable(GL_BLEND)
         glEnable(GL_TEXTURE_2D)
-        glColor4f(1f, 1f, 1f, 1f)
         glBegin(GL_QUADS)
         glTexCoord2d(textureStartX.toDouble(), textureEndY.toDouble())
         glVertex2d(left, bottom)
@@ -99,6 +95,29 @@ object RenderUtils {
         glVertex2d(right, top)
         glVertex2d(left, top)
         glEnd()
+        if (f2 == 1.0f) {
+            glDisable(GL_DEPTH_TEST)
+            glLineWidth(0.5f)
+            glShadeModel(GL_SMOOTH)
+            glEnable(GL_LINE_SMOOTH)
+            glColor4f(f, f1, f2, f3)
+            glBegin(GL_LINES)
+            glVertex2d(left, bottom)
+            glVertex2d(right, bottom)
+            glEnd()
+            glBegin(GL_LINES)
+            glVertex2d(right, bottom)
+            glVertex2d(right, top)
+            glEnd()
+            glBegin(GL_LINES)
+            glVertex2d(right, top)
+            glVertex2d(left, top)
+            glEnd()
+            glBegin(GL_LINES)
+            glVertex2d(left, top)
+            glVertex2d(left, bottom)
+            glEnd()
+        }
         glPopAttrib()
     }
 

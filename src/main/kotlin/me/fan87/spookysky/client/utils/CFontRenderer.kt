@@ -209,7 +209,7 @@ class CFontRenderer @JvmOverloads private constructor(
      * @param y     The y position of the text.
      * @param color The color of the text.
      */
-    fun drawString(text: String, x: Float, y: Float, color: Int) {
+    fun drawString(text: String, x: Float, y: Float, color: Int?) {
         renderString(text, x, y, color, false)
     }
 
@@ -240,8 +240,14 @@ class CFontRenderer @JvmOverloads private constructor(
         drawStringWithShadow(text, x - getStringWidth(text) / 2f, y, color)
     }
 
-    fun drawCenteredString(text: String, x: Float, y: Float, color: Int) {
+    fun drawCenteredString(text: String, x: Float, y: Float, color: Int?) {
+        drawString(text, x - getStringWidth(text) / 2f, y - getStringHeight(text) / 2f, color)
+    }
+    fun drawHorizontallyCenteredString(text: String, x: Float, y: Float, color: Int?) {
         drawString(text, x - getStringWidth(text) / 2f, y, color)
+    }
+    fun drawVerticallyCenteredString(text: String, x: Float, y: Float, color: Int?) {
+        drawString(text, x, y - getStringHeight(text) / 2f, color)
     }
 
     /**
@@ -253,7 +259,7 @@ class CFontRenderer @JvmOverloads private constructor(
      * @param shadow If the text should be rendered with the shadow color.
      * @param color  The color of the text.
      */
-    private fun renderString(text: String, x: Float, y: Float, color: Int, shadow: Boolean) {
+    private fun renderString(text: String, x: Float, y: Float, color: Int?, shadow: Boolean) {
         // Returns if the text is empty.
         var x = x
         var y = y
@@ -290,11 +296,14 @@ class CFontRenderer @JvmOverloads private constructor(
 
         // The multiplier.
         val multiplier = (if (shadow) 4 else 1).toFloat()
-        val a = (color shr 24 and 255).toFloat() / 255f
-        val r = (color shr 16 and 255).toFloat() / 255f
-        val g = (color shr 8 and 255).toFloat() / 255f
-        val b = (color and 255).toFloat() / 255f
-        GL11.glColor4f(r / multiplier, g / multiplier, b / multiplier, a)
+        if (color != null) {
+            val a = (color shr 24 and 255).toFloat() / 255f
+            val r = (color shr 16 and 255).toFloat() / 255f
+            val g = (color shr 8 and 255).toFloat() / 255f
+            val b = (color and 255).toFloat() / 255f
+            GL11.glColor4f(r / multiplier, g / multiplier, b / multiplier, a)
+
+        }
 
         // Loops through the text.
         for (i in 0 until length) {
@@ -333,12 +342,15 @@ class CFontRenderer @JvmOverloads private constructor(
                     val textColor = colorCodes[index]
 
                     // Sets the current color.
-                    GL11.glColor4d(
-                        (textColor shr 16) / 255.0,
-                        (textColor shr 8 and 255) / 255.0,
-                        (textColor and 255) / 255.0,
-                        a.toDouble()
-                    )
+                    if (color != null) {
+                        val a = (color shr 24 and 255).toFloat() / 255f
+                        GL11.glColor4d(
+                            (textColor shr 16) / 255.0,
+                            (textColor shr 8 and 255) / 255.0,
+                            (textColor and 255) / 255.0,
+                            a.toDouble()
+                        )
+                    }
                 } else if (index == 16) obfuscated =
                     true else if (index == 17) // Sets the character data to the bold type.
                     type = Font.BOLD else if (index == 18) strikethrough = true else if (index == 19) underlined =
@@ -353,12 +365,15 @@ class CFontRenderer @JvmOverloads private constructor(
                     type = Font.PLAIN
 
                     // Sets the color to white
-                    GL11.glColor4d(
-                        1.0 * if (shadow) 0.25 else 1.0,
-                        1.0 * if (shadow) 0.25 else 1.0,
-                        1.0 * if (shadow) 0.25 else 1.0,
-                        a.toDouble()
-                    )
+                    if (color != null) {
+                        val a = (color shr 24 and 255).toFloat() / 255f
+                        GL11.glColor4d(
+                            1.0 * if (shadow) 0.25 else 1.0,
+                            1.0 * if (shadow) 0.25 else 1.0,
+                            1.0 * if (shadow) 0.25 else 1.0,
+                            a.toDouble()
+                        )
+                    }
                 }
             } else {
                 // Continues to not crash!

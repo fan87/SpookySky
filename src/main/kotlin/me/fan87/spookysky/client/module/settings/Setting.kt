@@ -2,7 +2,7 @@ package me.fan87.spookysky.client.module.settings
 
 import com.google.gson.JsonObject
 
-abstract class Setting<T>(val defaultValue: T) {
+abstract class Setting<T>(val name: String, val description: String, val defaultValue: T) {
 
     var value: T = defaultValue
         set(value) {

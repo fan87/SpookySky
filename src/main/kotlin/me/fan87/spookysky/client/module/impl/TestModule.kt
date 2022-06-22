@@ -11,7 +11,7 @@ import me.fan87.spookysky.client.module.Module
 import me.fan87.spookysky.client.utils.MathUtils.getRotatedVector3
 import me.fan87.spookysky.client.utils.MathUtils.setMotion
 
-class TestModule: Module("Test", "A module to test the module system", Category.Misc) {
+class TestModule: Module("Test", "A module to test the module system", Category.MISC) {
 
     init {
         dependsOn(MapMinecraft)
