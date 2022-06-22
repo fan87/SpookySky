@@ -1,7 +1,6 @@
 package me.fan87.spookysky.client.mapping.impl.entities
 
 import me.fan87.spookysky.client.mapping.*
-import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.packets.NetHandlerPlayClient
 
 object MapEntityPlayerSP: ClassMapping<EntityPlayerSP>() {
@@ -19,7 +18,7 @@ object MapEntityPlayerSP: ClassMapping<EntityPlayerSP>() {
 
 }
 
-class EntityPlayerSP private constructor(original: Any): Entity(original) {
+class EntityPlayerSP private constructor(original: Any): EntityLivingBase(original) {
 
     val sendQueue by WrappedFieldType(MapEntityPlayerSP.mapSendQueue, NetHandlerPlayClient::class.java)
 

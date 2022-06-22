@@ -29,13 +29,16 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     val distanceSetting = DoubleSetting("Distance", "The distance (Block) between you and ClickGui", 0.3, 0.1, 4.0)
     val scaleSetting = DoubleSetting("Scale", "The scale of the ClickGui", 1.0, 0.1, 4.0)
 
+    init {
+        key.value = Keyboard.KEY_INSERT
+    }
+
     override fun onEnable() {
         this.pitchOffset = pitch.value.toFloat()
         startYaw = mc.thePlayer?.rotationYaw?.plus(0f) ?:0f
         distance = distanceSetting.value
         scale = scaleSetting.value
 
-        key.value = Keyboard.KEY_INSERT
     }
 
     override fun onDisable() {

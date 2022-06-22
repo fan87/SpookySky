@@ -39,6 +39,7 @@ object MapEntity: ClassMapping<Entity>() {
     val mapGetName = MethodMapping<String, Entity>(this, "getName()")
     val mapHasCustomName = MethodMapping<Boolean, Entity>(this, "hasCustomName()")
     val mapGetCustomNameTag = MethodMapping<String, Entity>(this, "getCustomNameTag()")
+    val mapIsSprinting = MethodMapping<Boolean, Entity>(this, "isSprinting()")
 
 }
 
@@ -68,5 +69,7 @@ open class Entity protected constructor (original: Any): WrapperClass(original) 
     fun getName(): String = MapEntity.mapGetName.invoke(this)!!
     fun hasCustomName(): Boolean = MapEntity.mapHasCustomName.invoke(this)!!
     fun getCustomNameTag(): String = MapEntity.mapGetCustomNameTag.invoke(this)!!
+    fun isSprinting(): Boolean = MapEntity.mapIsSprinting.invoke(this)!!
+
 
 }
