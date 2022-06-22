@@ -1,7 +1,9 @@
 package me.fan87.spookysky.client
 
 import me.fan87.spookysky.client.commands.CommandsManager
+import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.EventsManager
+import me.fan87.spookysky.client.events.events.KeyEvent
 import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
@@ -12,6 +14,7 @@ import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ChatColor
+import org.lwjgl.input.Keyboard
 import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileInputStream
@@ -80,6 +83,10 @@ class SpookySky(
 
     }
 
+    @EventHandler
+    fun onKey(event: KeyEvent) {
+        println("Key: ${Keyboard.getKeyName(event.key)}")
+    }
 
 
 }
