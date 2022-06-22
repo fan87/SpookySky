@@ -6,6 +6,4 @@ class GuiChatMessageEvent(var message: String) {
 class AutoCompleteEvent(var message: String) {
     var cancelled = false
 }
-class KeyEvent(val key: Int) {
-    var cancelled = false
-}
+class KeyEvent(val key: Int)
