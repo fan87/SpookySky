@@ -9,7 +9,7 @@ class DoubleSetting(name: String, description: String, defaultValue: Double, val
     }
 
     override fun readFrom(json: JsonObject) {
-        value = json["double"].asDouble
+        value = json["value"].asDouble
     }
 
     override fun isValueLegal(value: Double): Boolean {

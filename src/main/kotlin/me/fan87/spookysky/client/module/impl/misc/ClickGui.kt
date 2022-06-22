@@ -5,9 +5,7 @@ import me.fan87.spookysky.client.events.events.*
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
 import me.fan87.spookysky.client.module.settings.Setting
-import me.fan87.spookysky.client.module.settings.impl.DoubleSetting
-import me.fan87.spookysky.client.module.settings.impl.IntSetting
-import me.fan87.spookysky.client.module.settings.impl.KeySetting
+import me.fan87.spookysky.client.module.settings.impl.*
 import me.fan87.spookysky.client.utils.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -379,6 +377,15 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                 if (setting is IntSetting) {
                     renderer = IntSettingRenderer(setting)
                 }
+                if (setting is BooleanSetting) {
+                    renderer = BooleanSettingRenderer(setting)
+                }
+                if (setting is EnumSetting) {
+                    renderer = EnumSettingRenderer(setting)
+                }
+                if (setting is StringEnumSetting) {
+                    renderer = StringEnumSettingRenderer(setting)
+                }
                 if (setting is KeySetting) {
                     renderer = KeySettingRenderer(setting)
                 }
@@ -415,6 +422,18 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                 }
                 if (setting is IntSetting) {
                     renderer = IntSettingRenderer(setting)
+                }
+                if (setting is BooleanSetting) {
+                    renderer = BooleanSettingRenderer(setting)
+                }
+                if (setting is EnumSetting) {
+                    renderer = EnumSettingRenderer(setting)
+                }
+                if (setting is StringEnumSetting) {
+                    renderer = StringEnumSettingRenderer(setting)
+                }
+                if (setting is KeySetting) {
+                    renderer = KeySettingRenderer(setting)
                 }
                 if (renderer != null) {
                     cachedSettingsRenderer[setting] = renderer
@@ -455,8 +474,8 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     inner class DoubleSettingRenderer(setting: DoubleSetting): SettingRenderer<DoubleSetting>(setting) {
         override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
-            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
-            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.75);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.75);
             RenderUtils.drawRoundedRect(sliderStart, startY + height/2.0 - 0.001, sliderEnd, startY + height/2.0 + 0.001, 0.001, Color(0x767676))
             startDrawString(sliderStart, startY + height/2.0)
             valueFont.drawVerticallyCenteredString("${round(setting.value*10.0)/10.0}", 0f, 0f, 0xff6B6B6B.toInt())
@@ -487,9 +506,110 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             val height = endY - startY
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
             val sliderStart = startX + width * 0.4
-            val sliderEnd = startX + width * 0.8
+            val sliderEnd = startX + width * 0.75
             val mousePosition = getMousePosition()
             return isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)
+        }
+    }
+    inner class StringEnumSettingRenderer(setting: StringEnumSetting): SettingRenderer<StringEnumSetting>(setting) {
+        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            startDrawString(sliderEnd, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString(setting.value, 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+        }
+
+
+        override fun onMouseClick(
+            startX: Double,
+            startY: Double,
+            endX: Double,
+            endY: Double,
+            button: Int,
+            posX: Double,
+            posY: Double
+        ): Boolean {
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                val nextIndex = (setting.values.indexOf(setting.value) + 1) % (setting.values.size - 1)
+                setting.value = setting.values[nextIndex]
+                return true
+            }
+            return false
+        }
+    }
+    inner class EnumSettingRenderer(setting: EnumSetting<*>): SettingRenderer<EnumSetting<*>>(setting) {
+        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            startDrawString(sliderEnd, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString(setting.value.name, 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+        }
+
+
+        override fun onMouseClick(
+            startX: Double,
+            startY: Double,
+            endX: Double,
+            endY: Double,
+            button: Int,
+            posX: Double,
+            posY: Double
+        ): Boolean {
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                val nextIndex = (setting.values.indexOf(setting.value) + 1) % (setting.values.size - 1)
+                (setting as Setting<Any>).value = setting.values[nextIndex]
+                return true
+            }
+            return false
+        }
+    }
+    inner class BooleanSettingRenderer(setting: BooleanSetting): SettingRenderer<BooleanSetting>(setting) {
+        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            startDrawString(sliderEnd, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString(setting.value.toString(), 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+        }
+
+
+        override fun onMouseClick(
+            startX: Double,
+            startY: Double,
+            endX: Double,
+            endY: Double,
+            button: Int,
+            posX: Double,
+            posY: Double
+        ): Boolean {
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                setting.value = !setting.value
+                return true
+            }
+            return false
         }
     }
     inner class KeySettingRenderer(setting: KeySetting): SettingRenderer<KeySetting>(setting) {
@@ -550,10 +670,10 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     inner class IntSettingRenderer(setting: IntSetting): SettingRenderer<IntSetting>(setting) {
         override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
-            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
-            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.75);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.75);
             RenderUtils.drawRoundedRect(sliderStart, startY + height/2.0 - 0.001, sliderEnd, startY + height/2.0 + 0.001, 0.001, Color(0x767676))
-            startDrawString(sliderStart - valueFont.getWidth("${setting.value}") * 0.001, startY + height/2.0)
+            startDrawString(sliderStart, startY + height/2.0)
             valueFont.drawVerticallyCenteredString("${setting.value}", 0f, 0f, 0xff6B6B6B.toInt())
             endDrawString()
             if (Mouse.isButtonDown(0)) {
@@ -582,7 +702,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             val height = endY - startY
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
             val sliderStart = startX + width * 0.4
-            val sliderEnd = startX + width * 0.8
+            val sliderEnd = startX + width * 0.75
             val mousePosition = getMousePosition()
             return isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)
         }

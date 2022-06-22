@@ -67,7 +67,7 @@ open class Entity protected constructor (original: Any): WrapperClass(original) 
     val fallDistance by MapEntity.mapFallDistance
 
     fun getUniqueID(): UUID? = MapEntity.mapGetUniqueID.invoke(this)
-    fun getEyeHeight(): Float? = MapEntity.mapGetEyeHeight.invoke(this)
+    fun getEyeHeight(): Float = MapEntity.mapGetEyeHeight.invoke(this)!!
     fun getName(): String = MapEntity.mapGetName.invoke(this)!!
     fun hasCustomName(): Boolean = MapEntity.mapHasCustomName.invoke(this)!!
     fun getCustomNameTag(): String = MapEntity.mapGetCustomNameTag.invoke(this)!!

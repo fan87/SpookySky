@@ -2,7 +2,6 @@ package me.fan87.spookysky.client.utils
 
 import me.fan87.spookysky.client.mapping.impl.entities.Entity
 import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
-import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
 import kotlin.math.*
 
 
@@ -21,6 +20,33 @@ object MathUtils {
         val y: Double = cos(rYaw)
         val x: Double = -sin(rYaw)
         return Vector2f(x.toFloat(), y.toFloat())
+    }
+
+    fun Entity.tryFace(x: Double, y: Double, z: Double): Vector2f {
+        var actualFacingX = x
+        var actualFacingY = y
+        var actualFacingZ = z
+        actualFacingX = this.posX - actualFacingX
+        actualFacingY = this.posY + this.getEyeHeight().toDouble() - actualFacingY
+        actualFacingZ = this.posZ - actualFacingZ
+        val yaw = (Math.toDegrees(atan2(actualFacingZ, actualFacingX)) + 90).toFloat()
+        val pitch = Math.toDegrees(
+            atan(actualFacingY / Vector2d(actualFacingX, actualFacingZ).delta())
+        ).toFloat()
+        return Vector2f(yaw, pitch)
+    }
+    fun tryFace(viewerPos: Vector3d, position: Vector3d): Vector2f {
+        var actualFacingX = position.x
+        var actualFacingY = position.y
+        var actualFacingZ = position.z
+        actualFacingX = viewerPos.x - actualFacingX
+        actualFacingY = viewerPos.y - actualFacingY
+        actualFacingZ = viewerPos.z - actualFacingZ
+        val yaw = (Math.toDegrees(atan2(actualFacingZ, actualFacingX)) + 90).toFloat()
+        val pitch = Math.toDegrees(
+            atan(actualFacingY / Vector2d(actualFacingX, actualFacingZ).delta())
+        ).toFloat()
+        return Vector2f(yaw, pitch)
     }
 
     fun Entity.addMotion(motion: Vector3d) {
@@ -89,6 +115,12 @@ object MathUtils {
 
     fun Entity.distanceTo(another: Vector3d): Double {
         return (another - getPosition()).delta()
+    }
+    fun Entity.getDistanceTo(another: Vector3d): Double {
+        return (another - getPosition()).delta()
+    }
+    fun Entity.getDistanceToEntity(another: Entity): Double {
+        return (another.getPosition() - getPosition()).delta()
     }
 
     fun Entity.getRotatedVector3(): Vector3f {
