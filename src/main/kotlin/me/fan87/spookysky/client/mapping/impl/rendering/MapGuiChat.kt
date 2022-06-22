@@ -1,7 +1,6 @@
 package me.fan87.spookysky.client.mapping.impl.rendering
 
 import me.fan87.spookysky.client.mapping.*
-import me.fan87.spookysky.client.mapping.impl.chat.IChatComponent
 
 object MapGuiChat: ClassMapping<GuiChat>() {
     override fun getWrapperClass(): Class<GuiChat> {
