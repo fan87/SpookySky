@@ -127,6 +127,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             if (isInSection(left, top, right, bottom)) {
                 grabbing = true
                 grabYaw = mc.thePlayer!!.rotationYaw - startYaw
+                return true
             }
         }
         return false
