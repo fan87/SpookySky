@@ -95,16 +95,21 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     var selectedCategory: Category? = null
 
+    val grabAnimation = TwoWayAnimationTimer(250)
+
     fun renderGrab() {
-        RenderUtils.drawRect(0.45, 0.67, 0.65, 0.70, 0x70ffffff.toInt())
-        val value = 0.03 / 5
-        var current = value + 0.67
-        GL11.glTranslated(0.0, 0.0, -0.001)
-        for (i in 0 until 3) {
-            RenderUtils.drawRect(0.50, current, 0.60, current + 0.002, 0xff4f4f4f.toInt())
-            current += value
+        var left = 0.62
+        var top = 0.6 - 0.053
+        var right = left + 0.05
+        var bottom = top + 0.05
+        if (isInSection(left, top, right, bottom) || grabbing) {
+            grabAnimation.inAnimation()
+        } else {
+            grabAnimation.outAnimation()
         }
-        GL11.glTranslated(0.0, 0.0, 0.001)
+        GL11.glColor4f(1f, 1f, 1f, grabAnimation.getValue(1.0f, 0.7f))
+        RenderUtils.drawTexturedRect("clickgui/${if (grabbing) "selected" else "unselected"}/Base.png", left, top, 1f, 1f, right, bottom, 0f, 0f)
+
         if (grabbing) {
             startYaw = mc.thePlayer!!.rotationYaw - grabYaw
         }
@@ -115,10 +120,13 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             grabbing = false
             return true
         } else {
-            if (isInSection(0.45, 0.67, 0.65, 0.70)) {
+            val left = 0.62
+            val top = 0.6 - 0.053
+            val right = left + 0.05
+            val bottom = top + 0.05
+            if (isInSection(left, top, right, bottom)) {
                 grabbing = true
                 grabYaw = mc.thePlayer!!.rotationYaw - startYaw
-                return true
             }
         }
         return false
@@ -423,32 +431,23 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     inner class DoubleSettingRenderer(setting: DoubleSetting): SettingRenderer<DoubleSetting>(setting) {
         override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
-
-        }
-
-
-        override fun onMouseClick(
-            startX: Double,
-            startY: Double,
-            endX: Double,
-            endY: Double,
-            button: Int,
-            posX: Double,
-            posY: Double
-        ): Boolean {
-            return false
-        }
-    }
-    inner class IntSettingRenderer(setting: IntSetting): SettingRenderer<IntSetting>(setting) {
-        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
             val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
-            val sliderStart = startX + width * 0.4;
-            val sliderEnd = startX + width * 0.8;
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
             RenderUtils.drawRoundedRect(sliderStart, startY + height/2.0 - 0.001, sliderEnd, startY + height/2.0 + 0.001, 0.001, Color(0x767676))
-            startDrawString(sliderEnd + width * 0.05, startY + height/2.0)
+            startDrawString(sliderStart + width * 0.05, startY + height/2.0)
             valueFont.drawVerticallyCenteredString("${setting.value}", 0f, 0f, 0xff6B6B6B.toInt())
             endDrawString()
-//            println("$startY / $endY") // 0.516 0.55
+            if (Mouse.isButtonDown(0)) {
+                if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                    val mousePosition = getMousePosition()
+                    val progress = 1.0 - ((mousePosition.x - sliderStart) / (sliderEnd - sliderStart)).coerceAtMost(1.0)
+                    setting.value = setting.minValue + round((setting.maxValue - setting.minValue + 1) * progress).toInt()
+                }
+            }
+            GL11.glTranslated(0.0, 0.0, -0.0001)
+            RenderUtils.drawCircle(sliderStart + (1.0 - (setting.value - setting.minValue)*1.0/(setting.maxValue - setting.minValue))*(sliderEnd-sliderStart), startY + height/2.0, 0.004, 0.1f, 0xffEBA601.toInt())
+            GL11.glTranslated(0.0, 0.0, 0.0001)
         }
 
 
@@ -467,7 +466,47 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             val sliderStart = startX + width * 0.4
             val sliderEnd = startX + width * 0.8
             val mousePosition = getMousePosition()
-            return isInSection(sliderStart, startY, sliderEnd, endY)
+            return isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)
+        }
+    }
+    inner class IntSettingRenderer(setting: IntSetting): SettingRenderer<IntSetting>(setting) {
+        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
+            val sliderStart = min(startX + width * 0.4, startX + width * 0.8);
+            val sliderEnd = max(startX + width * 0.4, startX + width * 0.8);
+            RenderUtils.drawRoundedRect(sliderStart, startY + height/2.0 - 0.001, sliderEnd, startY + height/2.0 + 0.001, 0.001, Color(0x767676))
+            startDrawString(sliderStart + width * 0.05, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString("${setting.value}", 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+            if (Mouse.isButtonDown(0)) {
+                if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                    val mousePosition = getMousePosition()
+                    val progress = 1.0 - ((mousePosition.x - sliderStart) / (sliderEnd - sliderStart)).coerceAtMost(1.0)
+                    setting.value = setting.minValue + round((setting.maxValue - setting.minValue + 1) * progress).toInt()
+                }
+            }
+            GL11.glTranslated(0.0, 0.0, -0.0001)
+            RenderUtils.drawCircle(sliderStart + (1.0 - (setting.value - setting.minValue)*1.0/(setting.maxValue - setting.minValue))*(sliderEnd-sliderStart), startY + height/2.0, 0.004, 0.1f, 0xffEBA601.toInt())
+            GL11.glTranslated(0.0, 0.0, 0.0001)
+        }
+
+
+        override fun onMouseClick(
+            startX: Double,
+            startY: Double,
+            endX: Double,
+            endY: Double,
+            button: Int,
+            posX: Double,
+            posY: Double
+        ): Boolean {
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            return isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)
         }
     }
 
