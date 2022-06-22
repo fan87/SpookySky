@@ -99,7 +99,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     fun renderGrab() {
         var left = 0.62
-        var top = 0.6 - 0.053
+        var top = 0.6 + 0.053
         var right = left + 0.05
         var bottom = top + 0.05
         if (isInSection(left, top, right, bottom) || grabbing) {
@@ -121,7 +121,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             return true
         } else {
             val left = 0.62
-            val top = 0.6 - 0.053
+            val top = 0.6 + 0.053
             val right = left + 0.05
             val bottom = top + 0.05
             if (isInSection(left, top, right, bottom)) {

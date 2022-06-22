@@ -29,7 +29,6 @@ class ProcessorHookKeyEvent: Processor("Hook KeyEvent") {
     }
 
     override fun process(clazz: LoadedClass): Boolean {
-        File("C:\\\\Users\\moon0\\Desktop\\Minecraft.class").writeBytes(ASMUtils.writeClass(clazz.node))
         val pattern = RegbexPattern {
             thenGroup("keyNumber") {
                 thenOpcodeCheck(Opcodes.ILOAD)
