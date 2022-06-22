@@ -10,9 +10,6 @@ import java.util.Comparator
 
 class EventsManager {
 
-    init {
-        registerListener(this)
-    }
 
     @EventHandler
     fun worldTicKEventHook(event: ClientTickEvent) {
@@ -24,6 +21,10 @@ class EventsManager {
     }
 
     private val listeners = ArrayList<Any>()
+
+    init {
+        registerListener(this)
+    }
 
     fun post(event: Any) {
         val toCall = LinkedHashMap<Method, Any>()
