@@ -45,6 +45,7 @@ object MathUtils {
     }
 
 
+
     fun Entity.getPosition(): Vector3d {
         return Vector3d(posX, posY, posZ)
     }
@@ -148,6 +149,10 @@ data class Vector2f(val x: Float, val y: Float) {
     fun toVector2d(): Vector2d {
         return Vector2d(x.toDouble(), y.toDouble())
     }
+
+    fun toVector3f(): Vector3f {
+        return Vector3f(x, 0f, y)
+    }
 }
 
 data class Vector3d(val x: Double, val y: Double, val z: Double) {
@@ -215,5 +220,9 @@ data class Vector2d(val x: Double, val y: Double) {
 
     fun toVector2f(): Vector2f {
         return Vector2f(x.toFloat(), y.toFloat())
+    }
+
+    fun toVector3d(): Vector3d {
+        return Vector3d(x, 0.0, y)
     }
 }

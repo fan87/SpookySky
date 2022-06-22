@@ -4,6 +4,7 @@ import me.fan87.spookysky.client.mapping.impl.entities.Entity
 import me.fan87.spookysky.client.mapping.impl.packets.Packet
 
 class ClientTickEvent
+class WorldTickEvent
 class PacketSentEvent(val packet: Packet) {
     var cancelled = false
 }

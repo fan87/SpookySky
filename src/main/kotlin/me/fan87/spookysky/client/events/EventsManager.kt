@@ -1,10 +1,27 @@
 package me.fan87.spookysky.client.events
 
+import me.fan87.spookysky.client.events.events.ClientTickEvent
 import me.fan87.spookysky.client.events.events.PostRender3DEvent
+import me.fan87.spookysky.client.events.events.WorldTickEvent
+import me.fan87.spookysky.client.exception.MissingMappingException
+import me.fan87.spookysky.client.mapping.impl.Minecraft
 import java.lang.reflect.Method
 import java.util.Comparator
 
 class EventsManager {
+
+    init {
+        registerListener(this)
+    }
+
+    @EventHandler
+    fun worldTicKEventHook(event: ClientTickEvent) {
+        try {
+            if (Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().theWorld != null) {
+                post(WorldTickEvent())
+            }
+        } catch (_: MissingMappingException) {}
+    }
 
     private val listeners = ArrayList<Any>()
 
