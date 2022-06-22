@@ -1,6 +1,8 @@
 package me.fan87.spookysky.client.module
 
 import me.fan87.spookysky.client.SpookySky
+import me.fan87.spookysky.client.events.EventHandler
+import me.fan87.spookysky.client.events.events.KeyEvent
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
@@ -37,10 +39,20 @@ class ModulesManager(val spookySky: SpookySky) {
             SpookySky.debug("[Modules Manager] Registered Module: ${module.name}")
             modules.add(module)
         }
+        spookySky.eventManager.registerListener(this)
     }
 
     inline fun <reified T: Module> getModule(): T {
         return modules.first { it.javaClass == T::class.java } as T
+    }
+
+    @EventHandler
+    fun onKey(event: KeyEvent) {
+        for (module in modules) {
+            if (module.key.value == event.key) {
+                module.toggled = !module.toggled
+            }
+        }
     }
 
 

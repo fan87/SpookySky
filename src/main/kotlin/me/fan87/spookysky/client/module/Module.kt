@@ -5,6 +5,7 @@ import me.fan87.spookysky.client.events.events.ModuleToggleEvent
 import me.fan87.spookysky.client.mapping.Mapping
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.module.settings.Setting
+import me.fan87.spookysky.client.module.settings.impl.KeySetting
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
@@ -14,6 +15,8 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.memberProperties
 
 abstract class Module(val name: String, val description: String, val category: Category, val legit: Boolean = category == Category.LEGIT || category == Category.RENDER) {
+
+    val key = KeySetting("KeyBind", "When you press the key, the module will be toggled")
 
     var toggled = false
         set(value) {
