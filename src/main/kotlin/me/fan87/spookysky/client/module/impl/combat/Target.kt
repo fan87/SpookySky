@@ -10,8 +10,8 @@ import me.fan87.spookysky.client.module.settings.impl.BooleanSetting
 class Target: Module("Target", "Select your target types", Category.COMBAT) {
 
     val player = BooleanSetting("Player", "Attacks players", true)
-    val hostile = BooleanSetting("Hostile Mobs", "Attacks hostile mobs", false)
-    val friendly = BooleanSetting("Friendly Mobs", "Attacks friendly mobs", false)
+    val hostile = BooleanSetting("Hostile", "Attacks hostile mobs", false)
+    val friendly = BooleanSetting("Friendly", "Attacks friendly mobs", false)
 
     override fun onEnable() {
         toggled = false

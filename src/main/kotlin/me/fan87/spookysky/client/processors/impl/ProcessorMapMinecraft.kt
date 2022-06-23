@@ -8,17 +8,17 @@ import me.fan87.spookysky.client.events.events.RightClickMouseEvent
 import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
+import me.fan87.spookysky.client.mapping.impl.MapTimer
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
-import me.fan87.spookysky.client.mapping.impl.rendering.MapEntityRenderer
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiChat
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
+import me.fan87.spookysky.client.mapping.impl.rendering.*
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.addGetField
+import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
 import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.InsnNode
@@ -26,7 +26,6 @@ import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
-import java.io.File
 import java.lang.reflect.Modifier
 
 class ProcessorMapMinecraft: Processor("Map Minecraft") {
@@ -62,12 +61,59 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 matchGuiChat(clazz)
                 mapIngameGui(clazz)
                 matchEntityRenderer(clazz)
+                matchTimer(clazz)
+                matchFrameBuffer(clazz)
+                matchRenderManager(clazz.node)
                 return true
             }
         }
-
-
         return false
+    }
+
+    fun matchRenderManager(clazz: ClassNode) {
+        for (field in clazz.fields) {
+            if (field.desc == MapRenderManager.assumeMapped().getDescName()) {
+                MapMinecraft.mapRenderManager.map(field)
+            }
+        }
+    }
+
+    fun matchFrameBuffer(clazz: LoadedClass) {
+        val pattern = RegbexPattern {
+            thenCustomCheck { it.opcode == Opcodes.INVOKESPECIAL && it is MethodInsnNode && it.desc == "(IIZ)V" }
+            thenGroup("lol") {
+                thenOpcodeCheck(Opcodes.PUTFIELD)
+            }
+        }
+        for (method in clazz.node.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                MapFramebuffer.map(ASMUtils.descTypeToJvmType(matcher.groupAsFieldInsnNode("lol").desc))
+                MapMinecraft.mapFramebufferMc.map(matcher.groupAsFieldInsnNode("lol"))
+            }
+        }
+        assertMapped(MapFramebuffer)
+
+    }
+
+    fun matchTimer(clazz: LoadedClass) {
+        val pattern = RegbexPattern {
+            thenOpcodeCheck(Opcodes.DUP)
+            thenLdc(20.0f)
+            thenOpcodeCheck(Opcodes.INVOKESPECIAL)
+            thenGroup("timer") {
+                thenOpcodeCheck(Opcodes.PUTFIELD)
+            }
+        }
+        for (method in clazz.node.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                val timer = matcher.groupAsFieldInsnNode("timer")
+                MapMinecraft.mapTimer.map(timer)
+                MapTimer.map(ASMUtils.descTypeToJvmType(timer.desc))
+            }
+        }
+        assertMapped(MapTimer)
     }
 
     fun matchGuiChat(clazz: LoadedClass) {

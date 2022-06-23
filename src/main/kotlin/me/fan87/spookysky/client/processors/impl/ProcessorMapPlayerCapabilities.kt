@@ -24,7 +24,6 @@ class ProcessorMapPlayerCapabilities: Processor("Map PlayerCapabilities"){
     }
 
     override fun process(clazz: LoadedClass): Boolean {
-        File("C:\\Users\\moon0\\Desktop\\EntityPlayerSP.class").writeBytes(ASMUtils.writeClass(clazz.node))
         val pattern = RegbexPattern {
             thenThis()
             thenCustomCheck {

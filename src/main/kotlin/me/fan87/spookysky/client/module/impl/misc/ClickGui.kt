@@ -18,7 +18,6 @@ import kotlin.math.*
 class ClickGui: Module("ClickGui", "A gui that allows you to manage every module in the client", Category.MISC, true) {
     var startYaw: Float = 0f
 
-    var pitchOffset: Float = 0f
 
     var distance = 0.0
     var scale = 0.0
@@ -27,16 +26,21 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     val distanceSetting = DoubleSetting("Distance", "The distance (Block) between you and ClickGui", 0.3, 0.1, 4.0)
     val scaleSetting = DoubleSetting("Scale", "The scale of the ClickGui", 1.0, 0.1, 10.0)
 
+    val xOffset = DoubleSetting("X Offset", "The X position it's gonna be rendered at", 5.0, 0.0, 10.0)
+
+    var currentXOffset = 0.0
+    
     init {
         key.value = Keyboard.KEY_INSERT
     }
 
     override fun onEnable() {
-        this.pitchOffset = pitch.value.toFloat()
         startYaw = mc.thePlayer?.rotationYaw?.plus(0f) ?:0f
         distance = distanceSetting.value
         scale = scaleSetting.value
-
+        pitch.value = -mc.thePlayer!!.rotationPitch.toDouble()
+        hidden = false
+        currentXOffset = xOffset.value
     }
 
     override fun onDisable() {
@@ -72,11 +76,11 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         GL11.glPushMatrix()
         GL11.glLoadIdentity()
         mc.entityRenderer!!.orientCamera(event.partialTicks)
-        GL11.glTranslated(0.0, player.getEyeHeight()!!.toDouble(), 0.0)
+        GL11.glTranslated(0.0, player.getEyeHeight().toDouble(), 0.0)
 
 
         GL11.glRotated(-startYaw % 360.0, 0.0, 1.0, 0.0)
-        GL11.glRotated(-pitchOffset.toDouble(), 1.0, 0.0, 0.0)
+        GL11.glRotated(-pitch.value, 1.0, 0.0, 0.0)
         GL11.glScaled(scale*1.0, scale*1.0, 1.0)
         GL11.glTranslated(-0.5, -0.5, distance)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
@@ -89,17 +93,21 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     var grabbing = false
     var grabYaw = 0f
+    var grabPitch = 0.0
+    var hidden = false
 
     fun onClick(button: Int, posX: Double, posY: Double): Boolean {
+        if (clickGrab(button)) return true
+        if (hidden) return false
         if (categoriesClick(button, posX, posY)) return true
-        if (clickGrab()) return true
         return false
     }
 
     fun render() {
+        renderGrab()
+        if (hidden) return
         renderCursor()
         renderCategories()
-        renderGrab()
     }
 
     var selectedCategory: Category? = null
@@ -107,7 +115,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     val grabAnimation = TwoWayAnimationTimer(250)
 
     fun renderGrab() {
-        var left = 0.62
+        var left = currentXOffset/10.0
         var top = 0.6 + 0.053
         var right = left + 0.05
         var bottom = top + 0.05
@@ -121,21 +129,27 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
         if (grabbing) {
             startYaw = mc.thePlayer!!.rotationYaw - grabYaw
+            pitch.value = -mc.thePlayer!!.rotationPitch - grabPitch
         }
     }
 
-    fun clickGrab(): Boolean {
+    fun clickGrab(button: Int): Boolean {
         if (grabbing) {
             grabbing = false
             return true
         } else {
-            val left = 0.62
+            val left = currentXOffset/10.0
             val top = 0.6 + 0.053
             val right = left + 0.05
             val bottom = top + 0.05
             if (isInSection(left, top, right, bottom)) {
-                grabbing = true
-                grabYaw = mc.thePlayer!!.rotationYaw - startYaw
+                if (button == 1) {
+                    hidden = !hidden
+                } else {
+                    grabbing = true
+                    grabYaw = mc.thePlayer!!.rotationYaw - startYaw
+                    grabPitch = -mc.thePlayer!!.rotationPitch - pitch.value
+                }
                 return true
             }
         }
@@ -146,7 +160,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     fun renderCategories() {
         for (value in Category.values().withIndex()) {
-            var left = 0.62
+            var left = currentXOffset/10.0
             var top = 0.6 + value.index * -0.053
             var right = left + 0.05
             var bottom = top + 0.05
@@ -256,7 +270,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     fun categoriesClick(button: Int, posX: Double, posY: Double): Boolean {
         for (value in Category.values().withIndex()) {
-            val left = 0.62
+            val left = currentXOffset/10.0
             val top = 0.6 + value.index * -0.053
             val right = left + 0.05
             val bottom = top + 0.05
@@ -308,7 +322,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             Math.toRadians((mc.thePlayer!!.rotationYaw.toDouble() - 180 - startYaw)%360),
             Math.toRadians(mc.thePlayer!!.rotationPitch.toDouble()),
             0.0)
-        matrix.prependPitchRotation(Math.toRadians(-pitchOffset.toDouble()))
+        matrix.prependPitchRotation(Math.toRadians(-pitch.value.toDouble()))
         return Vector2d(Math.toDegrees(matrix.yaw), Math.toDegrees(matrix.pitch))
     }
     fun getMousePosition(): Vector2d {
