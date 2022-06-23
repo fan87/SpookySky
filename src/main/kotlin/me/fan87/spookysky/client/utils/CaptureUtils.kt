@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.utils
 
 import me.fan87.regbex.RegbexMatcher
 import org.objectweb.asm.tree.FieldInsnNode
+import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.TypeInsnNode
 
@@ -15,6 +16,9 @@ object CaptureUtils {
     }
     fun RegbexMatcher.groupAsFieldInsnNode(groupName: String): FieldInsnNode {
         return group(groupName)!![0] as FieldInsnNode
+    }
+    fun RegbexMatcher.groupAsJumpInsnNode(groupName: String): JumpInsnNode {
+        return group(groupName)!![0] as JumpInsnNode
     }
 
 }

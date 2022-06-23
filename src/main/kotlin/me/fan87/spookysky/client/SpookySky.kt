@@ -26,7 +26,8 @@ class SpookySky(
     val instrumentation: Instrumentation,
     val preLoadedClasses: HashMap<String, ClassNode>,
     val transformer: ClassFileTransformer,
-    val resourcesFile: File
+    val resourcesFile: File,
+    val clientClassLoader: ClassLoader
 ) {
 
 

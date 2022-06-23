@@ -76,8 +76,8 @@ object Main {
                 var text = "kysky.client.SpookySk"
                 text += "y"
                 val loadClass = loader.loadClass("me.fan87.spoo" + text) // Avoid shadowJar doing weird stuff
-                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java)
-                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile)
+                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java, ClassLoader::class.java)
+                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile, loader)
             } else if (loader is URLClassLoader) {
                 println("[SpookySky Loader] Detected URLClassLoader! Attempting to inject to it... (Using strategy: addURL)")
                 val addURLMethod = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
@@ -92,15 +92,15 @@ object Main {
                 text += "y"
 
                 val loadClass = loader.loadClass("me.fan87.spoo" + text)
-                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java)
-                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile)
+                val spookySkyInstance = loadClass.getConstructor(Instrumentation::class.java, HashMap::class.java, ClassFileTransformer::class.java, File::class.java, ClassLoader::class.java)
+                    .newInstance(instrumentation, HashMap(classes), transformer, resourcesFile, loader)
             } else {
                 /**
                  * This part of code is untested!
                  */
 
                 println("[SpookySky Loader] Target class loader is not an instance of URLClassLoader! Loading with App Class Loader (Using strategy: Agent Load)")
-                SpookySky(instrumentation, HashMap(classes), transformer, resourcesFile)
+                SpookySky(instrumentation, HashMap(classes), transformer, resourcesFile, Main::class.java.classLoader)
             }
         } catch (e: Throwable) {
             e.printStackTrace()

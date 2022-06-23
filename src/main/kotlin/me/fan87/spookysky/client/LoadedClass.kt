@@ -7,8 +7,18 @@ class LoadedClass(
     val name: String,
     val node: ClassNode
 ) {
+    private var clazz: Class<*>? = null
+
     val processLock = ReentrantLock()
-    fun getJavaClass(): Class<*> {
-        return Class.forName(name.replace("/", "."), false, javaClass.classLoader)
+    fun getJavaClass(): Class<*>? {
+        if (clazz == null) {
+            try {
+                clazz = Class.forName(name.replace("/", "."), false, SpookySky.INSTANCE.clientClassLoader)
+                return clazz
+            } catch (e: ClassNotFoundException) {
+                return null
+            }
+        }
+        return clazz
     }
 }

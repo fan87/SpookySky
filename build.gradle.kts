@@ -140,5 +140,50 @@ tasks {
             "--height", "480",
         )
     }
+    register<JavaExec>("lunarRun") {
+
+        dependsOn(":loader:classes")
+        dependsOn(":loader:shadowJar")
+        dependsOn("classes")
+        dependsOn("shadowJar")
+        val lunarHome = File(File(System.getProperty("user.home")), ".lunarclient")
+        val jreHome = File(lunarHome, "jre/1.8/").listFiles { file -> file.isDirectory }!!.first()
+        executable(File(jreHome, "bin/java"))
+        main = "com.moonsworth.lunar.patcher.LunarMain"
+        workingDir = File(lunarHome, "offline/1.8")
+        val agentJar = File(project(":loader").buildDir, "libs/${project(":loader").name}-${project(":loader").version}-all.jar").absolutePath
+        val clientJar = File(rootProject.buildDir, "libs/${rootProject.name}-${rootProject.version}-all.jar").absolutePath
+        doFirst {
+            try {
+                Runtime.getRuntime().exec(arrayOf("killall", "-9", File(jreHome, "bin/java").absolutePath)).waitFor()
+                Thread.sleep(100)
+            } catch (_: Throwable) {}
+        }
+        jvmArgs = listOf(
+            "--add-modules", "jdk.naming.dns",
+            "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
+            "--add-opens", "java.base/java.io=ALL-UNNAMED",
+            "--add-opens", "java.base/java.net=ALL-UNNAMED",
+            "-Djna.boot.library.path=natives",
+            "-Dlog4j2.formatMsgNoLookups=true",
+            "-Djava.library.path=natives",
+            "-javaagent:$agentJar=$clientJar",
+            "-Xverify:all",
+        )
+
+        classpath = files(*workingDir.listFiles { _, name -> name?.endsWith(".jar") == true }!!)
+        args = listOf(
+            "--version", "1.8",
+            "--accessToken", "0",
+            "--assetIndex", "1.8",
+            "--userProperties", "{}",
+            "--gameDir", File(File(System.getProperty("user.home")), ".minecraft").absolutePath,
+            "--texturesDir", File(lunarHome, "textures").absolutePath,
+            "--launcherVersion", "2.9.1",
+            "--hwid", "28fe925eeca05406329c39b8dbfafdba40117466843c5f874fae191b7080c499",
+            "--width", "854",
+            "--height", "480",
+        )
+    }
 
 }

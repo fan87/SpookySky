@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.mapping
 
 import me.fan87.regbex.PrimitiveType
 import me.fan87.spookysky.client.LoadedClass
+import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.utils.ASMUtils.getJvmTypeName
 import org.objectweb.asm.tree.TypeInsnNode
 
@@ -13,7 +14,7 @@ abstract class ClassMapping<T: WrapperClass>: Mapping<MappedClassInfo>() {
 
     fun getJavaClass(): Class<*> {
         if (cachedJavaClass == null) {
-            cachedJavaClass = Class.forName(assumeMapped().name.replace("/", "."), false, javaClass.classLoader)
+            cachedJavaClass = Class.forName(assumeMapped().name.replace("/", "."), false, SpookySky.INSTANCE.clientClassLoader)
         }
         return cachedJavaClass!!
     }

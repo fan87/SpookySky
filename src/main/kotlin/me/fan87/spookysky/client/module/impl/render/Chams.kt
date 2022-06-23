@@ -9,6 +9,7 @@ import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
 import me.fan87.spookysky.client.module.settings.impl.ColorSetting
 import me.fan87.spookysky.client.render.RenderStateManager
+import me.fan87.spookysky.client.utils.RenderUtils
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.EXTFramebufferObject
 import org.lwjgl.opengl.EXTPackedDepthStencil
@@ -29,7 +30,7 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
 
     @EventHandler
     fun onRenderEntity(event: RenderEntityEvent) {
-        checkSetupFBO()
+        RenderUtils.confirmSetupStencilAttachment()
         if (event.entity == mc.thePlayer) {
             return
         }
@@ -89,39 +90,7 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
 
     }
 
-    fun checkSetupFBO() {
-        val fbo = mc.framebufferMc
 
-        if (fbo != null) {
-            if (fbo.depthBuffer > -1) {
-                setupFBO(fbo)
-                fbo.depthBuffer = -1
-            }
-        }
-    }
 
-    fun setupFBO(fbo: Framebuffer) {
-        EXTFramebufferObject.glDeleteRenderbuffersEXT(fbo.depthBuffer)
-        val stencilDepthBuffer = EXTFramebufferObject.glGenRenderbuffersEXT()
-        EXTFramebufferObject.glBindRenderbufferEXT(EXTFramebufferObject.GL_RENDERBUFFER_EXT, stencilDepthBuffer)
-        EXTFramebufferObject.glRenderbufferStorageEXT(
-            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
-            EXTPackedDepthStencil.GL_DEPTH_STENCIL_EXT,
-            Display.getWidth(),
-            Display.getHeight()
-        )
-        EXTFramebufferObject.glFramebufferRenderbufferEXT(
-            EXTFramebufferObject.GL_FRAMEBUFFER_EXT,
-            EXTFramebufferObject.GL_STENCIL_ATTACHMENT_EXT,
-            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
-            stencilDepthBuffer
-        )
-        EXTFramebufferObject.glFramebufferRenderbufferEXT(
-            EXTFramebufferObject.GL_FRAMEBUFFER_EXT,
-            EXTFramebufferObject.GL_DEPTH_ATTACHMENT_EXT,
-            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
-            stencilDepthBuffer
-        )
-    }
 
 }

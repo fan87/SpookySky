@@ -347,7 +347,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         GL11.glTranslated(x, y - 0.003, 0.0)
         GL11.glScaled(0.001, 0.001, 1.0)
         GL11.glRotated(180.0, 0.0, 0.0, 1.0)
-        GL11.glTranslated(0.0, 0.0, -0.01)
+        GL11.glTranslated(0.0, 0.0, -0.000001)
     }
 
     fun endDrawString() {
@@ -510,6 +510,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             hue = hsb[0]
             saturation = hsb[1]
             brightness = hsb[2]
+            alpha = setting.value.alpha.toFloat()
         }
 
         var wasSbDown = false

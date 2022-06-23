@@ -1,6 +1,8 @@
 package me.fan87.spookysky.client.utils
 
 import me.fan87.spookysky.client.SpookySky
+import me.fan87.spookysky.client.mapping.impl.Minecraft
+import me.fan87.spookysky.client.mapping.impl.rendering.Framebuffer
 import me.fan87.spookysky.client.mapping.impl.rendering.Gui
 import me.fan87.spookysky.client.render.ShaderProgram
 import org.lwjgl.BufferUtils
@@ -14,6 +16,41 @@ import kotlin.math.*
 object RenderUtils {
 
     private val files = HashMap<String, Int>()
+
+    fun confirmSetupStencilAttachment() {
+        val fbo = Minecraft.getMinecraft().framebufferMc
+
+        if (fbo != null) {
+            if (fbo.depthBuffer > -1) {
+                setupFBO(fbo)
+                fbo.depthBuffer = -1
+            }
+        }
+    }
+
+    fun setupFBO(fbo: Framebuffer) {
+        EXTFramebufferObject.glDeleteRenderbuffersEXT(fbo.depthBuffer)
+        val stencilDepthBuffer = EXTFramebufferObject.glGenRenderbuffersEXT()
+        EXTFramebufferObject.glBindRenderbufferEXT(EXTFramebufferObject.GL_RENDERBUFFER_EXT, stencilDepthBuffer)
+        EXTFramebufferObject.glRenderbufferStorageEXT(
+            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
+            EXTPackedDepthStencil.GL_DEPTH_STENCIL_EXT,
+            Display.getWidth(),
+            Display.getHeight()
+        )
+        EXTFramebufferObject.glFramebufferRenderbufferEXT(
+            EXTFramebufferObject.GL_FRAMEBUFFER_EXT,
+            EXTFramebufferObject.GL_STENCIL_ATTACHMENT_EXT,
+            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
+            stencilDepthBuffer
+        )
+        EXTFramebufferObject.glFramebufferRenderbufferEXT(
+            EXTFramebufferObject.GL_FRAMEBUFFER_EXT,
+            EXTFramebufferObject.GL_DEPTH_ATTACHMENT_EXT,
+            EXTFramebufferObject.GL_RENDERBUFFER_EXT,
+            stencilDepthBuffer
+        )
+    }
 
     fun drawTexturedRect(fileName: String, left: Double, top: Double, textureStartX: Float, textureStartY: Float, right: Double, bottom: Double, textureEndX: Float, textureEndY: Float) {
         var texture: Int? = files[fileName]

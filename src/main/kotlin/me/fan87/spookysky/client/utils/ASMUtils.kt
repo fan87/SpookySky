@@ -29,6 +29,18 @@ import kotlin.reflect.jvm.javaMethod
 
 object ASMUtils {
 
+    private val classes = HashMap<String, Class<*>>()
+
+    fun getClassByName(name: String): Class<*> {
+        val value = classes[name]
+        if (value == null) {
+            val clazz = Class.forName(name, false, SpookySky.INSTANCE.clientClassLoader)
+            classes[name] = clazz
+            return clazz
+        }
+        return value
+    }
+
     fun parseClass(data: ByteArray): ClassNode {
         val reader = ClassReader(data)
         val classNode = ClassNode()
@@ -59,6 +71,10 @@ object ASMUtils {
         return classToDescType(T::class.java)
     }
 
+    fun jvmTypeToClass(name: String): Class<*> {
+        return getClassByName(name.replace("/", "."))
+    }
+
     fun descTypeToClass(name: String): Class<*> {
         for (value in PrimitiveType.values()) {
             if (value.jvmName == name) {
@@ -66,9 +82,9 @@ object ASMUtils {
             }
         }
         if (name.startsWith("L") && name.endsWith(";")) {
-            return Class.forName(name.replace("/", ".").let { it.substring(1, it.length - 1) }, false, javaClass.classLoader)
+            return getClassByName(name.replace("/", ".").let { it.substring(1, it.length - 1) })
         }
-        return Class.forName(name.replace("/", "."), false, javaClass.classLoader)
+        return getClassByName(name.replace("/", "."))
     }
 
     fun descTypeToJvmType(descType: String): String {
@@ -205,7 +221,6 @@ object ASMUtils {
         }
     }
     inline fun <reified E> generateNewEventPostAndPushToStack(between: InsnList = InsnList(), varNumberManager: VarNumberManager): InsnList {
-        SpookySky.Companion
         val clazz = E::class.java
         val constructor = clazz.constructors[0]
         return InsnList().also {
