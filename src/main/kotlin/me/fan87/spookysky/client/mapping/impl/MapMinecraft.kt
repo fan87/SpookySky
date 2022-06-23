@@ -3,10 +3,7 @@ package me.fan87.spookysky.client.mapping.impl
 import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.packets.NetworkManager
-import me.fan87.spookysky.client.mapping.impl.rendering.EntityRenderer
-import me.fan87.spookysky.client.mapping.impl.rendering.FrameBuffer
-import me.fan87.spookysky.client.mapping.impl.rendering.GuiIngame
-import me.fan87.spookysky.client.mapping.impl.rendering.GuiScreen
+import me.fan87.spookysky.client.mapping.impl.rendering.*
 import me.fan87.spookysky.client.mapping.impl.settings.GameSettings
 import me.fan87.spookysky.client.mapping.impl.world.WorldClient
 
@@ -35,7 +32,8 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapEntityRenderer = NullableFieldMapping<Any, Minecraft>(this, "entityRenderer")
     val mapTheWorld = NullableFieldMapping<Any, Minecraft>(this, "theWorld")
     val mapTimer = FieldMapping<Any, Minecraft>(this, "timer")
-    val mapFrameBufferMc = FieldMapping<Any, Minecraft>(this, "frameBufferMc")
+    val mapFramebufferMc = NullableFieldMapping<Any, Minecraft>(this, "framebufferMc")
+    val mapRenderManager = NullableFieldMapping<Any, Minecraft>(this, "renderManager")
 }
 
 class Minecraft protected constructor(original: Any): WrapperClass(original) {
@@ -61,5 +59,6 @@ class Minecraft protected constructor(original: Any): WrapperClass(original) {
     var entityRenderer by NullableWrappedFieldType(MapMinecraft.mapEntityRenderer, EntityRenderer::class.java)
     val gameSettings by WrappedFieldType(MapMinecraft.mapGameSettings, GameSettings::class.java)
     val timer by WrappedFieldType(MapMinecraft.mapTimer, Timer::class.java)
-    val frameBufferMc by WrappedFieldType(MapMinecraft.mapFrameBufferMc, FrameBuffer::class.java)
+    val framebufferMc by NullableWrappedFieldType(MapMinecraft.mapFramebufferMc, Framebuffer::class.java)
+    val renderManager by NullableWrappedFieldType(MapMinecraft.mapRenderManager, RenderManager::class.java)
 }

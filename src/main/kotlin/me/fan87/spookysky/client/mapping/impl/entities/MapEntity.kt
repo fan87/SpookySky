@@ -73,5 +73,7 @@ open class Entity protected constructor (original: Any): WrapperClass(original) 
     fun getCustomNameTag(): String = MapEntity.mapGetCustomNameTag.invoke(this)!!
     fun isSprinting(): Boolean = MapEntity.mapIsSprinting.invoke(this)!!
 
-
+    override fun equals(other: Any?): Boolean {
+        return other is Entity && other.entityId == this.entityId
+    }
 }

@@ -2,7 +2,7 @@ package me.fan87.spookysky.client.processors.impl.render
 
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
-import me.fan87.spookysky.client.mapping.impl.rendering.MapFrameBuffer
+import me.fan87.spookysky.client.mapping.impl.rendering.MapFramebuffer
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
 import org.objectweb.asm.Opcodes
@@ -10,11 +10,11 @@ import org.objectweb.asm.Opcodes
 class ProcessorMapFrameBufferMembers: Processor("Map FrameBuffer Members") {
 
     init {
-        dependsOn(MapFrameBuffer)
+        dependsOn(MapFramebuffer)
     }
 
     override fun start() {
-        onlyProcess(MapFrameBuffer)
+        onlyProcess(MapFramebuffer)
     }
 
     override fun process(clazz: LoadedClass): Boolean {
@@ -31,12 +31,12 @@ class ProcessorMapFrameBufferMembers: Processor("Map FrameBuffer Members") {
         matcher.next()
         matcher.next()
         matcher.next()
-        MapFrameBuffer.mapDepthBuffer.map(matcher.groupAsFieldInsnNode("field"))
+        MapFramebuffer.mapDepthBuffer.map(matcher.groupAsFieldInsnNode("field"))
 
         return false
     }
 
     override fun jobDone(): Boolean {
-        return MapFrameBuffer.mapDepthBuffer.isMapped()
+        return MapFramebuffer.mapDepthBuffer.isMapped()
     }
 }

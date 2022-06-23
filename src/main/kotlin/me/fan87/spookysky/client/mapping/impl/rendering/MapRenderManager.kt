@@ -16,6 +16,7 @@ object MapRenderManager : ClassMapping<RenderManager>() {
 
 
     val mapRenderEntityStatic = MethodMapping<Boolean, RenderManager>(this, "renderEntityStatic(Entity, float, boolean)")
+    val mapRenderEntitySimple = MethodMapping<Boolean, RenderManager>(this, "renderEntitySimple(Entity, float)")
 }
 
 open class RenderManager protected constructor(original: Any) : WrapperClass(original) {

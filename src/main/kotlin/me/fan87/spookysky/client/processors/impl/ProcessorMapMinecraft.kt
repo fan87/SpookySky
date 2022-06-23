@@ -15,10 +15,10 @@ import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.addGetField
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
-import me.fan87.spookysky.client.utils.CaptureUtils.groupAsMethodInsnNode
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
 import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.InsnNode
@@ -26,7 +26,6 @@ import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
-import java.io.File
 import java.lang.reflect.Modifier
 
 class ProcessorMapMinecraft: Processor("Map Minecraft") {
@@ -64,12 +63,19 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 matchEntityRenderer(clazz)
                 matchTimer(clazz)
                 matchFrameBuffer(clazz)
+                matchRenderManager(clazz.node)
                 return true
             }
         }
-
-
         return false
+    }
+
+    fun matchRenderManager(clazz: ClassNode) {
+        for (field in clazz.fields) {
+            if (field.desc == MapRenderManager.assumeMapped().getDescName()) {
+                MapMinecraft.mapRenderManager.map(field)
+            }
+        }
     }
 
     fun matchFrameBuffer(clazz: LoadedClass) {
@@ -82,11 +88,11 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
         for (method in clazz.node.methods) {
             val matcher = pattern.matcher(method)
             if (matcher.next()) {
-                MapFrameBuffer.map(ASMUtils.descTypeToJvmType(matcher.groupAsFieldInsnNode("lol").desc))
-                MapMinecraft.mapFrameBufferMc.map(matcher.groupAsFieldInsnNode("lol"))
+                MapFramebuffer.map(ASMUtils.descTypeToJvmType(matcher.groupAsFieldInsnNode("lol").desc))
+                MapMinecraft.mapFramebufferMc.map(matcher.groupAsFieldInsnNode("lol"))
             }
         }
-        assertMapped(MapFrameBuffer)
+        assertMapped(MapFramebuffer)
 
     }
 
