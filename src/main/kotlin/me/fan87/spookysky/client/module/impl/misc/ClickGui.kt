@@ -6,6 +6,7 @@ import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
 import me.fan87.spookysky.client.module.settings.Setting
 import me.fan87.spookysky.client.module.settings.impl.*
+import me.fan87.spookysky.client.render.Shaders
 import me.fan87.spookysky.client.utils.*
 import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
@@ -26,7 +27,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     val distanceSetting = DoubleSetting("Distance", "The distance (Block) between you and ClickGui", 0.3, 0.1, 4.0)
     val scaleSetting = DoubleSetting("Scale", "The scale of the ClickGui", 1.0, 0.1, 10.0)
 
-    val xOffset = DoubleSetting("X Offset", "The X position it's gonna be rendered at", 5.0, 0.0, 10.0)
+    val xOffset = DoubleSetting("X Offset", "The X position it's gonna be rendered at", 7.5, 0.0, 10.0)
 
     var currentXOffset = 0.0
     
@@ -253,6 +254,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                     module.toggled = !module.toggled
                 } else {
                     if (module.settings.isNotEmpty()) {
+                        currentColorSettingRenderer = null
                         if (selectedModule == module) {
                             selectedModule = null
                         } else {
@@ -342,7 +344,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     fun startDrawString(x: Double, y: Double) {
         GL11.glPushMatrix()
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS)
-        GL11.glTranslated(x, y, 0.0)
+        GL11.glTranslated(x, y + 0.003, 0.0)
         GL11.glScaled(0.001, 0.001, 1.0)
         GL11.glRotated(180.0, 0.0, 0.0, 1.0)
         GL11.glTranslated(0.0, 0.0, -0.01)
@@ -403,6 +405,10 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                 if (setting is KeySetting) {
                     renderer = KeySettingRenderer(setting)
                 }
+
+                if (setting is ColorSetting) {
+                    renderer = ColorSettingRenderer(setting)
+                }
                 if (renderer != null) {
                     cachedSettingsRenderer[setting] = renderer
                 }
@@ -449,6 +455,9 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                 if (setting is KeySetting) {
                     renderer = KeySettingRenderer(setting)
                 }
+                if (setting is ColorSetting) {
+                    renderer = ColorSettingRenderer(setting)
+                }
                 if (renderer != null) {
                     cachedSettingsRenderer[setting] = renderer
                 }
@@ -469,6 +478,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         keyEvent = null
     }
 
+
     inner abstract class SettingRenderer<T: Setting<*>>(val setting: T) {
         val regularFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 30)
         fun renderSetting(startX: Double, startY: Double, endX: Double, endY: Double) {
@@ -483,6 +493,204 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         }
         abstract fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double)
         abstract fun onMouseClick(startX: Double, startY: Double, endX: Double, endY: Double, button: Int, posX: Double, posY: Double): Boolean
+    }
+
+    var currentColorSettingRenderer: ColorSettingRenderer? = null
+
+    inner class ColorSettingRenderer(setting: ColorSetting): SettingRenderer<ColorSetting>(setting) {
+
+        var hue = 0f
+        var saturation = 0f
+        var brightness = 0f
+        var alpha = 0f
+
+        init {
+            val hsb =
+                Color.RGBtoHSB(setting.value.red, setting.value.green, setting.value.blue, floatArrayOf(0f, 0f, 0f))
+            hue = hsb[0]
+            saturation = hsb[1]
+            brightness = hsb[2]
+        }
+
+        var wasSbDown = false
+        var wasHueDown = false
+        var wasAlphaDown = false
+
+        override fun render(startX: Double, startY: Double, endX: Double, endY: Double, width: Double, height: Double) {
+            val mousePosition = getMousePosition()
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val buttonStart = min(startX + width * 0.4, startX + width * 0.8);
+            val buttonEnd = max(startX + width * 0.4, startX + width * 0.8);
+            val colorPreviewSize = 0.008
+            val colorPreviewMargin = 0.003
+            val colorPreviewBorder = 0.001
+
+            GL11.glTranslated(0.0, 0.0, -0.0001)
+            RenderUtils.drawRect(buttonEnd + colorPreviewBorder,
+                endY - (height+colorPreviewSize)/2.0 - colorPreviewBorder,
+                buttonEnd - colorPreviewSize - colorPreviewBorder,
+                startY + (height+colorPreviewSize)/2.0 + colorPreviewBorder,
+                0xff000000.toInt())
+            GL11.glTranslated(0.0, 0.0, -0.0001)
+            RenderUtils.drawRect(buttonEnd,
+                endY - (height+colorPreviewSize)/2.0,
+                buttonEnd - colorPreviewSize,
+                startY + (height+colorPreviewSize)/2.0,
+                setting.value.rgb or 0xff000000.toInt())
+            GL11.glTranslated(0.0, 0.0, 0.0002)
+
+            startDrawString(buttonEnd - colorPreviewSize - colorPreviewMargin - colorPreviewBorder, startY + height/2.0)
+            valueFont.drawVerticallyCenteredString("#" + Integer.toHexString(setting.value.rgb).uppercase().let { "0".repeat(8 - it.length) + it }, 0f, 0f, 0xff6B6B6B.toInt())
+            endDrawString()
+            if (currentColorSettingRenderer == this) {
+                val sbEndX = endX - 0.02
+                val sbEndY = 0.4
+                val sbStartX = sbEndX - 0.2
+                val sbStartY = sbEndY + 0.2
+                val hueEndX = sbEndX
+                val hueEndY = sbEndY
+                val hueStartX = hueEndX - (sbEndX - sbStartX)
+                val hueStartY = hueEndY - 0.02
+                val alphaEndX = hueEndX
+                val alphaEndY = hueStartY
+                val alphaStartX = alphaEndX - (sbEndX - sbStartX)
+                val alphaStartY = alphaEndY - 0.02
+
+                Shaders.colorPickerSB.width = abs(sbStartX - sbEndX).toFloat()
+                Shaders.colorPickerSB.height = -abs(sbEndY - sbStartY).toFloat()
+                Shaders.colorPickerSB.hue = hue
+                RenderUtils.drawRectWithShader(Shaders.colorPickerSB, sbStartX, sbStartY, sbEndX, sbEndY)
+
+                Shaders.colorPickerHue.width = -abs(hueStartX - hueEndX).toFloat()
+                Shaders.colorPickerHue.height = abs(hueStartY - hueEndY).toFloat()
+                RenderUtils.drawRectWithShader(Shaders.colorPickerHue, hueStartX, hueStartY, hueEndX, hueEndY)
+
+                if (setting.allowAlpha) {
+                    val colorPickerAlpha = Shaders.colorPickerAlpha
+                    colorPickerAlpha.width = abs(alphaEndX - alphaStartX).toFloat()
+                    colorPickerAlpha.height = abs(alphaEndY - alphaStartY).toFloat()
+                    colorPickerAlpha.alphaBoxSize = 0.005f
+                    colorPickerAlpha.red = setting.value.red / 255f
+                    colorPickerAlpha.green = setting.value.green / 255f
+                    colorPickerAlpha.blue = setting.value.blue / 255f
+                    GL11.glPushMatrix()
+                    GL11.glTranslated(alphaStartX, alphaStartY, 0.0)
+                    colorPickerAlpha.startUsing()
+                    RenderUtils.drawRect(0.0, 0.0, alphaEndX - alphaStartX, alphaEndY - alphaStartY, 0xff0000ff.toInt())
+                    colorPickerAlpha.stopUsing()
+                    GL11.glPopMatrix()
+                }
+                GL11.glTranslated(0.0, 0.0, -0.0001)
+                val sbSelectSize = 0.003
+                val sbSelectCenterX = (1f - saturation) * (sbEndX - sbStartX) + sbStartX
+                val sbSelectCenterY = (1f - brightness) * (sbEndY - sbStartY) + sbStartY
+                val sbSelectStartX = sbSelectCenterX - sbSelectSize
+                val sbSelectStartY = sbSelectCenterY - sbSelectSize
+                val sbSelectEndX = sbSelectCenterX + sbSelectSize
+                val sbSelectEndY = sbSelectCenterY + sbSelectSize
+                RenderUtils.drawBorderedRect(sbSelectStartX, sbSelectStartY, sbSelectEndX, sbSelectEndY, 0.002, 0xffffffff.toInt(), 0xff000000.toInt())
+                GL11.glTranslated(0.0, 0.0, 0.0001)
+                if (!Mouse.isButtonDown(0)) {
+                    wasSbDown = false
+                    wasHueDown = false
+                    wasAlphaDown = false
+                }
+                if (((Mouse.isButtonDown(0) && isInSection(sbStartX, sbStartY, sbEndX, sbEndY)) || wasSbDown) && !wasAlphaDown && !wasHueDown) {
+                    wasSbDown = true
+                    val x = 1f - ((mousePosition.x - sbStartX) / (sbEndX - sbStartX)).coerceAtLeast(0.0).coerceAtMost(1.0)
+                    val y = 1f - ((mousePosition.y - sbStartY) / (sbEndY - sbStartY)).coerceAtLeast(0.0).coerceAtMost(1.0)
+                    saturation = x.toFloat()
+                    brightness = y.toFloat()
+                    setting.value = Color(((alpha * 255).toInt() shl 24) or (Color.HSBtoRGB(
+                        hue,
+                        saturation,
+                        brightness
+                    ) and 0x00ffffff), true)
+                } else if (((Mouse.isButtonDown(0) && isInSection(
+                        hueStartX,
+                        hueStartY,
+                        hueEndX,
+                        hueEndY
+                    )) || wasHueDown) && !wasAlphaDown) {
+                    wasHueDown = true
+                    val x = 1f - ((mousePosition.x - hueStartX) / (sbEndX - sbStartX)).coerceAtLeast(0.0).coerceAtMost(1.0)
+                    hue = x.toFloat()
+                    setting.value = Color(((alpha * 255).toInt() shl 24) or (Color.HSBtoRGB(
+                        hue,
+                        saturation,
+                        brightness
+                    ) and 0x00ffffff), true)
+                } else if (setting.allowAlpha) {
+                    if ((Mouse.isButtonDown(0) && isInSection(alphaStartX, alphaStartY, alphaEndX, alphaEndY)) || wasAlphaDown) {
+                        wasAlphaDown = true
+                        val x = ((mousePosition.x - hueStartX) / (sbEndX - sbStartX)).coerceAtLeast(0.0).coerceAtMost(1.0)
+                        alpha = 1f - x.toFloat()
+                        println(alpha)
+                        setting.value = Color(((alpha * 255).toInt() shl 24) or (Color.HSBtoRGB(
+                            hue,
+                            saturation,
+                            brightness
+                        ) and 0x00ffffff), true)
+                    }
+                }
+
+
+
+            }
+        }
+
+
+        override fun onMouseClick(
+            startX: Double,
+            startY: Double,
+            endX: Double,
+            endY: Double,
+            button: Int,
+            posX: Double,
+            posY: Double
+        ): Boolean {
+            val width = endX - startX
+            val height = endY - startY
+            val valueFont = CFontRenderer.getFontRenderer("Jura-SemiBold.ttf", 25)
+            val sliderStart = startX + width * 0.4
+            val sliderEnd = startX + width * 0.8
+            val mousePosition = getMousePosition()
+            if (isInSection(sliderStart - 0.1, startY, sliderEnd + 0.1, endY)) {
+                if (currentColorSettingRenderer == this) {
+                    currentColorSettingRenderer = null
+                } else {
+                    currentColorSettingRenderer = this
+                }
+                return true
+            }
+            if (currentColorSettingRenderer == this) {
+                val sbEndX = endX - 0.02
+                val sbEndY = 0.4
+                val sbStartX = sbEndX - 0.2
+                val sbStartY = sbEndY + 0.2
+                val hueEndX = sbEndX
+                val hueEndY = sbEndY
+                val hueStartX = hueEndX - (sbEndX - sbStartX)
+                val hueStartY = hueEndY - 0.02
+                val alphaEndX = hueEndX
+                val alphaEndY = hueStartY
+                val alphaStartX = alphaEndX - (sbEndX - sbStartX)
+                val alphaStartY = alphaEndY - 0.02
+
+                val sbSelectSize = 0.003
+                val sbSelectCenterX = (1f - saturation) * (sbEndX - sbStartX) + sbStartX
+                val sbSelectCenterY = (1f - brightness) * (sbEndY - sbStartY) + sbStartY
+                if (isInSection(sbStartX, sbStartY, sbEndX, sbEndY) || isInSection(hueStartX, hueStartY, hueEndX, hueEndY)) {
+                    return true
+                }
+                if (setting.allowAlpha) {
+                    if (isInSection(alphaStartX, alphaStartY, alphaEndX, alphaEndY)) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
     }
 
     inner class DoubleSettingRenderer(setting: DoubleSetting): SettingRenderer<DoubleSetting>(setting) {

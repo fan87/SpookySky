@@ -2,15 +2,13 @@ package me.fan87.spookysky.client.utils
 
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.impl.rendering.Gui
+import me.fan87.spookysky.client.render.ShaderProgram
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 import javax.imageio.ImageIO
-import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sin
+import kotlin.math.*
 
 
 object RenderUtils {
@@ -70,6 +68,15 @@ object RenderUtils {
         Gui().drawGradient(left, top, right, bottom, startColor, endColor)
     }
 
+    fun drawRectWithShader(shader: ShaderProgram, left: Double, top: Double, right: Double, bottom: Double) {
+        shader.startUsing()
+        glPushMatrix()
+        glTranslated(left, top, 0.0)
+        drawRect(0.0, 0.0, right - left, bottom - top, 0xffffffff.toInt())
+        glPopMatrix()
+        shader.stopUsing()
+    }
+
     fun drawRect(left: Double, top: Double, right: Double, bottom: Double, color: Int) {
         var left = left
         var top = top
@@ -124,6 +131,17 @@ object RenderUtils {
             glEnd()
         }
         glPopAttrib()
+    }
+
+    fun drawBorderedRect(left: Double, top: Double, right: Double, bottom: Double, borderWidth: Double, color: Int, borderColor: Int) {
+        val xStart = min(left, right)
+        val xEnd = max(left, right)
+        val yStart = min(top, bottom)
+        val yEnd = max(top, bottom)
+        drawRect(xStart - borderWidth, yStart - borderWidth, xEnd + borderWidth, yEnd + borderWidth, borderColor)
+        glTranslated(0.0, 0.0, -0.00001)
+        drawRect(xStart, yStart, xEnd, yEnd, color)
+        glTranslated(0.0, 0.0, 0.00001)
     }
 
     fun drawRoundedRect(startX: Double, startY: Double, endX: Double, endY: Double, cornerRadius: Double, color: Color) {
