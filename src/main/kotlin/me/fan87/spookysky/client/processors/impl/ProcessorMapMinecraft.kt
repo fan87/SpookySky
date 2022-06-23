@@ -10,14 +10,12 @@ import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
 import me.fan87.spookysky.client.mapping.impl.MapTimer
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
-import me.fan87.spookysky.client.mapping.impl.rendering.MapEntityRenderer
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiChat
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiIngame
-import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
+import me.fan87.spookysky.client.mapping.impl.rendering.*
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.addGetField
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
+import me.fan87.spookysky.client.utils.CaptureUtils.groupAsMethodInsnNode
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
 import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
@@ -65,12 +63,31 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 mapIngameGui(clazz)
                 matchEntityRenderer(clazz)
                 matchTimer(clazz)
+                matchFrameBuffer(clazz)
                 return true
             }
         }
 
 
         return false
+    }
+
+    fun matchFrameBuffer(clazz: LoadedClass) {
+        val pattern = RegbexPattern {
+            thenCustomCheck { it.opcode == Opcodes.INVOKESPECIAL && it is MethodInsnNode && it.desc == "(IIZ)V" }
+            thenGroup("lol") {
+                thenOpcodeCheck(Opcodes.PUTFIELD)
+            }
+        }
+        for (method in clazz.node.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                MapFrameBuffer.map(ASMUtils.descTypeToJvmType(matcher.groupAsFieldInsnNode("lol").desc))
+                MapMinecraft.mapFrameBufferMc.map(matcher.groupAsFieldInsnNode("lol"))
+            }
+        }
+        assertMapped(MapFrameBuffer)
+
     }
 
     fun matchTimer(clazz: LoadedClass) {

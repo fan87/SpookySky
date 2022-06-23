@@ -120,7 +120,8 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
         if (grabbing) {
             startYaw = mc.thePlayer!!.rotationYaw - grabYaw
-            pitch.value = mc.thePlayer!!.rotationPitch - pitch.value
+            pitch.value = -mc.thePlayer!!.rotationPitch - grabPitch
+
         }
     }
 
@@ -136,7 +137,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             if (isInSection(left, top, right, bottom)) {
                 grabbing = true
                 grabYaw = mc.thePlayer!!.rotationYaw - startYaw
-                grabPitch = mc.thePlayer!!.rotationPitch - pitch.value
+                grabPitch = -mc.thePlayer!!.rotationPitch - pitch.value
                 return true
             }
         }
