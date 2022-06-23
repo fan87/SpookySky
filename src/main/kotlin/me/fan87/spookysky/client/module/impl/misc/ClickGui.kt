@@ -344,7 +344,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     fun startDrawString(x: Double, y: Double) {
         GL11.glPushMatrix()
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS)
-        GL11.glTranslated(x, y + 0.003, 0.0)
+        GL11.glTranslated(x, y - 0.003, 0.0)
         GL11.glScaled(0.001, 0.001, 1.0)
         GL11.glRotated(180.0, 0.0, 0.0, 1.0)
         GL11.glTranslated(0.0, 0.0, -0.01)
@@ -625,7 +625,6 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
                         wasAlphaDown = true
                         val x = ((mousePosition.x - hueStartX) / (sbEndX - sbStartX)).coerceAtLeast(0.0).coerceAtMost(1.0)
                         alpha = 1f - x.toFloat()
-                        println(alpha)
                         setting.value = Color(((alpha * 255).toInt() shl 24) or (Color.HSBtoRGB(
                             hue,
                             saturation,

@@ -84,7 +84,6 @@ class ProcessorMapRenderGlobal: Processor("Map RenderGlobal") {
                         out.add(instruction)
                     }
                 }
-                File("/tmp/RenderGlobal.class").writeBytes(ASMUtils.writeClass(clazz.node))
                 return true
             }
         }

@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.processors.impl.render
 
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
+import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntity
 import me.fan87.spookysky.client.mapping.impl.rendering.MapRender
 import me.fan87.spookysky.client.mapping.impl.rendering.Render
