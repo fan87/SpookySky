@@ -18,7 +18,6 @@ import kotlin.math.*
 class ClickGui: Module("ClickGui", "A gui that allows you to manage every module in the client", Category.MISC, true) {
     var startYaw: Float = 0f
 
-    var pitchOffset: Float = 0f
 
     var distance = 0.0
     var scale = 0.0
@@ -32,7 +31,6 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
     }
 
     override fun onEnable() {
-        this.pitchOffset = pitch.value.toFloat()
         startYaw = mc.thePlayer?.rotationYaw?.plus(0f) ?:0f
         distance = distanceSetting.value
         scale = scaleSetting.value
@@ -72,11 +70,11 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
         GL11.glPushMatrix()
         GL11.glLoadIdentity()
         mc.entityRenderer!!.orientCamera(event.partialTicks)
-        GL11.glTranslated(0.0, player.getEyeHeight()!!.toDouble(), 0.0)
+        GL11.glTranslated(0.0, player.getEyeHeight().toDouble(), 0.0)
 
 
         GL11.glRotated(-startYaw % 360.0, 0.0, 1.0, 0.0)
-        GL11.glRotated(-pitchOffset.toDouble(), 1.0, 0.0, 0.0)
+        GL11.glRotated(-pitch.value, 1.0, 0.0, 0.0)
         GL11.glScaled(scale*1.0, scale*1.0, 1.0)
         GL11.glTranslated(-0.5, -0.5, distance)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
@@ -89,6 +87,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
     var grabbing = false
     var grabYaw = 0f
+    var grabPitch = 0.0
 
     fun onClick(button: Int, posX: Double, posY: Double): Boolean {
         if (categoriesClick(button, posX, posY)) return true
@@ -121,6 +120,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
 
         if (grabbing) {
             startYaw = mc.thePlayer!!.rotationYaw - grabYaw
+            pitch.value = mc.thePlayer!!.rotationPitch - pitch.value
         }
     }
 
@@ -136,6 +136,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             if (isInSection(left, top, right, bottom)) {
                 grabbing = true
                 grabYaw = mc.thePlayer!!.rotationYaw - startYaw
+                grabPitch = mc.thePlayer!!.rotationPitch - pitch.value
                 return true
             }
         }
@@ -308,7 +309,7 @@ class ClickGui: Module("ClickGui", "A gui that allows you to manage every module
             Math.toRadians((mc.thePlayer!!.rotationYaw.toDouble() - 180 - startYaw)%360),
             Math.toRadians(mc.thePlayer!!.rotationPitch.toDouble()),
             0.0)
-        matrix.prependPitchRotation(Math.toRadians(-pitchOffset.toDouble()))
+        matrix.prependPitchRotation(Math.toRadians(-pitch.value.toDouble()))
         return Vector2d(Math.toDegrees(matrix.yaw), Math.toDegrees(matrix.pitch))
     }
     fun getMousePosition(): Vector2d {

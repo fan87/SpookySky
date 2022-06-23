@@ -33,6 +33,7 @@ object MapMinecraft: ClassMapping<Minecraft>() {
     val mapIngameGui = NullableFieldMapping<Any, Minecraft>(this, "ingameGui")
     val mapEntityRenderer = NullableFieldMapping<Any, Minecraft>(this, "entityRenderer")
     val mapTheWorld = NullableFieldMapping<Any, Minecraft>(this, "theWorld")
+    val mapTimer = FieldMapping<Any, Minecraft>(this, "timer")
 }
 
 class Minecraft protected constructor(original: Any): WrapperClass(original) {
@@ -57,4 +58,5 @@ class Minecraft protected constructor(original: Any): WrapperClass(original) {
     var myNetworkManager by NullableWrappedFieldType(MapMinecraft.mapMyNetworkManager, NetworkManager::class.java)
     var entityRenderer by NullableWrappedFieldType(MapMinecraft.mapEntityRenderer, EntityRenderer::class.java)
     val gameSettings by WrappedFieldType(MapMinecraft.mapGameSettings, GameSettings::class.java)
+    val timer by WrappedFieldType(MapMinecraft.mapTimer, Timer::class.java)
 }

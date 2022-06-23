@@ -8,6 +8,7 @@ import me.fan87.spookysky.client.events.events.RightClickMouseEvent
 import me.fan87.spookysky.client.mapping.MappedClassInfo
 import me.fan87.spookysky.client.mapping.MappedMethodInfo
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
+import me.fan87.spookysky.client.mapping.impl.MapTimer
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.rendering.MapEntityRenderer
 import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiChat
@@ -16,6 +17,7 @@ import me.fan87.spookysky.client.mapping.impl.rendering.MapGuiScreen
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.addGetField
+import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsTypeInsnNode
 import me.fan87.spookysky.client.utils.VarNumberManager
 import org.objectweb.asm.Opcodes
@@ -62,12 +64,33 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 matchGuiChat(clazz)
                 mapIngameGui(clazz)
                 matchEntityRenderer(clazz)
+                matchTimer(clazz)
                 return true
             }
         }
 
 
         return false
+    }
+
+    fun matchTimer(clazz: LoadedClass) {
+        val pattern = RegbexPattern {
+            thenOpcodeCheck(Opcodes.DUP)
+            thenLdc(20.0f)
+            thenOpcodeCheck(Opcodes.INVOKESPECIAL)
+            thenGroup("timer") {
+                thenOpcodeCheck(Opcodes.PUTFIELD)
+            }
+        }
+        for (method in clazz.node.methods) {
+            val matcher = pattern.matcher(method)
+            if (matcher.next()) {
+                val timer = matcher.groupAsFieldInsnNode("timer")
+                MapMinecraft.mapTimer.map(timer)
+                MapTimer.map(ASMUtils.descTypeToJvmType(timer.desc))
+            }
+        }
+        assertMapped(MapTimer)
     }
 
     fun matchGuiChat(clazz: LoadedClass) {
