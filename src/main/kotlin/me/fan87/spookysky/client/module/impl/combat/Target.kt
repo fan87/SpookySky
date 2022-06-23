@@ -2,6 +2,7 @@ package me.fan87.spookysky.client.module.impl.combat
 
 import me.fan87.spookysky.client.mapping.impl.entities.Entity
 import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
+import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayer
 import me.fan87.spookysky.client.mapping.impl.entities.EntityPlayerSP
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
@@ -24,7 +25,17 @@ class Target: Module("Target", "Select your target types", Category.COMBAT) {
         if (entity == mc.thePlayer) {
             return false
         }
-        return entity is EntityLivingBase
+        if (player.value) {
+            if (entity is EntityPlayer) {
+                return true
+            }
+        }
+        if (mobs.value) {
+            if (entity is EntityLivingBase && entity !is EntityPlayer) {
+                return true
+            }
+        }
+        return false
     }
 
 }
