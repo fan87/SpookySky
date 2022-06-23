@@ -81,6 +81,19 @@ tasks {
         dependsOn(":loader:classes")
         dependsOn("assemble")
     }
+    register("agent") {
+        dependsOn(":loader:classes")
+        dependsOn(":loader:shadowJar")
+        dependsOn("classes")
+        dependsOn("shadowJar")
+        val agentJar = File(project(":loader").buildDir, "libs/${project(":loader").name}-${project(":loader").version}-all.jar").absolutePath
+        val clientJar = File(rootProject.buildDir, "libs/${rootProject.name}-${rootProject.version}-all.jar").absolutePath
+        doFirst {
+            println("Agent Jar: $agentJar")
+            println("Client Jar: $clientJar")
+            println("JVM Argument: -javaagent:$agentJar=$clientJar")
+        }
+    }
     register<JavaExec>("lunar") {
 
         dependsOn(":loader:classes")
