@@ -1,15 +1,23 @@
 package me.fan87.spookysky.client.module.impl.misc
 
 import me.fan87.spookysky.client.events.EventHandler
+import me.fan87.spookysky.client.events.events.PostRender3DEvent
+import me.fan87.spookysky.client.events.events.Render2DPreBossBarEvent
 import me.fan87.spookysky.client.events.events.RenderEntityModelEvent
+import me.fan87.spookysky.client.mapping.impl.Minecraft
+import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
+import me.fan87.spookysky.client.mapping.impl.rendering.RenderLivingEntity
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
+import me.fan87.spookysky.client.module.impl.render.Outline
 import me.fan87.spookysky.client.module.settings.impl.*
 import me.fan87.spookysky.client.render.RenderStateManager
+import me.fan87.spookysky.client.render.Shaders
 import me.fan87.spookysky.client.utils.RenderUtils
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 import java.awt.Color
 import java.util.EnumSet
 
@@ -34,8 +42,7 @@ class Test: Module("Test", "A module to test stuff", Category.MOVEMENT) {
     }
 
     @EventHandler
-    fun onPreRenderModel(event: RenderEntityModelEvent) {
-
+    fun onPreRenderModel(event: PostRender3DEvent) {
 
     }
 

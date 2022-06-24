@@ -24,7 +24,7 @@ If you couldn't understand that, don't DM me for it as you are not supposed to u
 So if I release it, I can know what to write:
 
 #### How to check the status of injection
-You can look at left bottom corner of the screen, there should be a colored 4 pixels square.
+You can look at left bottom corner of the screen, there should be a colored 5 pixels square.
 If it's red, try going to MultiPlayer menu and wait for a while until it becomes green. Try following steps:
 - Go multiplayer menu
 - Add a server to servers list

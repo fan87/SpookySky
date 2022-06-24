@@ -17,11 +17,16 @@ object MapEntityRenderer : ClassMapping<EntityRenderer>() {
 
     val mapRenderWorldPass = MethodMapping<Unit, EntityRenderer>(this, "renderWorldPass(int, float, long)")
     val mapOrientCamera = MethodMapping<Unit, EntityRenderer>(this, "orientCamera(float)")
+    val mapSetupCameraTransform = MethodMapping<Unit, EntityRenderer>(this, "setupCameraTransform(float, int)")
 }
 
 open class EntityRenderer protected constructor(original: Any) : WrapperClass(original) {
 
     fun orientCamera(partialTicks: Float) = MapEntityRenderer.mapOrientCamera.invoke(this, partialTicks)
+
+    fun setupCameraTransform(partialTicks: Float, pass: Int) {
+        MapEntityRenderer.mapSetupCameraTransform.invoke(this, partialTicks, pass)
+    }
 
     fun setupOverlayRendering() {
         GL11.glClear(256)
@@ -29,8 +34,8 @@ open class EntityRenderer protected constructor(original: Any) : WrapperClass(or
         GL11.glLoadIdentity()
         GL11.glOrtho(
             0.0,
-            Display.getWidth() * 1.0,
-            Display.getHeight() * 1.0,
+            Display.getWidth() / 2.0,
+            Display.getHeight() / 2.0,
             0.0,
             1000.0,
             3000.0

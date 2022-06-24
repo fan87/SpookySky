@@ -3,6 +3,7 @@ package me.fan87.spookysky.client.render
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import org.lwjgl.opengl.ARBFramebufferObject.*
 import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.*
 import java.nio.ByteBuffer
@@ -19,49 +20,42 @@ abstract class FramebufferShaderProgram: ShaderProgram() {
     var oldFramebuffer = -1
 
     override fun startUsing() {
+
         oldFramebuffer = glGetInteger(GL_FRAMEBUFFER_BINDING)
         checkFboSetup()
         glBindFramebuffer(GL_FRAMEBUFFER, fbo)
         glClear(GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+        glClearColor(0f, 0f, 0f, 0f)
     }
 
     override fun stopUsing() {
 
 
 
-        glPushAttrib(GL_ALL_ATTRIB_BITS)
-        glPushMatrix()
-
-
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
         glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer)
 
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, texture)
+
         super.startUsing()
 
 
-        glClear(GL_DEPTH_BUFFER_BIT)
-
-        Minecraft.getMinecraft().entityRenderer!!.setupOverlayRendering()
-
         glEnable(GL_TEXTURE_2D)
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBegin(GL_QUADS);
         glTexCoord2d(0.0, 1.0);
         glVertex2d(0.0, 0.0);
         glTexCoord2d(0.0, 0.0);
-        glVertex2d(0.0, height.toDouble());
+        glVertex2d(0.0, height.toDouble()/2);
         glTexCoord2d(1.0, 0.0);
-        glVertex2d(width.toDouble(), height.toDouble());
+        glVertex2d(width.toDouble()/2, height.toDouble()/2);
         glTexCoord2d(1.0, 1.0);
-        glVertex2d(width.toDouble(), 0.0);
+        glVertex2d(width.toDouble()/2, 0.0);
         glEnd();
-//        super.stopUsing()
 
-        glPopMatrix()
-        glPopAttrib()
+        super.stopUsing()
+
     }
 
     private fun checkFboSetup() {

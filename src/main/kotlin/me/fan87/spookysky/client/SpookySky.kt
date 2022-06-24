@@ -100,9 +100,8 @@ class SpookySky(
                 if (!child.isMapped()) {
                     initTime = System.currentTimeMillis()
                     mapped = false
-                    break
+                    break@outer
                 }
-                break@outer
             }
         }
         if (System.currentTimeMillis() - initTime <= 20000) {
@@ -110,7 +109,7 @@ class SpookySky(
             GL11.glPushMatrix()
 
             GL11.glEnable(GL11.GL_SCISSOR_TEST)
-            GL11.glScissor(0, 0, 4, 4)
+            GL11.glScissor(0, 0, 5, 5)
             if (!mapped) {
                 GL11.glClearColor(1f, 0f, 0f, 1f)
             } else {
