@@ -8,6 +8,7 @@ import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.signature.SignatureReader
+import org.objectweb.asm.tree.MethodInsnNode
 import java.util.regex.Pattern
 
 class ProcessorMapRender: Processor("Map Render") {
@@ -41,12 +42,22 @@ class ProcessorMapRender: Processor("Map Render") {
                 val field = matcher.groupAsFieldInsnNode("entityRenderMap")
                 val entityRenderMap =
                     clazz.node.fields.first { it.name == field.name && it.desc == field.desc }
+                MapRenderManager.mapEntityRenderMap.map(field)
                 println(entityRenderMap.signature)
                 //Ljava/util/Map<Ljava/lang/Class;Lnet/minecraft/v1_8/speaaspssphpesspsppeheepa;>;
                 val regex = Pattern.compile("Ljava\\/util\\/Map<Ljava\\/lang\\/Class(?:<.*?>)?;L([\\w\\d_\\/]*)(?:<.*?>)?;>")
                 val signatureMatcher = regex.matcher(entityRenderMap.signature)
                 signatureMatcher.find(0)
                 MapRender.map(signatureMatcher.group(1))
+                val pattern0 = RegbexPattern {
+                    thenCustomCheck { it is MethodInsnNode && it.name == "getSuperclass" }
+                }
+                for (method in clazz.node.methods) {
+                    if (pattern0.matcher(method).next()) {
+                        MapRenderManager.mapGetEntityClassRenderObject.map(method)
+                    }
+                }
+                assertMapped(MapRenderManager.mapGetEntityClassRenderObject)
             }
         }
         return false

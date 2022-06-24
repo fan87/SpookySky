@@ -45,12 +45,12 @@ abstract class ShaderProgram  {
         loadShader()
     }
 
-    fun startUsing() {
+    open fun startUsing() {
         GL20.glUseProgram(programHandle)
         updateUniform()
     }
 
-    fun stopUsing() {
+    open fun stopUsing() {
         GL20.glUseProgram(0)
     }
 

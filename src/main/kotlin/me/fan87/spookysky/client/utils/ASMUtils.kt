@@ -9,6 +9,7 @@ import me.fan87.spookysky.client.mapping.MethodMapping
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
@@ -274,6 +275,23 @@ object ASMUtils {
     }
     fun InsnList.addThis() {
         add(VarInsnNode(Opcodes.ALOAD, 0))
+    }
+    fun InsnList.insertInstructions(inclusiveStart: Int, instructions: Iterable<AbstractInsnNode>): InsnList {
+        val out = InsnList()
+        for (withIndex in this.withIndex()) {
+            if (withIndex.index == inclusiveStart) {
+                for (instruction in instructions) {
+                    out.add(instruction)
+                }
+            }
+            out.add(withIndex.value)
+        }
+        return out
+    }
+    fun InsnList.insertInstructions(inclusiveStart: Int, instructions: (InsnList) -> Unit): InsnList {
+        val insnList = InsnList()
+        instructions(insnList)
+        return insertInstructions(inclusiveStart, insnList)
     }
     inline fun <reified T> InsnList.addGetCompanion() {
         add(generateGetCompanion<T>())

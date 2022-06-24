@@ -17,7 +17,6 @@ class CustomClassLoader(parent: ClassLoader): URLClassLoader(arrayOf(), parent) 
     val classes = HashMap<String, Class<*>?>()
 
     override fun loadClass(name: String): Class<*> {
-        println("[SpookySky Loader] Requested to load class: $name")
         loadLock.withLock {
             return super.loadClass(name)
         }
@@ -25,7 +24,6 @@ class CustomClassLoader(parent: ClassLoader): URLClassLoader(arrayOf(), parent) 
     }
 
     public override fun findClass(name: String?): Class<*> {
-        println("[SpookySky Loader] Requested to find class: $name")
         lock.withLock {
             return super.findClass(name)
         }

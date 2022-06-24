@@ -3,7 +3,7 @@ package me.fan87.spookysky.client
 import me.fan87.spookysky.client.commands.CommandsManager
 import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.EventsManager
-import me.fan87.spookysky.client.events.events.KeyEvent
+import me.fan87.spookysky.client.events.events.RenderEndFrameEvent
 import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.chat.ChatComponentText
@@ -14,7 +14,7 @@ import me.fan87.spookysky.client.module.ModulesManager
 import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ChatColor
-import org.lwjgl.input.Keyboard
+import org.lwjgl.opengl.GL11
 import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileInputStream
@@ -61,6 +61,8 @@ class SpookySky(
 
     val eventManager = EventsManager()
 
+    var initTime = System.currentTimeMillis()
+
     init {
         INSTANCE = this
         debug("SpookySky has been injected to class loader: ${javaClass.classLoader}! Initializing...")
@@ -81,6 +83,45 @@ class SpookySky(
         commandsManager = CommandsManager(this)
 
         eventManager.registerListener(this)
+
+
+    }
+
+    @EventHandler
+    fun onEndFrame(event: RenderEndFrameEvent) {
+        var mapped = true
+        outer@for (mapping in mappingsManager.mappings) {
+            if (!mapping.isMapped()) {
+                initTime = System.currentTimeMillis()
+                mapped = false
+                break
+            }
+            for (child in mapping.children) {
+                if (!child.isMapped()) {
+                    initTime = System.currentTimeMillis()
+                    mapped = false
+                    break
+                }
+                break@outer
+            }
+        }
+        if (System.currentTimeMillis() - initTime <= 20000) {
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS)
+            GL11.glPushMatrix()
+
+            GL11.glEnable(GL11.GL_SCISSOR_TEST)
+            GL11.glScissor(0, 0, 4, 4)
+            if (!mapped) {
+                GL11.glClearColor(1f, 0f, 0f, 1f)
+            } else {
+                GL11.glClearColor(0f, 1f, 0f, 1f)
+            }
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT)
+            GL11.glDisable(GL11.GL_SCISSOR_TEST)
+
+            GL11.glPopMatrix()
+            GL11.glPopAttrib()
+        }
 
     }
 

@@ -1,9 +1,7 @@
 package me.fan87.spookysky.client.mapping.impl.rendering
 
 
-import me.fan87.spookysky.client.mapping.ClassMapping
-import me.fan87.spookysky.client.mapping.MethodMapping
-import me.fan87.spookysky.client.mapping.WrapperClass
+import me.fan87.spookysky.client.mapping.*
 import me.fan87.spookysky.client.mapping.impl.entities.Entity
 
 object MapRenderManager : ClassMapping<RenderManager>() {
@@ -17,6 +15,9 @@ object MapRenderManager : ClassMapping<RenderManager>() {
 
     val mapRenderEntityStatic = MethodMapping<Boolean, RenderManager>(this, "renderEntityStatic(Entity, float, boolean)")
     val mapRenderEntitySimple = MethodMapping<Boolean, RenderManager>(this, "renderEntitySimple(Entity, float)")
+    val mapGetEntityClassRenderObject = MethodMapping<Any, RenderManager>(this, "getEntityClassRenderObject(Class<? extends Entity>)")
+
+    val mapEntityRenderMap = FieldMapping<Map<Class<*>, *>, RenderManager>(this, "entityRenderMap")
 }
 
 open class RenderManager protected constructor(original: Any) : WrapperClass(original) {
@@ -28,5 +29,12 @@ open class RenderManager protected constructor(original: Any) : WrapperClass(ori
     fun renderEntitySimple(entity: Entity, partialTick: Float): Boolean {
         return renderEntityStatic(entity, partialTick, false)
     }
+
+    fun <T: Entity> getEntityClassRenderObject(entity: T): Render<T> {
+        val renderOriginal = MapRenderManager.mapGetEntityClassRenderObject.invoke(this, entity.original.javaClass)
+            ?: throw IllegalArgumentException("Could not find render object for entity: ${entity.original}")
+        return MappingsManager.getWrapped(renderOriginal)
+    }
+
 
 }

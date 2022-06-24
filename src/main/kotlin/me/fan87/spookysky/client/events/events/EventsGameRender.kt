@@ -22,9 +22,11 @@ class RenderEntityEvent(original: Any): Event() {
     var cancelled = false
 }
 class PostRender3DEvent(val partialTicks: Float)
+class Render2DPreBossBarEvent()
+class RenderEndFrameEvent()
 class RenderEntityModelEvent(renderOriginal: Any, entityOriginal: Any, val renderLimbSwing: Float, val renderLimbSwingAmount: Float, val renderAgeInTicks: Float, val renderHeadYaw: Float, val renderHeadPitch: Float, val renderScaleFactor: Float): Event() {
     private var entity1: Entity? = null
-    private var render1: RenderLivingEntity? = null
+    private var render1: RenderLivingEntity<*>? = null
 
     init {
         try {
@@ -40,7 +42,7 @@ class RenderEntityModelEvent(renderOriginal: Any, entityOriginal: Any, val rende
 
     }
     
-    val render: RenderLivingEntity
+    val render: RenderLivingEntity<*>
         get() = render1!!
 
     val entity: Entity
@@ -50,7 +52,7 @@ class RenderEntityModelEvent(renderOriginal: Any, entityOriginal: Any, val rende
 }
 class PostRenderEntityModelEvent(renderOriginal: Any, entityOriginal: Any, val renderLimbSwing: Float, val renderLimbSwingAmount: Float, val renderAgeInTicks: Float, val renderHeadYaw: Float, val renderHeadPitch: Float, val renderScaleFactor: Float): Event() {
     private var entity1: Entity? = null
-    private var render1: RenderLivingEntity? = null
+    private var render1: RenderLivingEntity<*>? = null
 
     init {
         try {
@@ -61,7 +63,7 @@ class PostRenderEntityModelEvent(renderOriginal: Any, entityOriginal: Any, val r
         }
     }
 
-    val render: RenderLivingEntity
+    val render: RenderLivingEntity<*>
         get() = render1!!
 
     val entity: Entity

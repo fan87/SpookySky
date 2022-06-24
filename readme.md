@@ -1,5 +1,5 @@
 # SpookySky
-An injection based Minecraft client.
+An JavaAgent based Minecraft client.
 
 Nothing special, you may want to find other clients (Well until I spend enough time on it and decided
 to make it a real project). It's a client for me to practice kotlin, bytecode, and OpenGL, so you
@@ -19,6 +19,28 @@ Run `./gradlew agent`, and it will print out the jvm arguments you need to add. 
 clients mentioned below.
 
 If you couldn't understand that, don't DM me for it as you are not supposed to use it.
+
+### Notes
+So if I release it, I can know what to write:
+
+#### How to check the status of injection
+You can look at left bottom corner of the screen, there should be a colored 4 pixels square.
+If it's red, try going to MultiPlayer menu and wait for a while until it becomes green. Try following steps:
+- Go multiplayer menu
+- Add a server to servers list
+- Join a single player game
+
+Wait for at least 10 seconds, if it becomes green then you are free to join servers
+
+If it's green, it means that everything has been mapped, and the square will only appear for 20 more seconds
+
+If you saw nothing **from the beginning**, it means that the client is not supported at all. Keep in mind that
+if everything is mapped, the square will also disappear 20 seconds after the green square 
+
+
+![](https://imgur.com/cFfpDNh.png)
+
+(The green square)
 
 ### Known Supported Clients
 #### 1.8

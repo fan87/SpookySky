@@ -32,7 +32,6 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
 
     init {
         dependsOn(MapEntityPlayerSP)
-        dependsOn(MapGuiIngame)
         dependsOn(MapEntityRenderer)
     }
 
@@ -54,12 +53,10 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
                 }
                 matchClickMouse(clazz)
                 matchRunTick(clazz)
-                mapIngameGui(clazz)
                 matchPatternB(clazz)
                 matchCurrentGuiScreen(clazz)
                 matchFPS(clazz)
                 matchGuiChat(clazz)
-                mapIngameGui(clazz)
                 matchEntityRenderer(clazz)
                 matchTimer(clazz)
                 matchFrameBuffer(clazz)
@@ -133,14 +130,6 @@ class ProcessorMapMinecraft: Processor("Map Minecraft") {
             }
         }
         assertMapped(MapGuiChat)
-    }
-    fun mapIngameGui(clazz: LoadedClass) {
-        for (field in clazz.node.fields) {
-            if (field.desc == "L${MapGuiIngame.assumeMapped().name};") {
-                MapMinecraft.mapIngameGui.map(field)
-            }
-        }
-        assertMapped(MapMinecraft.mapIngameGui)
     }
     fun matchEntityRenderer(clazz: LoadedClass) {
         for (field in clazz.node.fields) {
