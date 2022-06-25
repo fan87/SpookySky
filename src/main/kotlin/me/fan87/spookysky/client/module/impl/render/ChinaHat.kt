@@ -32,7 +32,9 @@ class ChinaHat: Module("ChinaHat", "Module name.", Category.RENDER) {
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
         GL11.glShadeModel(GL11.GL_SMOOTH)
         GL11.glDisable(GL11.GL_CULL_FACE)
-        GL11.glColor4f(color.value.red.toFloat(), color.value.green.toFloat(), color.value.blue.toFloat(), color.value.alpha.toFloat())
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glColor4f(color.value.red.toFloat() / 255f, color.value.green.toFloat() / 255f, color.value.blue.toFloat() / 255f, color.value.alpha.toFloat() / 255f)
 
         GL11.glBegin(GL11.GL_TRIANGLE_STRIP)
         for (i in 0..360 step 10) {

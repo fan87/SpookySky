@@ -22,6 +22,10 @@ void main() {
         return;
     }
     float radius = 0.001;
+    if (gl_TexCoord[0].x < radius || gl_TexCoord[0].x > 1.0 - radius || gl_TexCoord[0].y < radius || gl_TexCoord[0].y > 1.0 - radius) {
+        gl_FragColor = color;
+        return;
+    }
     for (float x = -radius; x <= radius; x += radius) {
         for (float y = -radius; y <= radius; y += radius) {
             vec4 currentColor = texture2D(u_texture, gl_TexCoord[0].xy + vec2(x, y));
