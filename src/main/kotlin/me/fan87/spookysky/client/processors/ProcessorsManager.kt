@@ -55,6 +55,9 @@ class ProcessorsManager(val spookySky: SpookySky) {
                 SpookySky.debug("[Processors Manager] Running processor: ${processor.humanReadableName} as all of its dependencies has been solved")
                 var firstTime = false
                 processor.start()
+                for (onlyProcessMapping in processor.onlyProcessMappings) {
+                    processor.onlyProcess(onlyProcessMapping)
+                }
                 while (!processor.jobDone()) {
                     try {
                         if (processor.onlyProcess.isEmpty()) {

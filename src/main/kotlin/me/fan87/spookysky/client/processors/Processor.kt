@@ -10,10 +10,15 @@ abstract class Processor(
     val dependencies = ArrayList<Mapping<*>>()
     val onlyProcess = ArrayList<String>()
 
+    val onlyProcessMappings = ArrayList<Mapping<*>>()
+
     open fun start() {
 
     }
 
+    fun onlyProcessMapping(mapping: Mapping<*>) {
+        onlyProcessMappings.add(mapping)
+    }
     fun onlyProcess(name: String) {
         onlyProcess.add(name)
     }
@@ -28,6 +33,11 @@ abstract class Processor(
     open fun canProcess(): Boolean {
         for (dependency in dependencies) {
             if (!dependency.isMapped()) {
+                return false
+            }
+        }
+        for (mapping in onlyProcessMappings) {
+            if (!mapping.isMapped()) {
                 return false
             }
         }
