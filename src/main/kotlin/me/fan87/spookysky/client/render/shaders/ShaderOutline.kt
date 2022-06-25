@@ -9,7 +9,7 @@ class ShaderOutline: FramebufferShaderProgram() {
             .fragmentShader.fromPath("shaders/outline.frag").end()
     }
 
-    var currentDirection = 0
+    private var currentDirection = 0
 
     override fun updateUniform() {
         GL20.glUniform1i(getUniform("u_texture"), 0)
