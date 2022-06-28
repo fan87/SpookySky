@@ -15,8 +15,8 @@ const val timeout = 20000
 internal class MappingTest {
 
     companion object {
-        const val minMinor = 7
-        const val maxMinor = 12
+        const val minMinor = 8
+        const val maxMinor = 8
     }
 
 
@@ -81,6 +81,14 @@ internal class MappingTest {
         val oldOut = System.out
         System.setOut(PrintStream(object : OutputStream() { override fun write(b: Int) {} }))
         val mapper = SpookyMinecraftMapper(classes)
+        mapper.processorsManager.onError = {
+            mapper.stop()
+            System.setOut(oldOut)
+            println(" ===== Map Result of $version ===== ")
+            mapper.dumpToConsole()
+            println(" ================================== ")
+            throw AssertionError("Failed to map version: $version")
+        }
         val startTime = System.currentTimeMillis()
         var lastSendTime = System.currentTimeMillis()
         while (true) {

@@ -9,8 +9,9 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.util.CheckClassAdapter
 import java.io.File
 import java.io.PrintWriter
+import kotlin.system.exitProcess
 
-class SpookyMinecraftMapper(val classes: List<ClassNode>) {
+class SpookyMinecraftMapper(val classes: List<ClassNode>, val onError: () -> Unit = { exitProcess(-1) }) {
 
     val loadedClasses = HashMap<String, LoadedClass>()
 
@@ -25,7 +26,10 @@ class SpookyMinecraftMapper(val classes: List<ClassNode>) {
 //        val writeClass = ASMUtils.writeClassNoVerify(it.node)
 //        val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
         println("===== REDEFINE REQUEST =====\nClass Name: ${it.name}"
-    ) })
+    ) }).also {
+        it.onError = onError
+    }
+
 
 
     fun isFinished(): Boolean {

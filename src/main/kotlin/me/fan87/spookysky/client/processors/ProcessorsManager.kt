@@ -14,6 +14,10 @@ class ProcessorsManager(val mappingsManager: MappingsManager, val classesProvide
     val processors = ArrayList<Processor>()
     val threads = ArrayList<Thread>()
 
+    var onError: () -> Unit = {
+        exitProcess(-1)
+    }
+
     init {
         val resolver = ResolverUtil()
         resolver.classLoader = javaClass.classLoader
@@ -74,7 +78,7 @@ class ProcessorsManager(val mappingsManager: MappingsManager, val classesProvide
                                     }
                                 } catch (e: Throwable) {
                                     e.printStackTrace()
-                                    exitProcess(-1)
+                                    onError()
                                 } finally {
                                     mutableEntry.value.processLock.unlock()
                                 }
@@ -101,7 +105,7 @@ class ProcessorsManager(val mappingsManager: MappingsManager, val classesProvide
                                     }
                                 } catch (e: Throwable) {
                                     e.printStackTrace()
-                                    exitProcess(-1)
+                                    onError()
                                 } finally {
                                     node.processLock.unlock()
                                 }
