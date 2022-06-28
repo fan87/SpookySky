@@ -14,7 +14,6 @@ object MapRender : ClassMapping<Render<*>>() {
     override val humanReadableName: String
         get() = "Render"
 
-    val mapCanRenderName = MethodMapping<Unit, Render<*>>(this, "canRenderName(Entity)")
     val mapRenderShadow = MethodMapping<Unit, Render<*>>(this, "renderShadow(Entity, double, double, double, float, float)")
     val mapRenderLivingLabel = MethodMapping<Unit, Render<*>>(this, "renderLivingLabel(Entity, String, double, double, double, int)")
 }

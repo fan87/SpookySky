@@ -7,13 +7,15 @@ import java.lang.reflect.Modifier
 import java.net.URI
 import java.util.concurrent.locks.ReentrantLock
 
-class MappingsManager(val spookySky: SpookySky) {
+class MappingsManager {
 
     companion object {
 
+        lateinit var INSTANCE: MappingsManager
+
         fun <T> getWrapped(original: Any): T {
             var highest: Class<T>? = null
-            for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
+            for (mapping in MappingsManager.INSTANCE.mappings) {
                 val wrapperClass = mapping.getWrapperClass()
                 if (mapping.isInstance(original)) {
                     if (highest == null) {
@@ -42,8 +44,10 @@ class MappingsManager(val spookySky: SpookySky) {
     val condition = updateLock.newCondition()
 
     val mappings = ArrayList<ClassMapping<*>>()
+    val allMappings = ArrayList<Mapping<*>>()
 
     init {
+        INSTANCE = this
         val resolver = ResolverUtil()
         resolver.classLoader = javaClass.classLoader
         resolver.findInPackage(object : ResolverUtil.Test {
@@ -68,7 +72,28 @@ class MappingsManager(val spookySky: SpookySky) {
             val declaredField = clazz.getDeclaredField("INSTANCE")
             val mapping = declaredField.get(null) as ClassMapping<*>
             mappings.add(mapping)
+            allMappings.add(mapping)
+            for (child in mapping.children) {
+                allMappings.add(child)
+            }
         }
+    }
+
+    fun isMapped(): Boolean {
+        var mapped = true
+        outer@for (mapping in mappings) {
+            if (!mapping.isMapped()) {
+                mapped = false
+                break
+            }
+            for (child in mapping.children) {
+                if (!child.isMapped()) {
+                    mapped = false
+                    break@outer
+                }
+            }
+        }
+        return mapped
     }
 
 }

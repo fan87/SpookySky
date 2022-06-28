@@ -15,10 +15,14 @@ import me.fan87.spookysky.client.processors.ProcessorsManager
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ChatColor
 import org.lwjgl.opengl.GL11
+import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.util.CheckClassAdapter
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.io.PrintWriter
+import java.lang.instrument.ClassDefinition
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
 
@@ -77,8 +81,12 @@ class SpookySky(
             classes[preLoadedClass.key] = LoadedClass(preLoadedClass.key, preLoadedClass.value)
         }
 
-        mappingsManager = MappingsManager(this)
-        processorsManager = ProcessorsManager(this)
+        mappingsManager = MappingsManager()
+        processorsManager = ProcessorsManager(mappingsManager, { classes }, {
+            val writeClass = ASMUtils.writeClass(it.node)
+            val verifier = CheckClassAdapter.verify(ClassReader(writeClass), javaClass.classLoader, false, PrintWriter(System.err, true))
+            instrumentation.redefineClasses(ClassDefinition(it.getJavaClass(), writeClass))
+        })
         modulesManager = ModulesManager(this)
         commandsManager = CommandsManager(this)
 

@@ -51,6 +51,11 @@ object ASMUtils {
 
 
     fun writeClass(node: ClassNode): ByteArray {
+        val writer = PatchedClassWriter0(ClassWriter.COMPUTE_FRAMES)
+        node.accept(writer)
+        return writer.toByteArray()
+    }
+    fun writeClassNoVerify(node: ClassNode): ByteArray {
         val writer = PatchedClassWriter(ClassWriter.COMPUTE_FRAMES)
         node.accept(writer)
         return writer.toByteArray()
@@ -240,7 +245,13 @@ object ASMUtils {
         }
     }
 
-    class PatchedClassWriter(flags: Int) : ClassWriter(flags) {}
+    class PatchedClassWriter(flags: Int) : ClassWriter(flags) {
+
+        override fun getCommonSuperClass(type1: String?, type2: String?): String {
+            return "java/lang/Object"
+        }
+    }
+    class PatchedClassWriter0(flags: Int) : ClassWriter(flags) {}
 
 
     fun Class<*>.getJvmTypeName(): String {

@@ -33,7 +33,6 @@ abstract class HookingProcessor(humanReadableName: String) : Processor(humanRead
                 if (enableDebug()) {
                     println("[SpookySky] [Hooking Processor] ${humanReadableName} has requested outputting the file! Saving file to ${File(System.getProperty("java.io.tmpdir") ,"/${humanReadableName}.class").absoluteFile}")
                     File(System.getProperty("java.io.tmpdir") ,"/${humanReadableName}.class").writeBytes(ASMUtils.writeClass(clazz.node))
-
                 }
                 return true
             }

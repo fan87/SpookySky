@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import me.fan87.spookysky.buildsrc.BuildSrcCommon
+import me.fan87.spookysky.buildsrc.test.MappingTest
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -39,11 +40,17 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.lwjgl.lwjgl:lwjgl:2.9.3")
+    // Expected to be included in Minecraft Runtime
+    compileOnly("org.lwjgl.lwjgl:lwjgl:2.9.3") // For rendering
     compileOnly("org.lwjgl.lwjgl:lwjgl_util:2.9.3")
-    compileOnly("com.google.code.gson:gson:2.2.4")
-    implementation("org.apache.logging.log4j:log4j-api:2.0-beta9")
+    compileOnly("com.google.code.gson:gson:2.2.4") // Gson is included, and required for config system
+
+    // Dependencies
+    implementation("org.apache.logging.log4j:log4j-api:2.0-beta9") // There's a class scanning utility class in Log4j, we're using it
     implementation("org.apache.logging.log4j:log4j-core:2.0-beta9")
+
+
+    testImplementation(kotlin("test"))
 }
 
 allprojects {
@@ -75,8 +82,13 @@ allprojects {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
-
 tasks {
+    register<MappingTest>("remapTest") {
+
+    }
+    test {
+        useJUnitPlatform()
+    }
     register<JavaExec>("run") {
         dependsOn(":loader:classes")
         dependsOn("assemble")
@@ -95,7 +107,6 @@ tasks {
         }
     }
     register<JavaExec>("lunar") {
-
         dependsOn(":loader:classes")
         dependsOn(":loader:shadowJar")
         dependsOn("classes")

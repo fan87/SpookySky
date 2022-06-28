@@ -17,7 +17,7 @@ class ProcessorMapWorld: Processor("Map World") {
         for (method in clazz.node.methods) {
             if (pattern.matcher(method).next()) {
                 MapWorldClient.map(clazz)
-                MapWorld.map(MapWorldClient.getJavaClass().superclass)
+                MapWorld.map(getClass(MapWorldClient)!!.node.superName)
             }
         }
         return false

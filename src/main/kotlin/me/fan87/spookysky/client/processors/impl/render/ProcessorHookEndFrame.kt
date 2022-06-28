@@ -34,7 +34,4 @@ class ProcessorHookEndFrame: HookingProcessor("Hook EndFrame") {
         out.add(ASMUtils.generateNewEventPost<RenderEndFrameEvent>())
     }
 
-    override fun enableDebug(): Boolean {
-        return true
-    }
 }
