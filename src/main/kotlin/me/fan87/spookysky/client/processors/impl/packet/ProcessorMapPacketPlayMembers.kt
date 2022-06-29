@@ -22,7 +22,7 @@ class ProcessorMapPacketPlayMembers: Processor("Map PacketPlay Members") {
     }
 
     override fun start() {
-        for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
+        for (mapping in mappingsManager.mappings) {
             if (mapping is PacketMapping<*>) {
                 if (mapping.mode == PacketSource.PLAY_SERVER || mapping.mode == PacketSource.PLAY_CLIENT) {
                     onlyProcess(mapping)
@@ -37,7 +37,7 @@ class ProcessorMapPacketPlayMembers: Processor("Map PacketPlay Members") {
 
     override fun process(clazz: LoadedClass): Boolean {
         mapped++
-        for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
+        for (mapping in mappingsManager.mappings) {
             if (mapping is PacketMapping<*>) {
                 if (mapping.assumeMapped().name == clazz.name) {
                     val method = clazz.node.getMethod(MapPacket.mapReadPacketData)

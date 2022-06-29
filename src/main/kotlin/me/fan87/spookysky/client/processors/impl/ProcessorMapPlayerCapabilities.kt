@@ -7,6 +7,8 @@ import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayer
 import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.entities.MapPlayerCapabilities
 import me.fan87.spookysky.client.mapping.impl.packets.play.client.MapC13PacketPlayerAbilities
+import me.fan87.spookysky.client.mapping.impl.world.MapWorld
+import me.fan87.spookysky.client.mapping.impl.world.MapWorldClient
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
@@ -43,7 +45,7 @@ class ProcessorMapPlayerCapabilities: Processor("Map PlayerCapabilities"){
         for (method in clazz.node.methods) {
             val matcher = pattern.matcher(method)
             if (matcher.next()){
-                MapEntityPlayer.map(MapEntityPlayerSP.getJavaClass().superclass.superclass)
+                MapEntityPlayer.map(getClass(MapEntityPlayerSP)!!.node.superName)
                 MapEntityPlayerSP.mapSendPlayerAbilities.map(method)
                 MapEntityPlayer.mapCapabilities.map(matcher.groupAsFieldInsnNode("field"))
                 MapPlayerCapabilities.map(ASMUtils.descTypeToJvmType(matcher.groupAsFieldInsnNode("field").desc))

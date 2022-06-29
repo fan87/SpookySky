@@ -1,7 +1,9 @@
 package me.fan87.spookysky.client.processors
 
 import me.fan87.spookysky.client.LoadedClass
+import me.fan87.spookysky.client.mapping.ClassMapping
 import me.fan87.spookysky.client.mapping.Mapping
+import me.fan87.spookysky.client.mapping.MappingsManager
 
 abstract class Processor(
     val humanReadableName: String
@@ -10,10 +12,25 @@ abstract class Processor(
     val dependencies = ArrayList<Mapping<*>>()
     val onlyProcess = ArrayList<String>()
 
+    val onlyProcessMappings = ArrayList<Mapping<*>>()
+
+    lateinit var mappingsManager: MappingsManager
+    lateinit var processorsManager: ProcessorsManager
+
     open fun start() {
 
     }
 
+    fun getClass(name: String): LoadedClass? {
+        return processorsManager.classesProvider()[name]
+    }
+    fun getClass(mapping: ClassMapping<*>): LoadedClass? {
+        return getClass(mapping.assumeMapped().name)
+    }
+
+    fun onlyProcessMapping(mapping: Mapping<*>) {
+        onlyProcessMappings.add(mapping)
+    }
     fun onlyProcess(name: String) {
         onlyProcess.add(name)
     }
@@ -28,6 +45,11 @@ abstract class Processor(
     open fun canProcess(): Boolean {
         for (dependency in dependencies) {
             if (!dependency.isMapped()) {
+                return false
+            }
+        }
+        for (mapping in onlyProcessMappings) {
+            if (!mapping.isMapped()) {
                 return false
             }
         }
@@ -52,6 +74,10 @@ abstract class Processor(
         if (!value) {
             unsupportedClient("Expected true, but got false")
         }
+    }
+
+    fun ClassMapping<*>.getLoadedClass(): LoadedClass? {
+        return getClass(this)
     }
 
 }

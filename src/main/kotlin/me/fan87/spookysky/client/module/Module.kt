@@ -60,15 +60,15 @@ abstract class Module(val name: String, val description: String, val category: C
     protected abstract fun onDisable()
 
 
-    val settings: List<Setting<*>> by lazy {
+    val settings = ArrayList<Setting<*>>()
+
+    fun postInit() {
         val kClass = this::class
-        val out = ArrayList<Setting<*>>()
         for (memberProperty in kClass.memberProperties) {
             if (memberProperty.returnType.isSubtypeOf(Setting::class.createType(arguments = arrayListOf(KTypeProjection.STAR)))) {
-                out.add((memberProperty as KProperty1<Module, Setting<*>>).get(this))
+                settings.add((memberProperty as KProperty1<Module, Setting<*>>).get(this))
             }
         }
-        out
     }
 
 

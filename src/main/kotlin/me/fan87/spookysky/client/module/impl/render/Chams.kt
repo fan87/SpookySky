@@ -8,6 +8,7 @@ import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
 import me.fan87.spookysky.client.mapping.impl.rendering.Framebuffer
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
+import me.fan87.spookysky.client.module.settings.TargetSelector
 import me.fan87.spookysky.client.module.settings.impl.ColorSetting
 import me.fan87.spookysky.client.render.RenderStateManager
 import me.fan87.spookysky.client.utils.RenderUtils
@@ -21,6 +22,8 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
 
     val color = ColorSetting("Color", "The color of chams", Color(0xffffff))
 
+    val targetSelector = TargetSelector(this)
+
     override fun onEnable() {
 
     }
@@ -31,7 +34,9 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
 
     @EventHandler
     fun onRenderEntity(event: RenderEntityModelEvent) {
-
+        if (!targetSelector.matches(event.entity)) {
+            return
+        }
         RenderUtils.confirmSetupStencilAttachment()
 
         GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT)
@@ -39,7 +44,8 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
         GL11.glEnable(GL11.GL_STENCIL_TEST)
         GL11.glStencilMask(0xff)
         GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xff)
-        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_KEEP)
+        GL11.glDepthMask(false)
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_REPLACE)
 
         event.renderModel()
 
@@ -83,6 +89,7 @@ class Chams: Module("Chams", "See entities through walls", Category.RENDER) {
         GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xff)
         GL11.glStencilMask(0xff)
         GL11.glDisable(GL11.GL_STENCIL_TEST)
+        GL11.glDepthMask(true)
 
     }
 

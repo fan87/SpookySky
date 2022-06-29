@@ -38,6 +38,7 @@ class ModulesManager(val spookySky: SpookySky) {
             val module = clazz.newInstance() as Module
             SpookySky.debug("[Modules Manager] Registered Module: ${module.name}")
             modules.add(module)
+            module.postInit()
         }
         spookySky.eventManager.registerListener(this)
     }

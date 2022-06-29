@@ -19,8 +19,8 @@ abstract class Mapping<T: MappedInfo>() {
                 SpookySky.debug("$humanReadableName has been mapped (${value.name})")
             }
             field = value
-            SpookySky.INSTANCE.mappingsManager.updateLock.withLock {
-                SpookySky.INSTANCE.mappingsManager.condition.signalAll()
+            MappingsManager.INSTANCE.updateLock.withLock {
+                MappingsManager.INSTANCE.condition.signalAll()
             }
         }
 

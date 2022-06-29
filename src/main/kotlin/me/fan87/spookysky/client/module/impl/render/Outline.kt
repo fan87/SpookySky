@@ -8,18 +8,28 @@ import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.mapping.impl.entities.EntityLivingBase
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
+import me.fan87.spookysky.client.module.settings.TargetSelector
+import me.fan87.spookysky.client.module.settings.impl.ColorSetting
+import me.fan87.spookysky.client.module.settings.impl.DoubleSetting
 import me.fan87.spookysky.client.render.FramebufferShaderProgram
 import me.fan87.spookysky.client.render.RenderStateManager
 import me.fan87.spookysky.client.render.ShaderProgram
 import me.fan87.spookysky.client.render.Shaders
+import me.fan87.spookysky.client.utils.MathUtils.distanceTo
+import me.fan87.spookysky.client.utils.MathUtils.getDistanceToEntity
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL20
+import java.awt.Color
 
 class Outline: Module("Outline", "Shows outline of entities", Category.RENDER) {
 
+    val maxDistance = DoubleSetting("Distance", "Maximum distance of outline being rendered", 100.0, 30.0, 130.0)
+    val radius = DoubleSetting("Width", "Width of the outline", 5.0, 1.0, 100.0)
+    val color = ColorSetting("Color", "Color of the outline", Color.WHITE)
+    val targetSelector = TargetSelector(this)
 
     override fun onEnable() {
     }
@@ -38,18 +48,15 @@ class Outline: Module("Outline", "Shows outline of entities", Category.RENDER) {
         glPushAttrib(GL_ALL_ATTRIB_BITS)
         glPushMatrix()
         val shader = Shaders.outline
+        shader.radius = (radius.value * 0.0001).toFloat()
+        shader.color = color.value
         RenderStateManager.renderShadow = false
         Minecraft.getMinecraft().entityRenderer!!.setupCameraTransform(Minecraft.getMinecraft().timer.renderPartialTicks, 0)
         shader.startUsing()
         RenderStateManager.renderShadow = false
 
-        for (entity in mc.theWorld!!.loadedEntityList) {
-            if (entity == mc.thePlayer) {
-                continue
-            }
-            if (entity !is EntityLivingBase) {
-                continue
-            }
+        val player = mc.thePlayer!!
+        for (entity in mc.theWorld!!.loadedEntityList.filter(targetSelector::matches).filter { it.getDistanceToEntity(player) <= maxDistance.value }) {
 
             glDisable(GL_LIGHTING)
             mc.renderManager!!.renderEntitySimple(entity, partialTick)

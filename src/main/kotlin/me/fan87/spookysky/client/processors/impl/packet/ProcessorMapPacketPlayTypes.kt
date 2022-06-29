@@ -22,7 +22,7 @@ class ProcessorMapPacketPlayTypes: Processor("Map All Packet Types") {
             val method = clazz.node.getMethod("<init>", "(Ljava/lang/String;II)V")
             var clientPackets: MutableMap<Int, PacketMapping<*>> = LinkedHashMap()
             var serverPackets: MutableMap<Int, PacketMapping<*>> = LinkedHashMap()
-            for (mapping in SpookySky.INSTANCE.mappingsManager.mappings) {
+            for (mapping in mappingsManager.mappings) {
                 if (mapping is PacketMapping<*>) {
                     if (mapping.mode == PacketSource.PLAY_CLIENT) {
                         clientPackets[mapping.id] = mapping
@@ -70,7 +70,7 @@ class ProcessorMapPacketPlayTypes: Processor("Map All Packet Types") {
             for (clientPacket in clientPackets) {
                 clientPacket.value.map(((matcher.group(clientPacket.value.javaClass.name)!![0] as LdcInsnNode).cst as Type).internalName)
             }
-            MapPacket.map(MapC00PacketKeepAlive.getJavaClass().interfaces[0])
+            MapPacket.map(MapC00PacketKeepAlive.getLoadedClass()!!.node.interfaces[0])
             processed = true
         } else {
             if (clazz.node.access and Opcodes.ACC_ENUM == 0) {

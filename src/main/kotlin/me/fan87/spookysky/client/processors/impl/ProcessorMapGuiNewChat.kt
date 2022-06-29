@@ -3,6 +3,7 @@ package me.fan87.spookysky.client.processors.impl
 import me.fan87.regbex.RegbexPattern
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.mapping.impl.MapMinecraft
+import me.fan87.spookysky.client.mapping.impl.entities.MapEntityPlayerSP
 import me.fan87.spookysky.client.mapping.impl.rendering.*
 import me.fan87.spookysky.client.processors.Processor
 import me.fan87.spookysky.client.utils.ASMUtils
@@ -43,7 +44,7 @@ class ProcessorMapGuiNewChat: Processor("Map GuiNewChat") {
         matcher.next()
         MapGuiIngame.mapGetChatGUI.map(matcher.group("getChatGUI")!![0] as MethodInsnNode)
         MapGuiNewChat.map((matcher.group("addToSentMessages")!![0] as MethodInsnNode).owner)
-        MapGui.map(MapGuiNewChat.getJavaClass().superclass.getJvmTypeName())
+        MapGui.map(getClass(MapGuiNewChat)!!.node.superName)
         MapGuiNewChat.mapAddToSentMessages.map(matcher.group("addToSentMessages")!![0] as MethodInsnNode)
         return false
     }

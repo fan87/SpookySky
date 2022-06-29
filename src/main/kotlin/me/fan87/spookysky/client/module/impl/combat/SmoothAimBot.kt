@@ -6,6 +6,7 @@ import me.fan87.spookysky.client.events.events.WorldTickEvent
 import me.fan87.spookysky.client.mapping.impl.Minecraft
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
+import me.fan87.spookysky.client.module.settings.TargetSelector
 import me.fan87.spookysky.client.module.settings.impl.DoubleSetting
 import me.fan87.spookysky.client.module.settings.impl.IntSetting
 import me.fan87.spookysky.client.utils.MathUtils
@@ -19,6 +20,8 @@ class SmoothAimBot: Module("SmoothAimBot", "Automatically aims to your target", 
     val turnSpeed = IntSetting("Speed", "Turning speed of the bot", 30, 1, 100)
     val range = DoubleSetting("Range", "Range of the entity detection", 4.0, 2.0, 20.0)
     val fov = DoubleSetting("Fov", "Range of the entity detection", 180.0, 1.0, 360.0)
+
+    val targetSelector = TargetSelector(this)
 
     override fun onEnable() {
 
@@ -36,7 +39,7 @@ class SmoothAimBot: Module("SmoothAimBot", "Automatically aims to your target", 
     @EventHandler
     fun onRender(event: PostRender3DEvent) {
         for (entity in mc.theWorld!!.loadedEntityList) {
-            if (spookySky.modulesManager.getModule<Target>().metRequirements(entity)) {
+            if (targetSelector.matches(entity)) {
                 if (mc.thePlayer!!.getDistanceToEntity(entity) < range.value && mc.thePlayer!!.getDistanceToEntity(entity) > 0.5) {
                     var yaw: Float = MathUtils.tryFace(mc.thePlayer!!.getPosition(), entity.getPosition()).x
                     if (yaw > 180) {
