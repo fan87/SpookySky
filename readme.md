@@ -1,3 +1,12 @@
+# INJECTOR BRANCH
+DON'T USE THIS BRANCH, EVERY PATH IS HARDCODED TO MAKE MY LIFE EASIER.
+
+Yes, I'm planning to make it injects to JVM with -XX:+DisableAttachMechanism.
+
+This branch is only for me to not kill myself after deleting my operating system
+accidentally (aka a backup), and the injector and loader is not opensource (yet).
+
+
 # SpookySky
 An JavaAgent based Minecraft client.
 
@@ -7,6 +16,7 @@ shouldn't be using it, but learning the code as needed.
 
 This is also a perfect example of a library I made a while back ago:
 [Regular Bytecode Expression](https://github.com/fan87/Regular-Bytecode-Expression)
+
 
 
 ## Using
