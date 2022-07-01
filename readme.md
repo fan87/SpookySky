@@ -1,12 +1,3 @@
-# INJECTOR BRANCH
-DON'T USE THIS BRANCH, EVERY PATH IS HARDCODED TO MAKE MY LIFE EASIER.
-
-Yes, I'm planning to make it injects to JVM with -XX:+DisableAttachMechanism.
-
-This branch is only for me to not kill myself after deleting my operating system
-accidentally (aka a backup), and the injector and loader is not opensource (yet).
-
-
 # SpookySky
 An JavaAgent based Minecraft client.
 
