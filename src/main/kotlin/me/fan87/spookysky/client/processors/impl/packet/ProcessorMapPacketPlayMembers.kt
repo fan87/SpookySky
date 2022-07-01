@@ -8,10 +8,12 @@ import me.fan87.spookysky.client.mapping.impl.packets.MapPacketBuffer
 import me.fan87.spookysky.client.mapping.impl.packets.PacketMapping
 import me.fan87.spookysky.client.mapping.impl.packets.PacketSource
 import me.fan87.spookysky.client.processors.Processor
+import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.getMethod
 import me.fan87.spookysky.client.utils.CaptureUtils.groupAsFieldInsnNode
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.MethodInsnNode
+import java.io.File
 
 class ProcessorMapPacketPlayMembers: Processor("Map PacketPlay Members") {
 
@@ -44,6 +46,9 @@ class ProcessorMapPacketPlayMembers: Processor("Map PacketPlay Members") {
                     val matcher = RegbexPattern {
                         thenThis()
                         thenVarLoadNode(1)
+                        thenLazyAmountOf(0..3) {
+                            thenAny() // So it would match if it's readStringFromBuffer (has an int as argument, and this should push it)
+                        }
                         thenCustomCheck { it.opcode == Opcodes.INVOKEVIRTUAL && it is MethodInsnNode && it.owner == MapPacketBuffer.assumeMapped().name }
                         thenLazyAnyAmountOf {
                             thenAny() // So it would match if it's a boolean value (It has `!= 0` in the end)
@@ -54,7 +59,9 @@ class ProcessorMapPacketPlayMembers: Processor("Map PacketPlay Members") {
                     }.matcher(method)
                     for (fieldMapping in mapping.getDataOrder()) {
                         if (!matcher.next()) {
-                            throw IllegalStateException("Couldn't find ${fieldMapping.humanReadableName} (Defined at ${mapping.humanReadableName})")
+                            val output = File(System.getProperty("java.io.tmprdir"), mapping.getWrapperClass().simpleName+ ".class")
+                            output.writeBytes(ASMUtils.writeClass(clazz.node))
+                            throw IllegalStateException("Couldn't find ${fieldMapping.humanReadableName} (Defined at ${mapping.humanReadableName}). The class has been dumped at ${output.canonicalPath}")
                         }
                         fieldMapping.map(matcher.groupAsFieldInsnNode("field"))
                     }
