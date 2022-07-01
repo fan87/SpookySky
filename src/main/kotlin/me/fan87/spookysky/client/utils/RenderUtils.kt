@@ -86,6 +86,7 @@ object RenderUtils {
         }
 
         glPushAttrib(GL_ALL_ATTRIB_BITS)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
         glEnable(GL_TEXTURE_2D)
         glBegin(GL_QUADS)
@@ -115,6 +116,7 @@ object RenderUtils {
     }
 
     fun drawRect(left: Double, top: Double, right: Double, bottom: Double, color: Int) {
+
         var left = left
         var top = top
         var right = right
@@ -130,6 +132,7 @@ object RenderUtils {
             top = bottom
             bottom = j
         }
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glPushAttrib(GL_ALL_ATTRIB_BITS)
         glEnable(GL_BLEND)
         glDisable(GL_TEXTURE_2D)

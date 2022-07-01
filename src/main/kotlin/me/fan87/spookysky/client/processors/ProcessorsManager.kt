@@ -3,7 +3,9 @@ package me.fan87.spookysky.client.processors
 import me.fan87.spookysky.client.LoadedClass
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.mapping.MappingsManager
+import me.fan87.spookysky.mapper.MappingResultDumper
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
+import java.io.PrintWriter
 import java.lang.reflect.Modifier
 import java.net.URI
 import kotlin.concurrent.withLock

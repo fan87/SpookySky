@@ -28,7 +28,7 @@ import java.lang.instrument.Instrumentation
 
 class SpookySky(
     val instrumentation: Instrumentation,
-    val preLoadedClasses: HashMap<String, ClassNode>,
+    val preLoadedClasses: HashMap<String, ByteArray>,
     val transformer: ClassFileTransformer,
     val resourcesFile: File,
     val clientClassLoader: ClassLoader
@@ -78,7 +78,7 @@ class SpookySky(
         }
         instrumentation.removeTransformer(transformer)
         for (preLoadedClass in preLoadedClasses) {
-            classes[preLoadedClass.key] = LoadedClass(preLoadedClass.key, preLoadedClass.value)
+            classes[preLoadedClass.key] = LoadedClass(preLoadedClass.key, ASMUtils.parseClass(preLoadedClass.value))
         }
 
         mappingsManager = MappingsManager()

@@ -83,6 +83,9 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 tasks {
+    shadowJar {
+        relocate("org.objectweb.asm", "me.fan87.spookysky.org.objectweb.asm")
+    }
     register<MappingTest>("remapTest") {
 
     }

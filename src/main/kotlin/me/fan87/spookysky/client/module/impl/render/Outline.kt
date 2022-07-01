@@ -44,8 +44,8 @@ class Outline: Module("Outline", "Shows outline of entities", Category.RENDER) {
 
     @EventHandler
     fun onRender(event: PostRender3DEvent) {
-        val partialTick = mc.timer.renderPartialTicks
         glPushAttrib(GL_ALL_ATTRIB_BITS)
+        val partialTick = mc.timer.renderPartialTicks
         glPushMatrix()
         val shader = Shaders.outline
         shader.radius = (radius.value * 0.0001).toFloat()
@@ -70,10 +70,10 @@ class Outline: Module("Outline", "Shows outline of entities", Category.RENDER) {
         RenderStateManager.renderShadow = true
         Minecraft.getMinecraft().entityRenderer!!.setupCameraTransform(Minecraft.getMinecraft().timer.renderPartialTicks, 0)
         glPopMatrix()
-        glPopAttrib()
         GL13.glActiveTexture(33985)
         glDisable(GL_TEXTURE_2D)
         GL13.glActiveTexture(33984)
+        glPopAttrib()
     }
 
 
