@@ -190,7 +190,7 @@ object ASMUtils {
     }
 
     fun getReturnType(desc: String): String {
-        return desc.split("(")[1]
+        return desc.split(")")[1]
     }
 
     fun getParameterTypes(desc: String): Array<String> {

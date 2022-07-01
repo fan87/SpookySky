@@ -32,6 +32,9 @@ internal class MappingTest {
 
     @Test
     internal fun mapTest() {
+        println("Waiting 5 seconds so you can attach everything you may need for this run...")
+        Thread.sleep(5000)
+        println("Started! Assuming you have everything prepared.")
         assertTrue(minecraftVersionsDirectory.exists(), "Minecraft Version Directory doesn't exist!")
         val versions = arrayListOf(*(minMinor..maxMinor).toList().toTypedArray())
         for (dir in minecraftVersionsDirectory.listFiles()) {

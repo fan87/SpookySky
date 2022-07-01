@@ -1,5 +1,6 @@
 package me.fan87.spookysky.client.module.impl.misc
 
+import kotlin.random.Random
 import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.events.PacketReceivedEvent
@@ -25,21 +26,31 @@ class AutoFish: Module("AutoFish", "Use fishing rod automatically to fish", Cate
     }
 
     var currentTime = 0
-    var fishTime = -1
+    var rightClickTime = -1
+    var shouldContinue = false
 
     @EventHandler
     fun onTick(event: WorldTickEvent) {
-        //
+        if (rightClickTime == currentTime) {
+            mc.rightClickMouse()
+            if (shouldContinue) {
+                rightClickTime = currentTime + Random(System.currentTimeMillis()).nextInt(minOf(delayMin.value, delayMax.value), maxOf(delayMin.value, delayMax.value))
+                shouldContinue = false
+            } else {
+                rightClickTime = -1;
+            }
+        }
+        currentTime++
     }
 
     @EventHandler
     fun onPacket(event: PacketReceivedEvent) {
         val packet = event.packet
         if (packet is S29PacketSoundEffect) {
-            SpookySky.addClientChat(packet.soundName)
+            SpookySky.addClientChat("${packet.soundName} - ${mc.thePlayer!!.getHeldItem()}")
             if (packet.soundName == "random.splash") {
-                mc.rightClickMouse()
-                mc.rightClickMouse()
+                rightClickTime = currentTime + Random(System.currentTimeMillis()).nextInt(minOf(delayMin.value, delayMax.value), maxOf(delayMin.value, delayMax.value))
+                shouldContinue = refish.value
             }
         }
     }

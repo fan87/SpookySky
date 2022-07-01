@@ -38,6 +38,12 @@ class MappingsManager {
             }
             throw MissingMappingException("No available constructor for wrapper: ${highest.name}")
         }
+        fun <T> getWrappedNullable(original: Any?): T? {
+            if (original == null) {
+                return null
+            }
+            return getWrapped(original)
+        }
     }
 
     val updateLock = ReentrantLock()

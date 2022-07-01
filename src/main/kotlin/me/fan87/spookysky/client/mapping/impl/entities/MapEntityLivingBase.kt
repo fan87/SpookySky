@@ -1,10 +1,8 @@
 package me.fan87.spookysky.client.mapping.impl.entities
 
 
-import me.fan87.spookysky.client.mapping.ClassMapping
-import me.fan87.spookysky.client.mapping.FieldMapping
-import me.fan87.spookysky.client.mapping.MethodMapping
-import me.fan87.spookysky.client.mapping.WrapperClass
+import me.fan87.spookysky.client.mapping.*
+import me.fan87.spookysky.client.mapping.impl.item.ItemStack
 
 object MapEntityLivingBase : ClassMapping<EntityLivingBase>() {
     override fun getWrapperClass(): Class<EntityLivingBase> {
@@ -17,6 +15,7 @@ object MapEntityLivingBase : ClassMapping<EntityLivingBase>() {
     val mapJump = MethodMapping<Unit, EntityLivingBase>(this, "jump()")
     val mapOnLivingUpdate = MethodMapping<Unit, EntityLivingBase>(this, "onLivingUpdate()")
     val mapSwingItem = MethodMapping<Unit, EntityLivingBase>(this, "swingItem()")
+    val mapGetHeldItem = MethodMapping<Any, EntityLivingBase>(this, "getHeldItem()")
 
     val mapMoveStrafing = FieldMapping<Float, EntityLivingBase>(this, "movingStrafing")
     val mapMoveForward = FieldMapping<Float, EntityLivingBase>(this, "movingForward")
@@ -29,9 +28,11 @@ open class EntityLivingBase protected constructor(original: Any) : Entity(origin
     fun jump() = MapEntityLivingBase.mapJump.invoke(this)
     fun onLivingUpdate() = MapEntityLivingBase.mapOnLivingUpdate.invoke(this)
     fun swingItem() = MapEntityLivingBase.mapSwingItem.invoke(this)
+    fun getHeldItem(): ItemStack = MappingsManager.getWrapped(MapEntityLivingBase.mapGetHeldItem.invoke(this)!!)
 
     var moveStrafing: Float by MapEntityLivingBase.mapMoveStrafing
     var moveForward: Float by MapEntityLivingBase.mapMoveForward
+
 
     fun isMoving(): Boolean {
         return moveForward != 0f || moveStrafing != 0f
