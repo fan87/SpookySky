@@ -6,6 +6,7 @@ import me.fan87.spookysky.client.mapping.MappingsManager
 import me.fan87.spookysky.mapper.MappingResultDumper
 import org.apache.logging.log4j.core.config.plugins.ResolverUtil
 import java.io.PrintWriter
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Modifier
 import java.net.URI
 import kotlin.concurrent.withLock
@@ -80,6 +81,10 @@ class ProcessorsManager(val mappingsManager: MappingsManager, val classesProvide
                                     }
                                 } catch (e: Throwable) {
                                     e.printStackTrace()
+                                    System.err.println("(Invocation Target Exception's Cause:)")
+                                    if (e is InvocationTargetException) {
+                                        e.targetException.printStackTrace()
+                                    }
                                     onError()
                                 } finally {
                                     mutableEntry.value.processLock.unlock()

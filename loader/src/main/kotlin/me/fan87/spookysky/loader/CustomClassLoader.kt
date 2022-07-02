@@ -15,11 +15,20 @@ class CustomClassLoader(parent: ClassLoader): URLClassLoader(arrayOf(), parent) 
     }
 
     val classes = HashMap<String, Class<*>?>()
+    val loadingClasses = ArrayList<String>()
 
     override fun loadClass(name: String): Class<*> {
-        loadLock.withLock {
-            return super.loadClass(name)
+        val value = classes[name]
+        if (value != null) {
+            return value
         }
+        if (loadingClasses.contains(name)) {
+            throw ClassNotFoundException(name)
+        }
+        loadingClasses.add(name)
+        val clazz = super.loadClass(name)
+        classes[name] = clazz
+        return clazz
 
     }
 

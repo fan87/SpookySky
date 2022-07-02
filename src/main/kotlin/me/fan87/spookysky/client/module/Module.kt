@@ -63,11 +63,18 @@ abstract class Module(val name: String, val description: String, val category: C
     val settings = ArrayList<Setting<*>>()
 
     fun postInit() {
-        val kClass = this::class
-        for (memberProperty in kClass.memberProperties) {
-            if (memberProperty.returnType.isSubtypeOf(Setting::class.createType(arguments = arrayListOf(KTypeProjection.STAR)))) {
-                settings.add((memberProperty as KProperty1<Module, Setting<*>>).get(this))
+        addSettingsOf(javaClass)
+    }
+
+    fun addSettingsOf(clazz: Class<*>) {
+        for (field in clazz.declaredFields) {
+            if (Setting::class.java.isAssignableFrom(field.type)) {
+                field.isAccessible = true
+                settings.add(field.get(this) as Setting<*>)
             }
+        }
+        if (clazz.superclass != null) {
+            addSettingsOf(clazz.superclass)
         }
     }
 

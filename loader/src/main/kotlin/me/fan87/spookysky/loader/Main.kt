@@ -8,11 +8,13 @@ import me.fan87.spookysky.client.utils.ASMUtils
 import me.fan87.spookysky.client.utils.ASMUtils.insertInstructions
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.Handle
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 import java.io.File
 import java.lang.instrument.ClassFileTransformer
 import java.lang.instrument.Instrumentation
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Modifier
 import java.net.URL
 import java.net.URLClassLoader
@@ -56,8 +58,11 @@ object Main {
     @JvmStatic
     var args: String = ""
 
+    var instance = false
+
     @JvmStatic
     fun premain(args: String, instrumentation: Instrumentation) {
+        instance = true
         println("[SpookySky Loader] Attempting to load SpookySky @ $args")
         this.instrumentation = instrumentation
         injectTarget = File(args)
@@ -115,6 +120,8 @@ object Main {
                 classLoaderHook(obj)
                 return
             }
+            instrumentation!!.retransformClasses(loader.javaClass)
+            Thread.sleep(1000)
             // LaunchClassLoader
             if (loader.javaClass.name.replace(".", "/") in hookedClassLoaders) {
                 println("[SpookySky Loader] Detected Hooked Class Loader! Attempting to inject to it...  (Using strategy: Hook Custom Loader)")
@@ -160,14 +167,38 @@ object Main {
 
     @JvmStatic
     fun tryFindClass(e: Throwable, name: String): Class<*> {
+//        println("[SEX] CALLED ${javaClass.classLoader} ${name} ${e.message} ${e.javaClass.name}")
+        if (!instance) {
+//            println("[SEX] ERR ${javaClass.classLoader} ${name} ${e.message} ${e.javaClass.name}")
+
+            val main = ClassLoader.getSystemClassLoader().loadClass(Main::class.java.name)
+            try {
+                return main.getDeclaredMethod("tryFindClass", Throwable::class.java, String::class.java).invoke(null, e, name) as Class<*>
+            } catch (e: InvocationTargetException) {
+                throw e.targetException
+            }
+        }
         if (customClassLoader == null) {
             throw e
         } else {
             try {
                 return customClassLoader!!.findClass(name)
-            } catch (e: LinkageError) {
+            } catch (e: Throwable) {
                 return customClassLoader!!.loadClass(name)
             }
+        }
+    }
+
+    @JvmStatic
+    fun tryLoadClass(e: Throwable, name: String): Class<*> {
+        if (javaClass.classLoader != ClassLoader.getSystemClassLoader().loadClass(Main::class.java.name).classLoader) {
+            val main = ClassLoader.getSystemClassLoader().loadClass(Main::class.java.name)
+            return main.getDeclaredMethod("tryLoadClass", Throwable::class.java, String::class.java).invoke(null, e, name) as Class<*>;
+        }
+        if (customClassLoader == null) {
+            throw e
+        } else {
+            return customClassLoader!!.loadClass(name)
         }
     }
 
@@ -196,70 +227,79 @@ class Transformer: ClassFileTransformer {
 
         try {
             if (node.superName == "java/net/URLClassLoader") {
-
-            val writer = ClassWriter(ClassWriter.COMPUTE_MAXS)
-            node.accept(writer)
-            writer.toByteArray()
-
-            Main.hookedClassLoaders.add(node.name)
-            var method =
-                node.methods.firstOrNull { it.name == "findClass" && it.desc == "(Ljava/lang/String;)Ljava/lang/Class;" }
-            println("[SpookySky Loader] Attempting to inject to custom class loader ${node.name} (To Hook: ${method?.name})")
-            if (method != null) {
-                val start = LabelNode()
-                val catch = LabelNode()
-                val endOfMethod = LabelNode()
-                val out = InsnList()
-                out.add(start)
-                out.add(method.instructions)
-                out.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
-                out.add(catch)
-                out.add(TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
-                out.add(VarInsnNode(Opcodes.ALOAD, 1))
-                out.add(MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    Main::class.java.name.replace(".", "/"),
-                    "tryFindClass",
-                    "(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Class;"
-                ))
-                out.add(InsnNode(Opcodes.ARETURN))
-                out.add(endOfMethod)
-                method.instructions = out
-                method.tryCatchBlocks = ArrayList()
-                method.tryCatchBlocks.add(TryCatchBlockNode(start, catch, catch, "java/lang/Throwable"))
+                var method =
+                    node.methods.firstOrNull { it.name == "findClass" && it.desc == "(Ljava/lang/String;)Ljava/lang/Class;" }
+                if (method == null) {
+                    return classfileBuffer
+                }
+                Main.hookedClassLoaders.add(node.name)
+                println("[SpookySky Loader] Attempting to inject to custom class loader ${node.name} (To Hook: ${method?.name}")
+                if (method != null) {
+                    val start = LabelNode()
+                    val catch = LabelNode()
+                    val endOfMethod = LabelNode()
+                    val out = InsnList()
+                    out.add(start)
+                    out.add(method.instructions)
+                    out.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
+                    out.add(catch)
+                    out.add(TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
+                    out.add(VarInsnNode(Opcodes.ALOAD, 1))
+                    out.add(MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        Main::class.java.name.replace(".", "/"),
+                        "tryFindClass",
+                        "(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Class;"
+                    ))
+                    out.add(InsnNode(Opcodes.ARETURN))
+                    out.add(endOfMethod)
+                    method.instructions = out
+                    method.tryCatchBlocks = method.tryCatchBlocks?:ArrayList()
+                    method.tryCatchBlocks.add(TryCatchBlockNode(start, catch, catch, "java/lang/Throwable"))
+                    method.localVariables.removeIf { it.index == 1 }
+                } else {
+                    /**
+                     * TODO: This part of code is untested!
+                     */
+                    val method = MethodNode()
+                    val start = LabelNode()
+                    val catch = LabelNode()
+                    val endOfMethod = LabelNode()
+                    method.name = "findClass"
+                    method.desc = "(Ljava/lang/String;)Ljava/lang/Class;"
+                    method.instructions.add(start)
+                    method.instructions.add(VarInsnNode(Opcodes.ALOAD, 0))
+                    method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
+                    method.instructions.add(ASMUtils.generateMethodCall(URLClassLoader::class.java.getDeclaredMethod("findClass", String::class.java)))
+                    method.instructions.add(InsnNode(Opcodes.ARETURN))
+                    method.instructions.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
+                    method.instructions.add(catch)
+                    method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
+                    method.instructions.add(MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        Main::class.java.name.replace(".", "/"),
+                        "tryFindClass",
+                        "(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Class;"
+                    ))
+                    method.instructions.add(InsnNode(Opcodes.ARETURN))
+                    method.instructions.add(endOfMethod)
+                    method.tryCatchBlocks = ArrayList()
+                    method.tryCatchBlocks.add(TryCatchBlockNode(start, catch, catch, "java/lang/Throwable"))
+                    node.methods.add(method)
+                    method.localVariables?.clear()
+                }
+                val out = ASMUtils.writeClass(node)
+                val file = File("/tmp/${node.name}.class")
+                file.parentFile.mkdirs()
+                file.createNewFile()
+                file.writeBytes(out)
+                val oldFile = File("/tmp/${node.name}-Old.class")
+                oldFile.parentFile.mkdirs()
+                oldFile.createNewFile()
+                oldFile.writeBytes(classfileBuffer)
+                println("Saved to ${file.absolutePath} & ${oldFile.absolutePath}")
+                return out
             } else {
-                /**
-                 * TODO: This part of code is untested!
-                 */
-                val method = MethodNode()
-                val start = LabelNode()
-                val catch = LabelNode()
-                val endOfMethod = LabelNode()
-                method.name = "findClass"
-                method.desc = "(Ljava/lang/String;)Ljava/lang/Class;"
-                method.instructions.add(start)
-                method.instructions.add(VarInsnNode(Opcodes.ALOAD, 0))
-                method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
-                method.instructions.add(ASMUtils.generateMethodCall(URLClassLoader::class.java.getDeclaredMethod("findClass", String::class.java)))
-                method.instructions.add(InsnNode(Opcodes.ARETURN))
-                method.instructions.add(JumpInsnNode(Opcodes.GOTO, endOfMethod))
-                method.instructions.add(catch)
-                method.instructions.add(VarInsnNode(Opcodes.ALOAD, 1))
-                method.instructions.add(MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    Main::class.java.name.replace(".", "/"),
-                    "tryFindClass",
-                    "(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Class;"
-                ))
-                method.instructions.add(InsnNode(Opcodes.ARETURN))
-                method.instructions.add(endOfMethod)
-                method.tryCatchBlocks = ArrayList()
-                method.tryCatchBlocks.add(TryCatchBlockNode(start, catch, catch, "java/lang/Throwable"))
-                node.methods.add(method)
-            }
-            val out = ASMUtils.writeClass(node)
-            return out
-        } else {
                 for (method in node.methods) {
                     for (instruction in method.instructions) {
                         if (instruction is LdcInsnNode && instruction.cst is String) {
