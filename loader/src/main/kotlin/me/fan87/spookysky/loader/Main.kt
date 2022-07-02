@@ -289,15 +289,6 @@ class Transformer: ClassFileTransformer {
                     method.localVariables?.clear()
                 }
                 val out = ASMUtils.writeClass(node)
-                val file = File("/tmp/${node.name}.class")
-                file.parentFile.mkdirs()
-                file.createNewFile()
-                file.writeBytes(out)
-                val oldFile = File("/tmp/${node.name}-Old.class")
-                oldFile.parentFile.mkdirs()
-                oldFile.createNewFile()
-                oldFile.writeBytes(classfileBuffer)
-                println("Saved to ${file.absolutePath} & ${oldFile.absolutePath}")
                 return out
             } else {
                 for (method in node.methods) {
