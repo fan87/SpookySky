@@ -5,6 +5,7 @@ import me.fan87.spookysky.client.SpookySky
 import me.fan87.spookysky.client.events.EventHandler
 import me.fan87.spookysky.client.events.events.PacketReceivedEvent
 import me.fan87.spookysky.client.events.events.WorldTickEvent
+import me.fan87.spookysky.client.mapping.impl.item.Items
 import me.fan87.spookysky.client.mapping.impl.packets.play.server.S29PacketSoundEffect
 import me.fan87.spookysky.client.module.Category
 import me.fan87.spookysky.client.module.Module
@@ -47,11 +48,14 @@ class AutoFish: Module("AutoFish", "Use fishing rod automatically to fish", Cate
     fun onPacket(event: PacketReceivedEvent) {
         val packet = event.packet
         if (packet is S29PacketSoundEffect) {
-            SpookySky.addClientChat("${packet.soundName} - ${mc.thePlayer!!.getHeldItem()}")
-            if (packet.soundName == "random.splash") {
-                rightClickTime = currentTime + Random(System.currentTimeMillis()).nextInt(minOf(delayMin.value, delayMax.value), maxOf(delayMin.value, delayMax.value))
-                shouldContinue = refish.value
+            if (mc.thePlayer!!.getHeldItem().item.getUnlocalizedName() == Items.fishing_rod.getUnlocalizedName()) {
+                SpookySky.addClientChat("${packet.soundName} / ${packet.soundPitch} / ${packet.soundVolume} - ${mc.thePlayer!!.getHeldItem().getDisplayName()}")
+                if (packet.soundName == "random.splash" || (packet.soundName == "game.player.swim.splash" && packet.soundVolume == 0.25f)) {
+                    rightClickTime = currentTime + Random(System.currentTimeMillis()).nextInt(minOf(delayMin.value, delayMax.value), maxOf(delayMin.value, delayMax.value))
+                    shouldContinue = refish.value
+                }
             }
+
         }
     }
 
