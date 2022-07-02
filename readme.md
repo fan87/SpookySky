@@ -9,6 +9,15 @@ This is also a perfect example of a library I made a while back ago:
 [Regular Bytecode Expression](https://github.com/fan87/Regular-Bytecode-Expression)
 
 
+## Disclaimer
+You are not supposed to cheat on servers using this software! This was 1000% made for learning purposes 
+(im serious, this project was actually made for [Regular Bytecode Expression](https://github.com/fan87/Regular-Bytecode-Expression),
+I need something to be able to test it, and I feel like coding another hacked client will be a great idea).
+
+You may fork this repository and add bypasses to it, but I'm not doing them, at least for now.
+
+(So I'm not cheating on servers with this, don't ban me just because I made this repo without any proof,
+it's stupid)
 
 ## Using
 ### Running

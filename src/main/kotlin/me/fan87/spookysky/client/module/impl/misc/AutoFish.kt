@@ -49,7 +49,6 @@ class AutoFish: Module("AutoFish", "Use fishing rod automatically to fish", Cate
         val packet = event.packet
         if (packet is S29PacketSoundEffect) {
             if (mc.thePlayer!!.getHeldItem().item.getUnlocalizedName() == Items.fishing_rod.getUnlocalizedName()) {
-                SpookySky.addClientChat("${packet.soundName} / ${packet.soundPitch} / ${packet.soundVolume} - ${mc.thePlayer!!.getHeldItem().getDisplayName()}")
                 if (packet.soundName == "random.splash" || (packet.soundName == "game.player.swim.splash" && packet.soundVolume == 0.25f)) {
                     rightClickTime = currentTime + Random(System.currentTimeMillis()).nextInt(minOf(delayMin.value, delayMax.value), maxOf(delayMin.value, delayMax.value))
                     shouldContinue = refish.value
